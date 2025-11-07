@@ -1,20 +1,20 @@
 /**
- * 百度地图GL组件
+ * 百度地圖GL元件
  * 
- * 基于百度地图WebGL API封装的React地图组件，支持自定义标记点、缩放级别等配置
+ * 基於百度地圖WebGL API封裝的React地圖元件，支援自定義標記點、縮放級別等配置
  * 
  * 使用示例：
  * <Map
- *   ak="OeTpXHgdUrRT2pPyAPRL7pog6GlMlQzl" // 百度地图API密钥
+ *   ak="OeTpXHgdUrRT2pPyAPRL7pog6GlMlQzl" // 百度地圖API金鑰
  *   option={{
- *       address: "山东省威海市环翠区刘公岛景区内",
- *       lat: 37.51029432858647, // 纬度
- *       lng: 122.19726116385918, // 经度
- *       zoom: 12, // 缩放级别
+ *       address: "山東省威海市環翠區劉公島景區內",
+ *       lat: 37.51029432858647, // 緯度
+ *       lng: 122.19726116385918, // 經度
+ *       zoom: 12, // 縮放級別
  *   }}
- *   className="w-[600px] h-[300px] rounded-lg" // 容器样式
+ *   className="w-[600px] h-[300px] rounded-lg" // 容器樣式
  * >
- *   <MapTitle className="text-md"/> // 可选标题组件
+ *   <MapTitle className="text-md"/> // 可選標題元件
  * </Map>
  */
 
@@ -27,20 +27,20 @@ import {
     useRef,
 } from "react";
 
-/** 地图上下文属性 */
+/** 地圖上下文屬性 */
 type MapContextProps = {
 // 地址
-address?: string; /** 地图标记点地址 */
+address?: string; /** 地圖示記點地址 */
 };
 
 const MapContext = createContext<MapContextProps | null>(null);
 
-/** 默认地图配置 */
+/** 預設地圖配置 */
 const defaultOption = {
-zoom: 15, /** 默认缩放级别 */
-lng: 116.404, /** 默认经度(北京天安门) */
-lat: 39.915, /** 默认纬度(北京天安门) */
-address: "北京市东城区长安街", /** 默认地址 */
+zoom: 15, /** 預設縮放級別 */
+lng: 116.404, /** 預設經度(北京天安門) */
+lat: 39.915, /** 預設緯度(北京天安門) */
+address: "北京市東城區長安街", /** 預設地址 */
 };
 
 const loadScript = (src: string) => {
@@ -75,8 +75,8 @@ return context;
 };
 
 /**
- * 地图标题组件
- * @param {string} className - 自定义类名
+ * 地圖示題元件
+ * @param {string} className - 自定義類名
  */
 const MapTitle = ({ className }: React.ComponentProps<"div">) => {
 const { address } = useMap();
@@ -84,19 +84,19 @@ if (!address) return null;
 return <span className={`text-lg font-bold ${className}`}>{address}</span>;
 };
 
-// 记录百度地图SDK加载状态
+// 記錄百度地圖SDK載入狀態
 let BMapGLLoadingPromise: Promise<void> | null = null;
 
 /**
- * 百度地图主组件
- * @param {string} ak - 百度地图API密钥，默认为'OeTpXHgdUrRT2pPyAPRL7pog6GlMlQzl'
- * @param {object} option - 地图配置选项
- * @param {number} option.zoom - 地图缩放级别
- * @param {number} option.lng - 经度坐标
- * @param {number} option.lat - 纬度坐标
- * @param {string} option.address - 标记点地址
- * @param {string} className - 容器自定义类名
- * @param {ReactNode} children - 子组件，通常为MapTitle
+ * 百度地圖主元件
+ * @param {string} ak - 百度地圖API金鑰，預設為'OeTpXHgdUrRT2pPyAPRL7pog6GlMlQzl'
+ * @param {object} option - 地圖配置選項
+ * @param {number} option.zoom - 地圖縮放級別
+ * @param {number} option.lng - 經度座標
+ * @param {number} option.lat - 緯度座標
+ * @param {string} option.address - 標記點地址
+ * @param {string} className - 容器自定義類名
+ * @param {ReactNode} children - 子元件，通常為MapTitle
  */
 const Map = ({
 ak,
@@ -133,15 +133,15 @@ const initMap = useCallback(() => {
     let map = currentRef.current;
 
     if (!map) {
-    // 创建地图实例
+    // 建立地圖例項
     map = new (window as any).BMapGL.Map(mapRef.current);
     currentRef.current = map;
     }
 
-    // 清除覆盖物
+    // 清除覆蓋物
     map.clearOverlays();
 
-    // 设置地图中心点坐标和地图级别
+    // 設定地圖中心點座標和地圖級別
     const center = new (window as any).BMapGL.Point(
     _options?.lng,
     _options?.lat
@@ -149,13 +149,13 @@ const initMap = useCallback(() => {
 
     map.centerAndZoom(center, _options?.zoom);
 
-    // 添加标注
+    // 新增標註
     const marker = new (window as any).BMapGL.Marker(center);
     map.addOverlay(marker);
 }, [_options]);
 
 useEffect(() => {
-    // 检查百度地图API是否已加载
+    // 檢查百度地圖API是否已載入
     if ((window as any).BMapGL) {
     initMap();
     } else if (BMapGLLoadingPromise) {

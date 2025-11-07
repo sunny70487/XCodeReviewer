@@ -1,4 +1,4 @@
-// 从 localStorage 读取运行时配置
+// 從 localStorage 讀取執行時配置
 const STORAGE_KEY = 'xcodereviewer_runtime_config';
 const getRuntimeConfig = () => {
   try {
@@ -11,27 +11,27 @@ const getRuntimeConfig = () => {
 
 const runtimeConfig = getRuntimeConfig();
 
-// 环境变量配置（支持运行时配置覆盖）
+// 環境變數配置（支援執行時配置覆蓋）
 export const env = {
   // ==================== LLM 通用配置 ====================
-  // 当前使用的LLM提供商 (gemini|openai|claude|qwen|deepseek|zhipu|moonshot|baidu|minimax|doubao|ollama)
+  // 當前使用的LLM提供商 (gemini|openai|claude|qwen|deepseek|zhipu|moonshot|baidu|minimax|doubao|ollama)
   LLM_PROVIDER: runtimeConfig?.llmProvider || import.meta.env.VITE_LLM_PROVIDER || 'gemini',
   // LLM API Key
   LLM_API_KEY: runtimeConfig?.llmApiKey || import.meta.env.VITE_LLM_API_KEY || '',
-  // LLM 模型名称
+  // LLM 模型名稱
   LLM_MODEL: runtimeConfig?.llmModel || import.meta.env.VITE_LLM_MODEL || '',
-  // LLM API 基础URL (可选，用于自定义端点或代理)
+  // LLM API 基礎URL (可選，用於自定義端點或代理)
   LLM_BASE_URL: runtimeConfig?.llmBaseUrl || import.meta.env.VITE_LLM_BASE_URL || '',
-  // LLM 请求超时时间(ms)
+  // LLM 請求超時時間(ms)
   LLM_TIMEOUT: runtimeConfig?.llmTimeout || Number(import.meta.env.VITE_LLM_TIMEOUT) || 150000,
-  // LLM 温度参数 (0.0-2.0)
+  // LLM 溫度引數 (0.0-2.0)
   LLM_TEMPERATURE: runtimeConfig?.llmTemperature !== undefined ? runtimeConfig.llmTemperature : (Number(import.meta.env.VITE_LLM_TEMPERATURE) || 0.2),
-  // LLM 最大token数
-  LLM_MAX_TOKENS: runtimeConfig?.llmMaxTokens || Number(import.meta.env.VITE_LLM_MAX_TOKENS) || 4096,
-  // LLM 自定义请求头 (JSON字符串格式)
+  // LLM 最大token數（設置為 0 表示不限制，讓模型自行決定）
+  LLM_MAX_TOKENS: runtimeConfig?.llmMaxTokens !== undefined ? runtimeConfig.llmMaxTokens : (Number(import.meta.env.VITE_LLM_MAX_TOKENS) || 8192),
+  // LLM 自定義請求頭 (JSON字串格式)
   LLM_CUSTOM_HEADERS: runtimeConfig?.llmCustomHeaders || import.meta.env.VITE_LLM_CUSTOM_HEADERS || '',
 
-  // ==================== Gemini AI 配置 (兼容旧配置) ====================
+  // ==================== Gemini AI 配置 (相容舊配置) ====================
   GEMINI_API_KEY: runtimeConfig?.geminiApiKey || import.meta.env.VITE_GEMINI_API_KEY || '',
   GEMINI_MODEL: import.meta.env.VITE_GEMINI_MODEL || 'gemini-1.5-flash',
   GEMINI_TIMEOUT_MS: Number(import.meta.env.VITE_GEMINI_TIMEOUT_MS) || 25000,
@@ -45,7 +45,7 @@ export const env = {
   CLAUDE_API_KEY: runtimeConfig?.claudeApiKey || import.meta.env.VITE_CLAUDE_API_KEY || '',
   CLAUDE_MODEL: import.meta.env.VITE_CLAUDE_MODEL || 'claude-3-5-sonnet-20241022',
 
-  // ==================== 通义千问 配置 ====================
+  // ==================== 通義千問 配置 ====================
   QWEN_API_KEY: runtimeConfig?.qwenApiKey || import.meta.env.VITE_QWEN_API_KEY || '',
   QWEN_MODEL: import.meta.env.VITE_QWEN_MODEL || 'qwen-turbo',
 
@@ -53,7 +53,7 @@ export const env = {
   DEEPSEEK_API_KEY: runtimeConfig?.deepseekApiKey || import.meta.env.VITE_DEEPSEEK_API_KEY || '',
   DEEPSEEK_MODEL: import.meta.env.VITE_DEEPSEEK_MODEL || 'deepseek-chat',
 
-  // ==================== 智谱AI 配置 ====================
+  // ==================== 智譜AI 配置 ====================
   ZHIPU_API_KEY: runtimeConfig?.zhipuApiKey || import.meta.env.VITE_ZHIPU_API_KEY || '',
   ZHIPU_MODEL: import.meta.env.VITE_ZHIPU_MODEL || 'glm-4-flash',
 
@@ -88,7 +88,7 @@ export const env = {
   // ==================== GitLab 配置 ====================
   GITLAB_TOKEN: runtimeConfig?.gitlabToken || import.meta.env.VITE_GITLAB_TOKEN || '',
 
-  // ==================== 应用配置 ====================
+  // ==================== 應用配置 ====================
   APP_ID: import.meta.env.VITE_APP_ID || 'xcodereviewer',
 
   // ==================== 分析配置 ====================
@@ -96,26 +96,26 @@ export const env = {
   LLM_CONCURRENCY: runtimeConfig?.llmConcurrency || Number(import.meta.env.VITE_LLM_CONCURRENCY) || 2,
   LLM_GAP_MS: runtimeConfig?.llmGapMs || Number(import.meta.env.VITE_LLM_GAP_MS) || 500,
   
-  // ==================== 语言配置 ====================
+  // ==================== 語言配置 ====================
   OUTPUT_LANGUAGE: runtimeConfig?.outputLanguage || import.meta.env.VITE_OUTPUT_LANGUAGE || 'zh-CN', // zh-CN | en-US
 
-  // ==================== 开发环境标识 ====================
+  // ==================== 開發環境標識 ====================
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
 } as const;
 
 /**
- * 获取当前配置的LLM服务的API Key
+ * 獲取當前配置的LLM服務的API Key
  */
 export function getCurrentLLMApiKey(): string {
   const provider = env.LLM_PROVIDER.toLowerCase();
   
-  // 优先使用通用配置
+  // 優先使用通用配置
   if (env.LLM_API_KEY) {
     return env.LLM_API_KEY;
   }
 
-  // 根据provider获取对应的API Key
+  // 根據provider獲取對應的API Key
   const providerKeyMap: Record<string, string> = {
     gemini: env.GEMINI_API_KEY,
     openai: env.OPENAI_API_KEY,
@@ -134,17 +134,17 @@ export function getCurrentLLMApiKey(): string {
 }
 
 /**
- * 获取当前配置的LLM模型
+ * 獲取當前配置的LLM模型
  */
 export function getCurrentLLMModel(): string {
   const provider = env.LLM_PROVIDER.toLowerCase();
   
-  // 优先使用通用配置
+  // 優先使用通用配置
   if (env.LLM_MODEL) {
     return env.LLM_MODEL;
   }
 
-  // 根据provider获取对应的模型
+  // 根據provider獲取對應的模型
   const providerModelMap: Record<string, string> = {
     gemini: env.GEMINI_MODEL,
     openai: env.OPENAI_MODEL,
@@ -162,12 +162,12 @@ export function getCurrentLLMModel(): string {
   return providerModelMap[provider] || '';
 }
 
-// 验证必需的环境变量
+// 驗證必需的環境變數
 export function validateEnv() {
   const apiKey = getCurrentLLMApiKey();
   
   if (!apiKey) {
-    console.warn(`未配置 ${env.LLM_PROVIDER} 的API Key，请在环境变量中配置`);
+    console.warn(`未配置 ${env.LLM_PROVIDER} 的API Key，請在環境變數中配置`);
     return false;
   }
   

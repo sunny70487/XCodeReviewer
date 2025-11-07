@@ -1,5 +1,5 @@
 /**
- * LLM适配器导出
+ * LLM介面卡匯出
  */
 
 export { GeminiAdapter } from './gemini-adapter';

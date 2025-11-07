@@ -113,7 +113,7 @@ export function calculateQualityGrade(score: number): {
     return {
       grade: 'A',
       color: 'text-green-600',
-      description: '优秀'
+      description: '優秀'
     };
   } else if (score >= 80) {
     return {
@@ -131,7 +131,7 @@ export function calculateQualityGrade(score: number): {
     return {
       grade: 'D',
       color: 'text-orange-600',
-      description: '较差'
+      description: '較差'
     };
   } else {
     return {
@@ -167,13 +167,13 @@ export function copyToClipboard(text: string): Promise<void> {
 }
 
 /**
- * 计算任务扫描进度百分比
- * @param scannedFiles 已扫描文件数
- * @param totalFiles 总文件数
- * @returns 进度百分比（0-100），安全处理NaN情况
+ * 計算任務掃描進度百分比
+ * @param scannedFiles 已掃描檔案數
+ * @param totalFiles 總檔案數
+ * @returns 進度百分比（0-100），安全處理NaN情況
  */
 export function calculateTaskProgress(scannedFiles?: number, totalFiles?: number): number {
-  // 处理未定义或无效值
+  // 處理未定義或無效值
   const scanned = scannedFiles || 0;
   const total = totalFiles || 0;
   
@@ -182,18 +182,18 @@ export function calculateTaskProgress(scannedFiles?: number, totalFiles?: number
     return 0;
   }
   
-  // 计算百分比并四舍五入
+  // 計算百分比並四捨五入
   const percentage = (scanned / total) * 100;
   
-  // 确保返回值在0-100之间
+  // 確保返回值在0-100之間
   return Math.min(100, Math.max(0, Math.round(percentage)));
 }
 
 /**
- * 获取任务进度的完整信息
- * @param scannedFiles 已扫描文件数
- * @param totalFiles 总文件数
- * @returns 包含百分比、显示文本等信息的对象
+ * 獲取任務進度的完整資訊
+ * @param scannedFiles 已掃描檔案數
+ * @param totalFiles 總檔案數
+ * @returns 包含百分比、顯示文字等資訊的物件
  */
 export function getTaskProgressInfo(scannedFiles?: number, totalFiles?: number) {
   const scanned = scannedFiles || 0;
@@ -204,7 +204,7 @@ export function getTaskProgressInfo(scannedFiles?: number, totalFiles?: number) 
     percentage,
     scanned,
     total,
-    text: `${scanned} / ${total} 文件`,
+    text: `${scanned} / ${total} 檔案`,
     percentText: `${percentage}%`,
     isComplete: total > 0 && scanned >= total,
     isStarted: scanned > 0

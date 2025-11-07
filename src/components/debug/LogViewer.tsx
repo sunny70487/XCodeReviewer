@@ -1,5 +1,5 @@
 /**
- * 日志查看器组件
+ * 日誌檢視器元件
  */
 
 import { useState, useMemo } from 'react';
@@ -25,25 +25,25 @@ export function LogViewer() {
     }), [levelFilter, categoryFilter, searchQuery]);
 
     const rawLogs = useLogs(filter);
-    // 反转日志顺序，最新的在最上面
+    // 反轉日誌順序，最新的在最上面
     const logs = useMemo(() => [...rawLogs].reverse(), [rawLogs]);
     const stats = useLogStats();
 
     const handleClearLogs = () => {
-        if (confirm('确定要清空所有日志吗？')) {
+        if (confirm('確定要清空所有日誌嗎？')) {
             logger.clearLogs();
-            toast.success('日志已清空');
+            toast.success('日誌已清空');
         }
     };
 
     const handleDownloadJson = () => {
         logger.downloadLogs('json');
-        toast.success('日志已导出为JSON');
+        toast.success('日誌已匯出為JSON');
     };
 
     const handleDownloadCsv = () => {
         logger.downloadLogs('csv');
-        toast.success('日志已导出为CSV');
+        toast.success('日誌已匯出為CSV');
     };
 
     const getLevelColor = (level: LogLevel) => {
@@ -69,34 +69,34 @@ export function LogViewer() {
 
     return (
         <div className="flex h-full flex-col gap-4 p-4">
-            {/* 统计信息 */}
+            {/* 統計資訊 */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">总日志数</div>
+                    <div className="text-sm text-muted-foreground">總日誌數</div>
                     <div className="text-2xl font-bold">{stats.total}</div>
                 </div>
                 <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">错误数</div>
+                    <div className="text-sm text-muted-foreground">錯誤數</div>
                     <div className="text-2xl font-bold text-red-500">{stats.errors}</div>
                 </div>
                 <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">当前显示</div>
+                    <div className="text-sm text-muted-foreground">當前顯示</div>
                     <div className="text-2xl font-bold">{logs.length}</div>
                 </div>
                 <div className="rounded-lg border bg-card p-4">
-                    <div className="text-sm text-muted-foreground">最新日志</div>
+                    <div className="text-sm text-muted-foreground">最新日誌</div>
                     <div className="text-sm">
                         {logs.length > 0 ? new Date(logs[logs.length - 1].timestamp).toLocaleTimeString() : '-'}
                     </div>
                 </div>
             </div>
 
-            {/* 工具栏 */}
+            {/* 工具欄 */}
             <div className="flex flex-wrap items-center gap-2">
                 <div className="relative flex-1 min-w-[200px]">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="搜索日志..."
+                        placeholder="搜尋日誌..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-8"
@@ -105,10 +105,10 @@ export function LogViewer() {
 
                 <Select value={levelFilter} onValueChange={(v) => setLevelFilter(v as any)}>
                     <SelectTrigger className="w-32">
-                        <SelectValue placeholder="所有级别" />
+                        <SelectValue placeholder="所有級別" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">所有级别</SelectItem>
+                        <SelectItem value="ALL">所有級別</SelectItem>
                         {Object.values(LogLevel).map(level => (
                             <SelectItem key={level} value={level}>{level}</SelectItem>
                         ))}
@@ -117,41 +117,41 @@ export function LogViewer() {
 
                 <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v as any)}>
                     <SelectTrigger className="w-40">
-                        <SelectValue placeholder="所有分类" />
+                        <SelectValue placeholder="所有分類" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="ALL">所有分类</SelectItem>
+                        <SelectItem value="ALL">所有分類</SelectItem>
                         {Object.values(LogCategory).map(category => (
                             <SelectItem key={category} value={category}>{category}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
 
-                <Button variant="outline" size="icon" onClick={() => window.location.reload()} title="刷新页面">
+                <Button variant="outline" size="icon" onClick={() => window.location.reload()} title="重新整理頁面">
                     <RefreshCw className="h-4 w-4" />
                 </Button>
 
-                <Button variant="outline" size="icon" onClick={handleDownloadJson} title="导出为JSON格式">
+                <Button variant="outline" size="icon" onClick={handleDownloadJson} title="匯出為JSON格式">
                     <FileJson className="h-4 w-4" />
                 </Button>
 
-                <Button variant="outline" size="icon" onClick={handleDownloadCsv} title="导出为CSV格式">
+                <Button variant="outline" size="icon" onClick={handleDownloadCsv} title="匯出為CSV格式">
                     <FileSpreadsheet className="h-4 w-4" />
                 </Button>
 
-                <Button variant="destructive" size="icon" onClick={handleClearLogs} title="清空日志">
+                <Button variant="destructive" size="icon" onClick={handleClearLogs} title="清空日誌">
                     <Trash2 className="h-4 w-4" />
                 </Button>
             </div>
 
-            {/* 日志列表 */}
+            {/* 日誌列表 */}
             <div className="flex flex-1 flex-col gap-4 overflow-hidden lg:flex-row">
                 <div className="flex-1 flex flex-col rounded-lg border bg-card overflow-hidden">
                     <div className="flex-1 overflow-auto">
                         <div className="p-2">
                             {logs.length === 0 ? (
                                 <div className="flex h-40 items-center justify-center text-muted-foreground">
-                                    没有找到日志
+                                    沒有找到日誌
                                 </div>
                             ) : (
                                 logs.map((log) => (
@@ -178,7 +178,7 @@ export function LogViewer() {
                                                 onClick={() => setSelectedLog(log)}
                                                 className="h-7 text-xs"
                                             >
-                                                详情
+                                                詳情
                                             </Button>
                                         </div>
                                         <div className="mt-2 text-sm line-clamp-2">{log.message}</div>
@@ -189,11 +189,11 @@ export function LogViewer() {
                     </div>
                 </div>
 
-                {/* 日志详情 */}
+                {/* 日誌詳情 */}
                 {selectedLog && (
                     <div className="flex w-full flex-col rounded-lg border bg-card lg:w-[600px] overflow-hidden">
                         <div className="flex items-center justify-between border-b p-4 flex-shrink-0">
-                            <h3 className="text-lg font-semibold">日志详情</h3>
+                            <h3 className="text-lg font-semibold">日誌詳情</h3>
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -210,30 +210,30 @@ export function LogViewer() {
                                     <div className="rounded bg-muted p-2 font-mono text-xs break-all">{selectedLog.id}</div>
                                 </div>
                                 <div>
-                                    <div className="mb-1 font-medium text-muted-foreground">时间</div>
+                                    <div className="mb-1 font-medium text-muted-foreground">時間</div>
                                     <div className="rounded bg-muted p-2">{new Date(selectedLog.timestamp).toLocaleString()}</div>
                                 </div>
                                 <div>
-                                    <div className="mb-1 font-medium text-muted-foreground">级别</div>
+                                    <div className="mb-1 font-medium text-muted-foreground">級別</div>
                                     <Badge className={`${getLevelColor(selectedLog.level)} text-white`}>
                                         {selectedLog.level}
                                     </Badge>
                                 </div>
                                 <div>
-                                    <div className="mb-1 font-medium text-muted-foreground">分类</div>
+                                    <div className="mb-1 font-medium text-muted-foreground">分類</div>
                                     <Badge className={`${getCategoryColor(selectedLog.category)} text-white`}>
                                         {selectedLog.category}
                                     </Badge>
                                 </div>
                                 <div>
-                                    <div className="mb-1 font-medium text-muted-foreground">消息</div>
+                                    <div className="mb-1 font-medium text-muted-foreground">訊息</div>
                                     <div className="rounded bg-muted p-3 whitespace-pre-wrap break-words overflow-auto max-h-96">
                                         {selectedLog.message}
                                     </div>
                                 </div>
                                 {selectedLog.data && (
                                     <div>
-                                        <div className="mb-1 font-medium text-muted-foreground">数据</div>
+                                        <div className="mb-1 font-medium text-muted-foreground">資料</div>
                                         <pre className="overflow-auto rounded bg-muted p-3 text-xs max-h-96 whitespace-pre-wrap break-words">
                                             {JSON.stringify(selectedLog.data, null, 2)}
                                         </pre>
@@ -241,7 +241,7 @@ export function LogViewer() {
                                 )}
                                 {selectedLog.stack && (
                                     <div>
-                                        <div className="mb-1 font-medium text-muted-foreground">堆栈跟踪</div>
+                                        <div className="mb-1 font-medium text-muted-foreground">堆疊跟蹤</div>
                                         <pre className="overflow-auto rounded bg-muted p-3 text-xs max-h-96 whitespace-pre-wrap break-words">
                                             {selectedLog.stack}
                                         </pre>

@@ -1,13 +1,13 @@
 /**
- * 二维码生成组件
+ * 二維碼生成元件
  * 
- * 基于QRCode.js的React封装组件，可将任意文本转换为二维码图片
+ * 基於QRCode.js的React封裝元件，可將任意文字轉換為二維碼圖片
  * 
  * 使用示例：
  * import QRCodeDataUrl from './components/qrcodedataurl'
  * 
  * function App() {
- *   return <QRCodeDataUrl text="https://example.com" /> // 替换为有效URL
+ *   return <QRCodeDataUrl text="https://example.com" /> // 替換為有效URL
  * }
  */
 
@@ -16,39 +16,39 @@ import QRCode from 'qrcode';
 
 interface QRCodeDataUrlProps {
   /** 
-   * 需要编码为二维码的文本内容
-   * 可以是URL、文本、联系方式等
+   * 需要編碼為二維碼的文字內容
+   * 可以是URL、文字、聯絡方式等
    * 示例: "https://example.com" 或 "CONTACT:1234567890"
    */
   text: string;
 
   /**
-   * 二维码图片宽度(像素)
+   * 二維碼圖片寬度(畫素)
    * @default 128
    */
   width?: number;
 
   /**
-   * 二维码前景色(有效CSS颜色值)
+   * 二維碼前景色(有效CSS顏色值)
    * @default "#000000" (黑色)
    */
   color?: string;
 
   /**
-   * 二维码背景色(有效CSS颜色值) 
+   * 二維碼背景色(有效CSS顏色值) 
    * @default "#ffffff" (白色)
    */
   backgroundColor?: string;
 
   /**
-   * 自定义CSS类名
+   * 自定義CSS類名
    */
   className?: string;
 }
 
 /**
- * 二维码生成组件
- * @param {QRCodeDataUrlProps} props - 组件属性
+ * 二維碼生成元件
+ * @param {QRCodeDataUrlProps} props - 元件屬性
  */
 const QRCodeDataUrl: React.FC<QRCodeDataUrlProps> = ({
   text,
@@ -71,7 +71,7 @@ const QRCodeDataUrl: React.FC<QRCodeDataUrlProps> = ({
         });
         setDataUrl(url);
       } catch (err) {
-        console.error('生成二维码失败:', err);
+        console.error('生成二維碼失敗:', err);
       }
     };
 
@@ -83,12 +83,12 @@ const QRCodeDataUrl: React.FC<QRCodeDataUrlProps> = ({
       {dataUrl ? (
         <img
           src={dataUrl}
-          alt={`二维码: ${text}`}
+          alt={`二維碼: ${text}`}
           width={width}
           height={width}
         />
       ) : (
-        <div>生成二维码中...</div>
+        <div>生成二維碼中...</div>
       )}
     </div>
   );

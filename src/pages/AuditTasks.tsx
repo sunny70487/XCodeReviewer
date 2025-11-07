@@ -31,7 +31,7 @@ export default function AuditTasks() {
     loadTasks();
   }, []);
 
-  // 静默更新活动任务的进度（不触发loading状态）
+  // 靜默更新活動任務的進度（不觸發loading狀態）
   useEffect(() => {
     const activeTasks = tasks.filter(
       task => task.status === 'running' || task.status === 'pending'
@@ -43,14 +43,14 @@ export default function AuditTasks() {
 
     const intervalId = setInterval(async () => {
       try {
-        // 只获取活动任务的最新数据
+        // 只獲取活動任務的最新資料
         const updatedData = await api.getAuditTasks();
         
-        // 使用函数式更新，确保基于最新状态
+        // 使用函式式更新，確保基於最新狀態
         setTasks(prevTasks => {
           return prevTasks.map(prevTask => {
             const updated = updatedData.find(t => t.id === prevTask.id);
-            // 只有在进度、状态或问题数真正变化时才更新
+            // 只有在進度、狀態或問題數真正變化時才更新
             if (updated && (
               updated.status !== prevTask.status ||
               updated.scanned_files !== prevTask.scanned_files ||
@@ -62,9 +62,9 @@ export default function AuditTasks() {
           });
         });
       } catch (error) {
-        console.error('静默更新任务列表失败:', error);
+        console.error('靜默更新任務列表失敗:', error);
       }
-    }, 3000); // 每3秒静默更新一次
+    }, 3000); // 每3秒靜默更新一次
 
     return () => clearInterval(intervalId);
   }, [tasks.map(t => t.id + t.status).join(',')]);
@@ -76,7 +76,7 @@ export default function AuditTasks() {
       setTasks(data);
     } catch (error) {
       console.error('Failed to load tasks:', error);
-      toast.error("加载任务失败");
+      toast.error("載入任務失敗");
     } finally {
       setLoading(false);
     }
@@ -129,25 +129,25 @@ export default function AuditTasks() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* 页面标题 */}
+      {/* 頁面標題 */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="page-title">审计任务</h1>
-          <p className="page-subtitle">查看和管理所有代码审计任务的执行状态</p>
+          <h1 className="page-title">審計任務</h1>
+          <p className="page-subtitle">檢視和管理所有程式碼審計任務的執行狀態</p>
         </div>
         <Button className="btn-primary" onClick={() => setShowCreateDialog(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          新建任务
+          新建任務
         </Button>
       </div>
 
-      {/* 统计卡片 */}
+      {/* 統計卡片 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="stat-card">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">总任务数</p>
+                <p className="stat-label">總任務數</p>
                 <p className="stat-value text-xl">{tasks.length}</p>
               </div>
               <div className="stat-icon from-primary to-accent">
@@ -175,7 +175,7 @@ export default function AuditTasks() {
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">运行中</p>
+                <p className="stat-label">執行中</p>
                 <p className="stat-value text-xl">{tasks.filter(t => t.status === 'running').length}</p>
               </div>
               <div className="stat-icon from-orange-500 to-orange-600">
@@ -189,7 +189,7 @@ export default function AuditTasks() {
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">失败</p>
+                <p className="stat-label">失敗</p>
                 <p className="stat-value text-xl">{tasks.filter(t => t.status === 'failed').length}</p>
               </div>
               <div className="stat-icon from-red-500 to-red-600">
@@ -200,14 +200,14 @@ export default function AuditTasks() {
         </Card>
       </div>
 
-      {/* 搜索和筛选 */}
+      {/* 搜尋和篩選 */}
       <Card>
         <CardContent className="p-4">
           <div className="flex items-center space-x-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="搜索项目名称或任务类型..."
+                placeholder="搜尋專案名稱或任務型別..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -226,7 +226,7 @@ export default function AuditTasks() {
                 size="sm"
                 onClick={() => setStatusFilter("running")}
               >
-                运行中
+                執行中
               </Button>
               <Button
                 variant={statusFilter === "completed" ? "default" : "outline"}
@@ -240,14 +240,14 @@ export default function AuditTasks() {
                 size="sm"
                 onClick={() => setStatusFilter("failed")}
               >
-                失败
+                失敗
               </Button>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* 任务列表 */}
+      {/* 任務列表 */}
       {filteredTasks.length > 0 ? (
         <div className="space-y-4">
           {filteredTasks.map((task) => (
@@ -264,17 +264,17 @@ export default function AuditTasks() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg text-gray-900 group-hover:text-primary transition-colors">
-                        {task.project?.name || '未知项目'}
+                        {task.project?.name || '未知專案'}
                       </h3>
                       <p className="text-sm text-gray-500">
-                        {task.task_type === 'repository' ? '仓库审计任务' : '即时分析任务'}
+                        {task.task_type === 'repository' ? '倉庫審計任務' : '即時分析任務'}
                       </p>
                     </div>
                   </div>
                   <Badge className={getStatusColor(task.status)}>
                     {task.status === 'completed' ? '已完成' : 
-                     task.status === 'running' ? '运行中' : 
-                     task.status === 'failed' ? '失败' :
+                     task.status === 'running' ? '執行中' : 
+                     task.status === 'failed' ? '失敗' :
                      task.status === 'cancelled' ? '已取消' : '等待中'}
                   </Badge>
                 </div>
@@ -282,28 +282,28 @@ export default function AuditTasks() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-xl border border-blue-200">
                     <div className="text-2xl font-bold text-blue-600 mb-1">{task.total_files}</div>
-                    <p className="text-xs text-blue-700 font-medium">文件数</p>
+                    <p className="text-xs text-blue-700 font-medium">檔案數</p>
                   </div>
                   <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100/30 rounded-xl border border-purple-200">
                     <div className="text-2xl font-bold text-purple-600 mb-1">{task.total_lines.toLocaleString()}</div>
-                    <p className="text-xs text-purple-700 font-medium">代码行数</p>
+                    <p className="text-xs text-purple-700 font-medium">程式碼行數</p>
                   </div>
                   <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100/30 rounded-xl border border-orange-200">
                     <div className="text-2xl font-bold text-orange-600 mb-1">{task.issues_count}</div>
-                    <p className="text-xs text-orange-700 font-medium">发现问题</p>
+                    <p className="text-xs text-orange-700 font-medium">發現問題</p>
                   </div>
                   <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100/30 rounded-xl border border-green-200">
                     <div className="text-2xl font-bold text-green-600 mb-1">{task.quality_score.toFixed(1)}</div>
-                    <p className="text-xs text-green-700 font-medium">质量评分</p>
+                    <p className="text-xs text-green-700 font-medium">質量評分</p>
                   </div>
                 </div>
 
-                {/* 扫描进度 */}
+                {/* 掃描進度 */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">扫描进度</span>
+                    <span className="text-sm font-medium text-gray-700">掃描進度</span>
                     <span className="text-sm text-gray-500">
-                      {task.scanned_files || 0} / {task.total_files || 0} 文件
+                      {task.scanned_files || 0} / {task.total_files || 0} 檔案
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -337,13 +337,13 @@ export default function AuditTasks() {
                     <Link to={`/tasks/${task.id}`}>
                       <Button variant="outline" size="sm" className="btn-secondary">
                         <FileText className="w-4 h-4 mr-2" />
-                        查看详情
+                        檢視詳情
                       </Button>
                     </Link>
                     {task.project && (
                       <Link to={`/projects/${task.project.id}`}>
                         <Button size="sm" className="btn-primary">
-                          查看项目
+                          檢視專案
                         </Button>
                       </Link>
                     )}
@@ -360,22 +360,22 @@ export default function AuditTasks() {
               <Activity className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchTerm || statusFilter !== "all" ? '未找到匹配的任务' : '暂无审计任务'}
+              {searchTerm || statusFilter !== "all" ? '未找到匹配的任務' : '暫無審計任務'}
             </h3>
             <p className="text-gray-500 mb-6 max-w-md">
-              {searchTerm || statusFilter !== "all" ? '尝试调整搜索条件或筛选器' : '创建第一个审计任务开始代码质量分析'}
+              {searchTerm || statusFilter !== "all" ? '嘗試調整搜尋條件或篩選器' : '建立第一個審計任務開始程式碼質量分析'}
             </p>
             {!searchTerm && statusFilter === "all" && (
               <Button className="btn-primary" onClick={() => setShowCreateDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                创建任务
+                建立任務
               </Button>
             )}
           </CardContent>
         </Card>
       )}
 
-      {/* 新建任务对话框 */}
+      {/* 新建任務對話方塊 */}
       <CreateTaskDialog
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}

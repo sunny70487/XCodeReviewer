@@ -1,5 +1,5 @@
 /**
- * 日志查看页面
+ * 日誌檢視頁面
  */
 
 import { LogViewer } from '@/components/debug/LogViewer';

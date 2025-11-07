@@ -1,5 +1,5 @@
 /**
- * Anthropic Claude适配器
+ * Anthropic Claude介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,12 +21,12 @@ export class ClaudeAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, 'Claude API调用失败');
+      this.handleError(error, 'Claude API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // Claude API需要将system消息分离
+    // Claude API需要將system訊息分離
     const systemMessage = request.messages.find(msg => msg.role === 'system');
     const messages = request.messages
       .filter(msg => msg.role !== 'system')
@@ -47,13 +47,13 @@ export class ClaudeAdapter extends BaseLLMAdapter {
       requestBody.system = systemMessage.content;
     }
 
-    // 构建请求头
+    // 構建請求頭
     const headers: Record<string, string> = {
       'x-api-key': this.config.apiKey,
       'anthropic-version': '2023-06-01',
     };
 
-    // 合并自定义请求头
+    // 合併自定義請求頭
     if (this.config.customHeaders) {
       Object.assign(headers, this.config.customHeaders);
     }
@@ -75,7 +75,7 @@ export class ClaudeAdapter extends BaseLLMAdapter {
     const data = await response.json();
 
     if (!data.content || !data.content[0]) {
-      throw new Error('API响应格式异常: 缺少content字段');
+      throw new Error('API響應格式異常: 缺少content欄位');
     }
 
     return {
@@ -94,7 +94,7 @@ export class ClaudeAdapter extends BaseLLMAdapter {
     await super.validateConfig();
     
     if (!this.config.model.startsWith('claude-')) {
-      throw new Error(`无效的Claude模型: ${this.config.model}`);
+      throw new Error(`無效的Claude模型: ${this.config.model}`);
     }
     
     return true;

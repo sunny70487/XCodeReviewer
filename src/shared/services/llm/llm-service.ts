@@ -1,5 +1,5 @@
 /**
- * LLM服务 - 统一的LLM调用接口
+ * LLM服務 - 統一的LLM呼叫介面
  */
 
 import type { ILLMAdapter, LLMConfig, LLMRequest, LLMResponse } from './types';
@@ -7,7 +7,7 @@ import { LLMFactory } from './llm-factory';
 import { env } from '@/shared/config/env';
 
 /**
- * LLM服务类
+ * LLM服務類
  */
 export class LLMService {
   private adapter: ILLMAdapter;
@@ -17,14 +17,14 @@ export class LLMService {
   }
 
   /**
-   * 发送请求
+   * 傳送請求
    */
   async complete(request: LLMRequest): Promise<LLMResponse> {
     return await this.adapter.complete(request);
   }
 
   /**
-   * 简单的文本补全
+   * 簡單的文字補全
    */
   async simpleComplete(prompt: string, systemPrompt?: string): Promise<string> {
     const messages: any[] = [];
@@ -40,28 +40,28 @@ export class LLMService {
   }
 
   /**
-   * 验证配置
+   * 驗證配置
    */
   async validateConfig(): Promise<boolean> {
     return await this.adapter.validateConfig();
   }
 
   /**
-   * 获取提供商
+   * 獲取提供商
    */
   getProvider() {
     return this.adapter.getProvider();
   }
 
   /**
-   * 获取模型
+   * 獲取模型
    */
   getModel() {
     return this.adapter.getModel();
   }
 
   /**
-   * 从环境变量创建默认实例
+   * 從環境變數建立預設例項
    */
   static createFromEnv(): LLMService {
     const provider = env.LLM_PROVIDER as any || 'gemini';
@@ -69,10 +69,10 @@ export class LLMService {
     const model = env.LLM_MODEL || env.GEMINI_MODEL;
 
     if (!apiKey) {
-      throw new Error('未配置LLM API Key，请在环境变量中设置');
+      throw new Error('未配置LLM API Key，請在環境變數中設定');
     }
 
-    // 获取 baseUrl，优先使用通用配置，然后是平台专用配置
+    // 獲取 baseUrl，優先使用通用配置，然後是平臺專用配置
     let baseUrl = env.LLM_BASE_URL;
     if (!baseUrl && provider === 'openai') {
       baseUrl = env.OPENAI_BASE_URL;
@@ -80,7 +80,7 @@ export class LLMService {
       baseUrl = env.OLLAMA_BASE_URL;
     }
 
-    // 解析自定义请求头
+    // 解析自定義請求頭
     let customHeaders: Record<string, string> | undefined;
     if (env.LLM_CUSTOM_HEADERS) {
       try {
@@ -106,14 +106,14 @@ export class LLMService {
 }
 
 /**
- * 创建LLM服务实例的便捷函数
+ * 建立LLM服務例項的便捷函式
  */
 export function createLLMService(config: LLMConfig): LLMService {
   return new LLMService(config);
 }
 
 /**
- * 获取默认的LLM服务实例
+ * 獲取預設的LLM服務例項
  */
 export function getDefaultLLMService(): LLMService {
   return LLMService.createFromEnv();

@@ -58,30 +58,30 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
   });
 
   const commonExcludePatterns = [
-    { label: "node_modules", value: "node_modules/**", description: "Node.js 依赖包" },
-    { label: ".git", value: ".git/**", description: "Git 版本控制文件" },
-    { label: "dist/build", value: "dist/**", description: "构建输出目录" },
-    { label: "logs", value: "*.log", description: "日志文件" },
-    { label: "cache", value: ".cache/**", description: "缓存文件" },
-    { label: "temp", value: "temp/**", description: "临时文件" },
-    { label: "vendor", value: "vendor/**", description: "第三方库" },
-    { label: "coverage", value: "coverage/**", description: "测试覆盖率报告" }
+    { label: "node_modules", value: "node_modules/**", description: "Node.js 依賴包" },
+    { label: ".git", value: ".git/**", description: "Git 版本控制檔案" },
+    { label: "dist/build", value: "dist/**", description: "構建輸出目錄" },
+    { label: "logs", value: "*.log", description: "日誌檔案" },
+    { label: "cache", value: ".cache/**", description: "快取檔案" },
+    { label: "temp", value: "temp/**", description: "臨時檔案" },
+    { label: "vendor", value: "vendor/**", description: "第三方庫" },
+    { label: "coverage", value: "coverage/**", description: "測試覆蓋率報告" }
   ];
 
   useEffect(() => {
     if (open) {
       loadProjects();
-      // 如果有预选择的项目ID，设置到表单中
+      // 如果有預選擇的專案ID，設定到表單中
       if (preselectedProjectId) {
         setTaskForm(prev => ({ ...prev, project_id: preselectedProjectId }));
       }
-      // 重置ZIP文件状态
+      // 重置ZIP檔案狀態
       setZipFile(null);
       setHasLoadedZip(false);
     }
   }, [open, preselectedProjectId]);
 
-  // 当项目ID变化时，尝试自动加载保存的ZIP文件
+  // 當專案ID變化時，嘗試自動載入儲存的ZIP檔案
   useEffect(() => {
     const autoLoadZipFile = async () => {
       if (!taskForm.project_id || hasLoadedZip) return;
@@ -96,11 +96,11 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
         if (savedFile) {
           setZipFile(savedFile);
           setHasLoadedZip(true);
-          console.log('✓ 已自动加载保存的ZIP文件:', savedFile.name);
-          toast.success(`已加载保存的ZIP文件: ${savedFile.name}`);
+          console.log('✓ 已自動載入儲存的ZIP檔案:', savedFile.name);
+          toast.success(`已載入儲存的ZIP檔案: ${savedFile.name}`);
         }
       } catch (error) {
-        console.error('自动加载ZIP文件失败:', error);
+        console.error('自動載入ZIP檔案失敗:', error);
       } finally {
         setLoadingZipFile(false);
       }
@@ -116,7 +116,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
       setProjects(data.filter(p => p.is_active));
     } catch (error) {
       console.error('Failed to load projects:', error);
-      toast.error("加载项目失败");
+      toast.error("載入專案失敗");
     } finally {
       setLoading(false);
     }
@@ -124,25 +124,25 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
 
   const handleCreateTask = async () => {
     if (!taskForm.project_id) {
-      toast.error("请选择项目");
+      toast.error("請選擇專案");
       return;
     }
 
     if (taskForm.task_type === "repository" && !taskForm.branch_name?.trim()) {
-      toast.error("请输入分支名称");
+      toast.error("請輸入分支名稱");
       return;
     }
 
     const project = selectedProject;
     if (!project) {
-      toast.error("未找到选中的项目");
+      toast.error("未找到選中的專案");
       return;
     }
 
     try {
       setCreating(true);
       
-      console.log('🎯 开始创建审计任务...', { 
+      console.log('🎯 開始建立審計任務...', { 
         projectId: project.id, 
         projectName: project.name,
         repositoryType: project.repository_type 
@@ -150,15 +150,15 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
 
       let taskId: string;
 
-      // 根据项目是否有repository_url判断使用哪种扫描方式
+      // 根據專案是否有repository_url判斷使用哪種掃描方式
       if (!project.repository_url || project.repository_url.trim() === '') {
-        // ZIP上传的项目：需要有ZIP文件才能扫描
+        // ZIP上傳的專案：需要有ZIP檔案才能掃描
         if (!zipFile) {
-          toast.error("请上传ZIP文件进行扫描");
+          toast.error("請上傳ZIP檔案進行掃描");
           return;
         }
         
-        console.log('📦 调用 scanZipFile...');
+        console.log('📦 呼叫 scanZipFile...');
         taskId = await scanZipFile({
           projectId: project.id,
           zipFile: zipFile,
@@ -166,10 +166,10 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
           createdBy: 'local-user'
         });
       } else {
-        // GitHub/GitLab等远程仓库
-        console.log('📡 调用 runRepositoryAudit...');
+        // GitHub/GitLab等遠端倉庫
+        console.log('📡 呼叫 runRepositoryAudit...');
         
-        // 从运行时配置中获取 Token
+        // 從執行時配置中獲取 Token
         const getRuntimeConfig = () => {
           try {
             const saved = localStorage.getItem('xcodereviewer_runtime_config');
@@ -193,11 +193,11 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
         });
       }
       
-      console.log('✅ 任务创建成功:', taskId);
+      console.log('✅ 任務建立成功:', taskId);
       
-      // 记录用户操作
+      // 記錄使用者操作
       import('@/shared/utils/logger').then(({ logger, LogCategory }) => {
-        logger.logUserAction('创建审计任务', {
+        logger.logUserAction('建立審計任務', {
           taskId,
           projectId: project.id,
           projectName: project.name,
@@ -207,26 +207,26 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
         });
       });
       
-      // 关闭创建对话框
+      // 關閉建立對話方塊
       onOpenChange(false);
       resetForm();
       onTaskCreated();
       
-      // 显示终端进度窗口
+      // 顯示終端進度視窗
       setCurrentTaskId(taskId);
       setShowTerminalDialog(true);
       
-      toast.success("审计任务已创建并启动");
+      toast.success("審計任務已建立並啟動");
     } catch (error) {
-      console.error('❌ 创建任务失败:', error);
+      console.error('❌ 建立任務失敗:', error);
       
-      // 记录错误并显示详细信息
+      // 記錄錯誤並顯示詳細資訊
       import('@/shared/utils/errorHandler').then(({ handleError }) => {
-        handleError(error, '创建审计任务失败');
+        handleError(error, '建立審計任務失敗');
       });
       
-      const errorMessage = error instanceof Error ? error.message : '未知错误';
-      toast.error(`创建任务失败: ${errorMessage}`);
+      const errorMessage = error instanceof Error ? error.message : '未知錯誤';
+      toast.error(`建立任務失敗: ${errorMessage}`);
     } finally {
       setCreating(false);
     }
@@ -291,32 +291,32 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
             <Shield className="w-5 h-5 text-primary" />
-            <span>新建审计任务</span>
+            <span>新建審計任務</span>
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* 项目选择 */}
+          {/* 專案選擇 */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label className="text-base font-medium">选择项目</Label>
+              <Label className="text-base font-medium">選擇專案</Label>
               <Badge variant="outline" className="text-xs">
-                {filteredProjects.length} 个可用项目
+                {filteredProjects.length} 個可用專案
               </Badge>
             </div>
 
-            {/* 项目搜索 */}
+            {/* 專案搜尋 */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="搜索项目名称..."
+                placeholder="搜尋專案名稱..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
 
-            {/* 项目列表 */}
+            {/* 專案列表 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto">
               {loading ? (
                 <div className="col-span-2 flex items-center justify-center py-8">
@@ -360,33 +360,33 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                 <div className="col-span-2 text-center py-8 text-gray-500">
                   <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
-                    {searchTerm ? '未找到匹配的项目' : '暂无可用项目'}
+                    {searchTerm ? '未找到匹配的專案' : '暫無可用專案'}
                   </p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* 任务配置 */}
+          {/* 任務配置 */}
           {selectedProject && (
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="basic" className="flex items-center space-x-2">
                   <GitBranch className="w-4 h-4" />
-                  <span>基础配置</span>
+                  <span>基礎配置</span>
                 </TabsTrigger>
                 <TabsTrigger value="exclude" className="flex items-center space-x-2">
                   <FileText className="w-4 h-4" />
-                  <span>排除规则</span>
+                  <span>排除規則</span>
                 </TabsTrigger>
                 <TabsTrigger value="advanced" className="flex items-center space-x-2">
                   <Settings className="w-4 h-4" />
-                  <span>高级选项</span>
+                  <span>高階選項</span>
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-4 mt-6">
-                {/* ZIP项目文件上传 */}
+                {/* ZIP專案檔案上傳 */}
                 {(!selectedProject.repository_url || selectedProject.repository_url.trim() === '') && (
                   <Card className="bg-amber-50 border-amber-200">
                     <CardContent className="p-4">
@@ -394,15 +394,15 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                         {loadingZipFile ? (
                           <div className="flex items-center space-x-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                            <p className="text-sm text-blue-800">正在加载保存的ZIP文件...</p>
+                            <p className="text-sm text-blue-800">正在載入儲存的ZIP檔案...</p>
                           </div>
                         ) : zipFile ? (
                           <div className="flex items-start space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                             <Info className="w-5 h-5 text-green-600 mt-0.5" />
                             <div className="flex-1">
-                              <p className="font-medium text-green-900 text-sm">已准备就绪</p>
+                              <p className="font-medium text-green-900 text-sm">已準備就緒</p>
                               <p className="text-xs text-green-700 mt-1">
-                                使用保存的ZIP文件: {zipFile.name} (
+                                使用儲存的ZIP檔案: {zipFile.name} (
                                 {zipFile.size >= 1024 * 1024 
                                   ? `${(zipFile.size / 1024 / 1024).toFixed(2)} MB`
                                   : zipFile.size >= 1024
@@ -419,7 +419,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                                 setHasLoadedZip(false);
                               }}
                             >
-                              更换文件
+                              更換檔案
                             </Button>
                           </div>
                         ) : (
@@ -427,15 +427,15 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                             <div className="flex items-start space-x-3">
                               <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
                               <div>
-                                <p className="font-medium text-amber-900 text-sm">需要上传ZIP文件</p>
+                                <p className="font-medium text-amber-900 text-sm">需要上傳ZIP檔案</p>
                                 <p className="text-xs text-amber-700 mt-1">
-                                  未找到保存的ZIP文件，请上传文件进行扫描
+                                  未找到儲存的ZIP檔案，請上傳檔案進行掃描
                                 </p>
                               </div>
                             </div>
                             
                             <div className="space-y-2">
-                              <Label htmlFor="zipFile">上传ZIP文件</Label>
+                              <Label htmlFor="zipFile">上傳ZIP檔案</Label>
                               <Input
                                 id="zipFile"
                                 type="file"
@@ -443,7 +443,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    console.log('📁 选择的文件:', {
+                                    console.log('📁 選擇的檔案:', {
                                       name: file.name,
                                       size: file.size,
                                       type: file.type,
@@ -452,7 +452,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                                     
                                     const validation = validateZipFile(file);
                                     if (!validation.valid) {
-                                      toast.error(validation.error || "文件无效");
+                                      toast.error(validation.error || "檔案無效");
                                       e.target.value = '';
                                       return;
                                     }
@@ -463,7 +463,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                                     const sizeKB = (file.size / 1024).toFixed(2);
                                     const sizeText = file.size >= 1024 * 1024 ? `${sizeMB} MB` : `${sizeKB} KB`;
                                     
-                                    toast.success(`已选择文件: ${file.name} (${sizeText})`);
+                                    toast.success(`已選擇檔案: ${file.name} (${sizeText})`);
                                   }
                                 }}
                                 className="cursor-pointer"
@@ -478,7 +478,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="task_type">任务类型</Label>
+                    <Label htmlFor="task_type">任務型別</Label>
                     <Select 
                       value={taskForm.task_type} 
                       onValueChange={(value: any) => setTaskForm({ ...taskForm, task_type: value })}
@@ -490,13 +490,13 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                         <SelectItem value="repository">
                           <div className="flex items-center space-x-2">
                             <GitBranch className="w-4 h-4" />
-                            <span>仓库审计</span>
+                            <span>倉庫審計</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="instant">
                           <div className="flex items-center space-x-2">
                             <Zap className="w-4 h-4" />
-                            <span>即时分析</span>
+                            <span>即時分析</span>
                           </div>
                         </SelectItem>
                       </SelectContent>
@@ -505,7 +505,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
 
                   {taskForm.task_type === "repository" && (selectedProject.repository_url) && (
                     <div className="space-y-2">
-                      <Label htmlFor="branch_name">目标分支</Label>
+                      <Label htmlFor="branch_name">目標分支</Label>
                       <Input
                         id="branch_name"
                         value={taskForm.branch_name || ""}
@@ -516,20 +516,20 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                   )}
                 </div>
 
-                {/* 项目信息展示 */}
+                {/* 專案資訊展示 */}
                 <Card className="bg-blue-50 border-blue-200">
                   <CardContent className="p-4">
                     <div className="flex items-start space-x-3">
                       <Info className="w-5 h-5 text-blue-600 mt-0.5" />
                       <div className="text-sm">
-                        <p className="font-medium text-blue-900 mb-1">选中项目：{selectedProject.name}</p>
+                        <p className="font-medium text-blue-900 mb-1">選中專案：{selectedProject.name}</p>
                         <div className="text-blue-700 space-y-1">
                           {selectedProject.description && (
                             <p>描述：{selectedProject.description}</p>
                           )}
-                          <p>默认分支：{selectedProject.default_branch}</p>
+                          <p>預設分支：{selectedProject.default_branch}</p>
                           {selectedProject.programming_languages && (
-                            <p>编程语言：{JSON.parse(selectedProject.programming_languages).join(', ')}</p>
+                            <p>程式語言：{JSON.parse(selectedProject.programming_languages).join(', ')}</p>
                           )}
                         </div>
                       </div>
@@ -543,7 +543,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                   <div>
                     <Label className="text-base font-medium">排除模式</Label>
                     <p className="text-sm text-gray-500 mt-1">
-                      选择要从审计中排除的文件和目录模式
+                      選擇要從審計中排除的檔案和目錄模式
                     </p>
                   </div>
 
@@ -563,9 +563,9 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                     ))}
                   </div>
 
-                  {/* 自定义排除模式 */}
+                  {/* 自定義排除模式 */}
                   <div className="space-y-2">
-                    <Label>自定义排除模式</Label>
+                    <Label>自定義排除模式</Label>
                     <div className="flex space-x-2">
                       <Input
                         placeholder="例如: *.tmp, test/**"
@@ -585,15 +585,15 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                           input.value = '';
                         }}
                       >
-                        添加
+                        新增
                       </Button>
                     </div>
                   </div>
 
-                  {/* 已选择的排除模式 */}
+                  {/* 已選擇的排除模式 */}
                   {taskForm.exclude_patterns.length > 0 && (
                     <div className="space-y-2">
-                      <Label>已选择的排除模式</Label>
+                      <Label>已選擇的排除模式</Label>
                       <div className="flex flex-wrap gap-2">
                         {taskForm.exclude_patterns.map((pattern) => (
                           <Badge 
@@ -614,9 +614,9 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
               <TabsContent value="advanced" className="space-y-4 mt-6">
                 <div className="space-y-6">
                   <div>
-                    <Label className="text-base font-medium">扫描配置</Label>
+                    <Label className="text-base font-medium">掃描配置</Label>
                     <p className="text-sm text-gray-500 mt-1">
-                      配置代码扫描的详细参数
+                      配置程式碼掃描的詳細引數
                     </p>
                   </div>
 
@@ -633,8 +633,8 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                           }
                         />
                         <div>
-                          <p className="text-sm font-medium">包含测试文件</p>
-                          <p className="text-xs text-gray-500">扫描 *test*, *spec* 等测试文件</p>
+                          <p className="text-sm font-medium">包含測試檔案</p>
+                          <p className="text-xs text-gray-500">掃描 *test*, *spec* 等測試檔案</p>
                         </div>
                       </div>
 
@@ -649,15 +649,15 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                           }
                         />
                         <div>
-                          <p className="text-sm font-medium">包含文档文件</p>
-                          <p className="text-xs text-gray-500">扫描 README, docs 等文档文件</p>
+                          <p className="text-sm font-medium">包含文件檔案</p>
+                          <p className="text-xs text-gray-500">掃描 README, docs 等文件檔案</p>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="max_file_size">最大文件大小 (KB)</Label>
+                        <Label htmlFor="max_file_size">最大檔案大小 (KB)</Label>
                         <Input
                           id="max_file_size"
                           type="number"
@@ -691,26 +691,26 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="basic">基础扫描</SelectItem>
-                            <SelectItem value="standard">标准扫描</SelectItem>
-                            <SelectItem value="deep">深度扫描</SelectItem>
+                            <SelectItem value="basic">基礎掃描</SelectItem>
+                            <SelectItem value="standard">標準掃描</SelectItem>
+                            <SelectItem value="deep">深度掃描</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
                   </div>
 
-                  {/* 分析深度说明 */}
+                  {/* 分析深度說明 */}
                   <Card className="bg-amber-50 border-amber-200">
                     <CardContent className="p-4">
                       <div className="flex items-start space-x-3">
                         <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
                         <div className="text-sm">
-                          <p className="font-medium text-amber-900 mb-2">分析深度说明：</p>
+                          <p className="font-medium text-amber-900 mb-2">分析深度說明：</p>
                           <ul className="text-amber-800 space-y-1 text-xs">
-                            <li>• <strong>基础扫描</strong>：快速检查语法错误和基本问题</li>
-                            <li>• <strong>标准扫描</strong>：包含代码质量、安全性和性能分析</li>
-                            <li>• <strong>深度扫描</strong>：全面分析，包含复杂度、可维护性等高级指标</li>
+                            <li>• <strong>基礎掃描</strong>：快速檢查語法錯誤和基本問題</li>
+                            <li>• <strong>標準掃描</strong>：包含程式碼質量、安全性和效能分析</li>
+                            <li>• <strong>深度掃描</strong>：全面分析，包含複雜度、可維護性等高階指標</li>
                           </ul>
                         </div>
                       </div>
@@ -721,7 +721,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
             </Tabs>
           )}
 
-          {/* 操作按钮 */}
+          {/* 操作按鈕 */}
           <div className="flex justify-end space-x-3 pt-4 border-t">
             <Button variant="outline" onClick={() => onOpenChange(false)} disabled={creating}>
               取消
@@ -734,12 +734,12 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
               {creating ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  创建中...
+                  建立中...
                 </>
               ) : (
                 <>
                   <Shield className="w-4 h-4 mr-2" />
-                  创建任务
+                  建立任務
                 </>
               )}
             </Button>
@@ -747,7 +747,7 @@ export default function CreateTaskDialog({ open, onOpenChange, onTaskCreated, pr
         </div>
       </DialogContent>
 
-      {/* 终端进度对话框 */}
+      {/* 終端進度對話方塊 */}
       <TerminalProgressDialog
         open={showTerminalDialog}
         onOpenChange={setShowTerminalDialog}

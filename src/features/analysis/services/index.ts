@@ -1,2 +1,2 @@
-// 导出代码分析相关服务
+// 匯出程式碼分析相關服務
 export * from './codeAnalysis';

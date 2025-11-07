@@ -28,22 +28,22 @@ import type { CodeAnalysisResult, AuditTask, AuditIssue } from "@/shared/types";
 import { toast } from "sonner";
 import ExportReportDialog from "@/components/reports/ExportReportDialog";
 
-// AI解释解析函数
+// AI解釋解析函式
 function parseAIExplanation(aiExplanation: string) {
   try {
     const parsed = JSON.parse(aiExplanation);
-    // 检查是否有xai字段
+    // 檢查是否有xai欄位
     if (parsed.xai) {
       return parsed.xai;
     }
-    // 检查是否直接包含what, why, how字段
+    // 檢查是否直接包含what, why, how欄位
     if (parsed.what || parsed.why || parsed.how) {
       return parsed;
     }
-    // 如果都没有，返回null表示无法解析
+    // 如果都沒有，返回null表示無法解析
     return null;
   } catch (error) {
-    // JSON解析失败，返回null
+    // JSON解析失敗，返回null
     return null;
   }
 }
@@ -61,10 +61,10 @@ export default function InstantAnalysis() {
 
   const supportedLanguages = CodeAnalysisEngine.getSupportedLanguages();
 
-  // 监听analyzing状态变化，自动滚动到加载卡片
+  // 監聽analyzing狀態變化，自動滾動到載入卡片
   useEffect(() => {
     if (analyzing && loadingCardRef.current) {
-      // 使用requestAnimationFrame确保DOM更新完成后再滚动
+      // 使用requestAnimationFrame確保DOM更新完成後再滾動
       requestAnimationFrame(() => {
         setTimeout(() => {
           if (loadingCardRef.current) {
@@ -78,21 +78,21 @@ export default function InstantAnalysis() {
     }
   }, [analyzing]);
 
-  // 示例代码
+  // 示例程式碼
   const exampleCodes = {
-    javascript: `// 示例JavaScript代码 - 包含多种问题
+    javascript: `// 示例JavaScript程式碼 - 包含多種問題
 var userName = "admin";
-var password = "123456"; // 硬编码密码
+var password = "123456"; // 硬編碼密碼
 
 function validateUser(input) {
-    if (input == userName) { // 使用 == 比较
-        console.log("User validated"); // 生产代码中的console.log
+    if (input == userName) { // 使用 == 比較
+        console.log("User validated"); // 生產程式碼中的console.log
         return true;
     }
     return false;
 }
 
-// 性能问题：循环中重复计算长度
+// 效能問題：迴圈中重複計算長度
 function processItems(items) {
     for (var i = 0; i < items.length; i++) {
         for (var j = 0; j < items.length; j++) {
@@ -101,14 +101,14 @@ function processItems(items) {
     }
 }
 
-// 安全问题：使用eval
+// 安全問題：使用eval
 function executeCode(userInput) {
-    eval(userInput); // 危险的eval使用
+    eval(userInput); // 危險的eval使用
 }`,
-    python: `# 示例Python代码 - 包含多种问题
-import *  # 通配符导入
+    python: `# 示例Python程式碼 - 包含多種問題
+import *  # 萬用字元匯入
 
-password = "secret123"  # 硬编码密码
+password = "secret123"  # 硬編碼密碼
 
 def process_data(data):
     try:
@@ -117,29 +117,29 @@ def process_data(data):
             print(item)  # 使用print而非logging
             result.append(item * 2)
         return result
-    except:  # 裸露的except语句
+    except:  # 裸露的except語句
         pass
 
 def complex_function():
-    # 函数过长示例
+    # 函式過長示例
     if True:
         if True:
             if True:
                 if True:
-                    if True:  # 嵌套过深
+                    if True:  # 巢狀過深
                         print("Deep nesting")`,
-    java: `// 示例Java代码 - 包含多种问题
+    java: `// 示例Java程式碼 - 包含多種問題
 public class Example {
-    private String password = "admin123"; // 硬编码密码
+    private String password = "admin123"; // 硬編碼密碼
     
     public void processData() {
         System.out.println("Processing..."); // 使用System.out.print
         
         try {
-            // 一些处理逻辑
+            // 一些處理邏輯
             String data = getData();
         } catch (Exception e) {
-            // 空的异常处理
+            // 空的異常處理
         }
     }
     
@@ -147,29 +147,29 @@ public class Example {
         return "data";
     }
 }`,
-    swift: `// 示例Swift代码 - 包含多种问题
+    swift: `// 示例Swift程式碼 - 包含多種問題
 import Foundation
 
 class UserManager {
-    var password = "admin123" // 硬编码密码
+    var password = "admin123" // 硬編碼密碼
     
     func validateUser(input: String) -> Bool {
-        if input == password { // 直接比较密码
-            print("User validated") // 使用print而非日志
+        if input == password { // 直接比較密碼
+            print("User validated") // 使用print而非日誌
             return true
         }
         return false
     }
     
-    // 强制解包可能导致崩溃
+    // 強制解包可能導致崩潰
     func processData(data: [String]?) {
-        let items = data! // 强制解包
+        let items = data! // 強制解包
         for item in items {
             print(item)
         }
     }
     
-    // 内存泄漏风险：循环引用
+    // 記憶體洩漏風險：迴圈引用
     var closure: (() -> Void)?
     func setupClosure() {
         closure = {
@@ -177,30 +177,30 @@ class UserManager {
         }
     }
 }`,
-    kotlin: `// 示例Kotlin代码 - 包含多种问题
+    kotlin: `// 示例Kotlin程式碼 - 包含多種問題
 class UserManager {
-    private val password = "admin123" // 硬编码密码
+    private val password = "admin123" // 硬編碼密碼
     
     fun validateUser(input: String): Boolean {
-        if (input == password) { // 直接比较密码
-            println("User validated") // 使用println而非日志
+        if (input == password) { // 直接比較密碼
+            println("User validated") // 使用println而非日誌
             return true
         }
         return false
     }
     
-    // 空指针风险
+    // 空指標風險
     fun processData(data: List<String>?) {
-        val items = data!! // 强制非空断言
+        val items = data!! // 強制非空斷言
         for (item in items) {
             println(item)
         }
     }
     
-    // 性能问题：循环中重复计算
+    // 效能問題：迴圈中重複計算
     fun inefficientLoop(items: List<String>) {
         for (i in 0 until items.size) {
-            for (j in 0 until items.size) { // O(n²) 复杂度
+            for (j in 0 until items.size) { // O(n²) 複雜度
                 println(items[i] + items[j])
             }
         }
@@ -210,18 +210,18 @@ class UserManager {
 
   const handleAnalyze = async () => {
     if (!code.trim()) {
-      toast.error("请输入要分析的代码");
+      toast.error("請輸入要分析的程式碼");
       return;
     }
     if (!language) {
-      toast.error("请选择编程语言");
+      toast.error("請選擇程式語言");
       return;
     }
 
     try {
       setAnalyzing(true);
 
-      // 立即滚动到页面底部（加载卡片会出现的位置）
+      // 立即滾動到頁面底部（載入卡片會出現的位置）
       setTimeout(() => {
         window.scrollTo({
           top: document.body.scrollHeight,
@@ -238,12 +238,12 @@ class UserManager {
       setResult(analysisResult);
       setAnalysisTime(duration);
 
-      // 保存分析记录（可选，未登录时跳过）
+      // 儲存分析記錄（可選，未登入時跳過）
       if (user) {
         await api.createInstantAnalysis({
           user_id: user.id,
           language,
-          // 不存储代码内容，仅存储摘要
+          // 不儲存程式碼內容，僅儲存摘要
           code_content: '',
           analysis_result: JSON.stringify(analysisResult),
           issues_count: analysisResult.issues.length,
@@ -252,13 +252,39 @@ class UserManager {
         });
       }
 
-      toast.success(`分析完成！发现 ${analysisResult.issues.length} 个问题`);
+      toast.success(`分析完成！發現 ${analysisResult.issues.length} 個問題`);
     } catch (error) {
-      console.error('Analysis failed:', error);
-      toast.error("分析失败，请稍后重试");
+      console.error('❌ 分析失敗:', error);
+      
+      // 獲取詳細錯誤信息
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // 檢查是否有保存的調試數據
+      const debugKeys = Object.keys(localStorage).filter(k => k.startsWith('llm_response_failed_'));
+      if (debugKeys.length > 0) {
+        console.log('💾 檢測到失敗的響應記錄，可在 localStorage 中查看:', debugKeys);
+        console.log('💡 使用以下命令查看最新記錄: localStorage.getItem("' + debugKeys[debugKeys.length - 1] + '")');
+      }
+      
+      // 使用詳細錯誤顯示
+      toast.error(
+        <div className="space-y-2 max-w-2xl">
+          <div className="font-semibold text-base">分析失敗</div>
+          <pre className="text-xs whitespace-pre-wrap bg-red-50 p-3 rounded border border-red-200 max-h-64 overflow-auto font-mono">
+{errorMessage}
+          </pre>
+          <div className="text-xs text-gray-600 border-t border-red-200 pt-2">
+            💡 請檢查瀏覽器控制台以獲取更詳細的調試信息
+          </div>
+        </div>,
+        { 
+          duration: 15000,
+          className: 'max-w-3xl'
+        }
+      );
     } finally {
       setAnalyzing(false);
-      // 即时分析结束后清空前端内存中的代码（满足NFR-2销毁要求）
+      // 即時分析結束後清空前端記憶體中的程式碼（滿足NFR-2銷燬要求）
       setCode("");
     }
   };
@@ -272,7 +298,7 @@ class UserManager {
       const content = e.target?.result as string;
       setCode(content);
 
-      // 根据文件扩展名自动选择语言
+      // 根據副檔名自動選擇語言
       const extension = file.name.split('.').pop()?.toLowerCase();
       const languageMap: Record<string, string> = {
         'js': 'javascript',
@@ -307,7 +333,7 @@ class UserManager {
     if (example) {
       setCode(example);
       setLanguage(lang);
-      toast.success(`已加载${lang}示例代码`);
+      toast.success(`已載入${lang}示例程式碼`);
     }
   };
 
@@ -339,7 +365,7 @@ class UserManager {
     setAnalysisTime(0);
   };
 
-  // 构造临时任务和问题数据用于导出
+  // 構造臨時任務和問題資料用於匯出
   const getTempTaskAndIssues = () => {
     if (!result) return null;
 
@@ -363,8 +389,8 @@ class UserManager {
       project: {
         id: 'instant',
         owner_id: 'local-user',
-        name: '即时分析',
-        description: `${language} 代码即时分析`,
+        name: '即時分析',
+        description: `${language} 程式碼即時分析`,
         repository_type: 'other',
         repository_url: undefined,
         default_branch: 'instant',
@@ -397,7 +423,7 @@ class UserManager {
     return { task: tempTask, issues: tempIssues };
   };
 
-  // 渲染问题的函数，使用紧凑样式
+  // 渲染問題的函式，使用緊湊樣式
   const renderIssue = (issue: any, index: number) => (
     <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200 group">
       <div className="flex items-start justify-between mb-3">
@@ -419,7 +445,7 @@ class UserManager {
           </div>
         </div>
         <Badge className={`${getSeverityColor(issue.severity)} px-2 py-1 text-xs font-medium`}>
-          {issue.severity === 'critical' ? '严重' :
+          {issue.severity === 'critical' ? '嚴重' :
             issue.severity === 'high' ? '高' :
               issue.severity === 'medium' ? '中等' : '低'}
         </Badge>
@@ -429,7 +455,7 @@ class UserManager {
         <div className="bg-white border border-gray-200 rounded-lg p-3 mb-3">
           <div className="flex items-center mb-1">
             <Info className="w-3 h-3 text-gray-600 mr-1" />
-            <span className="font-medium text-gray-800 text-xs">问题详情</span>
+            <span className="font-medium text-gray-800 text-xs">問題詳情</span>
           </div>
           <p className="text-gray-700 text-xs leading-relaxed">
             {issue.description}
@@ -444,7 +470,7 @@ class UserManager {
               <div className="w-4 h-4 bg-red-600 rounded flex items-center justify-center">
                 <Code className="w-2 h-2 text-white" />
               </div>
-              <span className="text-gray-300 text-xs font-medium">问题代码</span>
+              <span className="text-gray-300 text-xs font-medium">問題程式碼</span>
             </div>
             <span className="text-gray-400 text-xs">第 {issue.line} 行</span>
           </div>
@@ -463,7 +489,7 @@ class UserManager {
               <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center mr-2">
                 <Lightbulb className="w-3 h-3 text-white" />
               </div>
-              <span className="font-medium text-blue-800 text-sm">修复建议</span>
+              <span className="font-medium text-blue-800 text-sm">修復建議</span>
             </div>
             <p className="text-blue-700 text-xs leading-relaxed">{issue.suggestion}</p>
           </div>
@@ -479,13 +505,13 @@ class UserManager {
                   <div className="w-5 h-5 bg-red-600 rounded flex items-center justify-center mr-2">
                     <Zap className="w-3 h-3 text-white" />
                   </div>
-                  <span className="font-medium text-red-800 text-sm">AI 解释</span>
+                  <span className="font-medium text-red-800 text-sm">AI 解釋</span>
                 </div>
 
                 <div className="space-y-2 text-xs">
                   {parsedExplanation.what && (
                     <div className="border-l-2 border-red-600 pl-2">
-                      <span className="font-medium text-red-700">问题：</span>
+                      <span className="font-medium text-red-700">問題：</span>
                       <span className="text-gray-700 ml-1">{parsedExplanation.what}</span>
                     </div>
                   )}
@@ -506,7 +532,7 @@ class UserManager {
 
                   {parsedExplanation.learn_more && (
                     <div className="border-l-2 border-red-400 pl-2">
-                      <span className="font-medium text-red-600">链接：</span>
+                      <span className="font-medium text-red-600">連結：</span>
                       <a
                         href={parsedExplanation.learn_more}
                         target="_blank"
@@ -521,12 +547,12 @@ class UserManager {
               </div>
             );
           } else {
-            // 如果无法解析JSON，回退到原始显示方式
+            // 如果無法解析JSON，回退到原始顯示方式
             return (
               <div className="bg-white border border-red-200 rounded-lg p-3">
                 <div className="flex items-center mb-2">
                   <Zap className="w-4 h-4 text-red-600 mr-2" />
-                  <span className="font-medium text-red-800 text-sm">AI 解释</span>
+                  <span className="font-medium text-red-800 text-sm">AI 解釋</span>
                 </div>
                 <p className="text-gray-700 text-xs leading-relaxed">{issue.ai_explanation}</p>
               </div>
@@ -539,17 +565,17 @@ class UserManager {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* 页面标题 */}
+      {/* 頁面標題 */}
       <div>
-        <h1 className="page-title">即时代码分析</h1>
-        <p className="page-subtitle">快速分析代码片段，发现潜在问题并获得修复建议</p>
+        <h1 className="page-title">即時程式碼分析</h1>
+        <p className="page-subtitle">快速分析程式碼片段，發現潛在問題並獲得修復建議</p>
       </div>
 
-      {/* 代码输入区域 */}
+      {/* 程式碼輸入區域 */}
       <Card className="card-modern">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">代码分析</CardTitle>
+            <CardTitle className="text-base">程式碼分析</CardTitle>
             {result && (
               <Button variant="outline" onClick={clearAnalysis} size="sm">
                 <X className="w-4 h-4 mr-2" />
@@ -559,12 +585,12 @@ class UserManager {
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          {/* 工具栏 */}
+          {/* 工具欄 */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger className="h-9">
-                  <SelectValue placeholder="选择编程语言" />
+                  <SelectValue placeholder="選擇程式語言" />
                 </SelectTrigger>
                 <SelectContent>
                   {supportedLanguages.map((lang) => (
@@ -582,7 +608,7 @@ class UserManager {
               size="sm"
             >
               <Upload className="w-3 h-3 mr-1" />
-              上传文件
+              上傳檔案
             </Button>
             <input
               ref={fileInputRef}
@@ -643,21 +669,21 @@ class UserManager {
             </Button>
           </div>
 
-          {/* 代码编辑器 */}
+          {/* 程式碼編輯器 */}
           <div>
             <Textarea
-              placeholder="粘贴代码或上传文件..."
+              placeholder="貼上程式碼或上傳檔案..."
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="min-h-[250px] font-mono text-sm"
               disabled={analyzing}
             />
             <div className="text-xs text-gray-500 mt-1">
-              {code.length} 字符，{code.split('\n').length} 行
+              {code.length} 字元，{code.split('\n').length} 行
             </div>
           </div>
 
-          {/* 分析按钮 */}
+          {/* 分析按鈕 */}
           <Button
             onClick={handleAnalyze}
             disabled={!code.trim() || !language || analyzing}
@@ -671,23 +697,23 @@ class UserManager {
             ) : (
               <>
                 <Zap className="w-4 h-4 mr-2" />
-                开始分析
+                開始分析
               </>
             )}
           </Button>
         </CardContent>
       </Card>
 
-      {/* 分析结果区域 */}
+      {/* 分析結果區域 */}
       {result && (
         <div className="space-y-4">
-          {/* 结果概览 */}
+          {/* 結果概覽 */}
           <Card className="card-modern">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center text-base">
                   <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                  分析结果
+                  分析結果
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="text-xs">
@@ -698,20 +724,20 @@ class UserManager {
                     {language.charAt(0).toUpperCase() + language.slice(1)}
                   </Badge>
 
-                  {/* 导出按钮 */}
+                  {/* 匯出按鈕 */}
                   <Button
                     size="sm"
                     onClick={() => setExportDialogOpen(true)}
                     className="btn-primary"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    导出报告
+                    匯出報告
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              {/* 核心指标 */}
+              {/* 核心指標 */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center p-4 bg-white rounded-lg border border-red-200">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-3">
@@ -720,7 +746,7 @@ class UserManager {
                   <div className="text-2xl font-bold text-primary mb-1">
                     {result.quality_score.toFixed(1)}
                   </div>
-                  <p className="text-xs font-medium text-primary/80 mb-2">质量评分</p>
+                  <p className="text-xs font-medium text-primary/80 mb-2">質量評分</p>
                   <Progress value={result.quality_score} className="h-1" />
                 </div>
 
@@ -731,8 +757,8 @@ class UserManager {
                   <div className="text-2xl font-bold text-red-600 mb-1">
                     {result.summary.critical_issues + result.summary.high_issues}
                   </div>
-                  <p className="text-xs font-medium text-red-700 mb-1">严重问题</p>
-                  <div className="text-xs text-red-600">需要立即处理</div>
+                  <p className="text-xs font-medium text-red-700 mb-1">嚴重問題</p>
+                  <div className="text-xs text-red-600">需要立即處理</div>
                 </div>
 
                 <div className="text-center p-4 bg-white rounded-lg border border-yellow-200">
@@ -742,8 +768,8 @@ class UserManager {
                   <div className="text-2xl font-bold text-yellow-600 mb-1">
                     {result.summary.medium_issues + result.summary.low_issues}
                   </div>
-                  <p className="text-xs font-medium text-yellow-700 mb-1">一般问题</p>
-                  <div className="text-xs text-yellow-600">建议优化</div>
+                  <p className="text-xs font-medium text-yellow-700 mb-1">一般問題</p>
+                  <div className="text-xs text-yellow-600">建議最佳化</div>
                 </div>
 
                 <div className="text-center p-4 bg-white rounded-lg border border-green-200">
@@ -753,26 +779,26 @@ class UserManager {
                   <div className="text-2xl font-bold text-green-600 mb-1">
                     {result.issues.length}
                   </div>
-                  <p className="text-xs font-medium text-green-700 mb-1">总问题数</p>
-                  <div className="text-xs text-green-600">已全部识别</div>
+                  <p className="text-xs font-medium text-green-700 mb-1">總問題數</p>
+                  <div className="text-xs text-green-600">已全部識別</div>
                 </div>
               </div>
 
-              {/* 详细指标 */}
+              {/* 詳細指標 */}
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
                   <TrendingUp className="w-4 h-4 mr-1" />
-                  详细指标
+                  詳細指標
                 </h3>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900 mb-1">{result.metrics.complexity}</div>
-                    <p className="text-xs text-gray-600 mb-2">复杂度</p>
+                    <p className="text-xs text-gray-600 mb-2">複雜度</p>
                     <Progress value={result.metrics.complexity} className="h-1" />
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900 mb-1">{result.metrics.maintainability}</div>
-                    <p className="text-xs text-gray-600 mb-2">可维护性</p>
+                    <p className="text-xs text-gray-600 mb-2">可維護性</p>
                     <Progress value={result.metrics.maintainability} className="h-1" />
                   </div>
                   <div className="text-center">
@@ -782,7 +808,7 @@ class UserManager {
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900 mb-1">{result.metrics.performance}</div>
-                    <p className="text-xs text-gray-600 mb-2">性能</p>
+                    <p className="text-xs text-gray-600 mb-2">效能</p>
                     <Progress value={result.metrics.performance} className="h-1" />
                   </div>
                 </div>
@@ -790,12 +816,12 @@ class UserManager {
             </CardContent>
           </Card>
 
-          {/* 问题详情 */}
+          {/* 問題詳情 */}
           <Card className="card-modern">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center text-base">
                 <Shield className="w-5 h-5 mr-2 text-orange-600" />
-                发现的问题 ({result.issues.length})
+                發現的問題 ({result.issues.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -806,7 +832,7 @@ class UserManager {
                       全部 ({result.issues.length})
                     </TabsTrigger>
                     <TabsTrigger value="critical" className="text-xs">
-                      严重 ({result.issues.filter(i => i.severity === 'critical').length})
+                      嚴重 ({result.issues.filter(i => i.severity === 'critical').length})
                     </TabsTrigger>
                     <TabsTrigger value="high" className="text-xs">
                       高 ({result.issues.filter(i => i.severity === 'high').length})
@@ -828,10 +854,10 @@ class UserManager {
                         <div className="text-center py-12">
                           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                           <h3 className="text-lg font-medium text-gray-900 mb-2">
-                            没有发现{severity === 'critical' ? '严重' : severity === 'high' ? '高优先级' : '中等优先级'}问题
+                            沒有發現{severity === 'critical' ? '嚴重' : severity === 'high' ? '高優先順序' : '中等優先順序'}問題
                           </h3>
                           <p className="text-gray-500">
-                            代码在此级别的检查中表现良好
+                            程式碼在此級別的檢查中表現良好
                           </p>
                         </div>
                       )}
@@ -845,11 +871,11 @@ class UserManager {
                   <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-12 h-12 text-green-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-green-800 mb-3">代码质量优秀！</h3>
-                  <p className="text-green-600 text-lg mb-6">恭喜！没有发现任何问题</p>
+                  <h3 className="text-2xl font-bold text-green-800 mb-3">程式碼質量優秀！</h3>
+                  <p className="text-green-600 text-lg mb-6">恭喜！沒有發現任何問題</p>
                   <div className="bg-green-50 rounded-lg p-6 max-w-md mx-auto">
                     <p className="text-green-700 text-sm">
-                      您的代码通过了所有质量检查，包括安全性、性能、可维护性等各个方面的评估。
+                      您的程式碼透過了所有質量檢查，包括安全性、效能、可維護性等各個方面的評估。
                     </p>
                   </div>
                 </div>
@@ -859,7 +885,7 @@ class UserManager {
         </div>
       )}
 
-      {/* 分析进行中状态 */}
+      {/* 分析進行中狀態 */}
       {analyzing && (
         <Card className="card-modern">
           <CardContent className="py-16">
@@ -867,13 +893,13 @@ class UserManager {
               <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">AI正在分析您的代码</h3>
-              <p className="text-gray-600 text-lg mb-6">请稍候，这通常需要至少30秒钟...</p>
-              <p className="text-gray-600 text-lg mb-6">分析时长取决于您的网络环境、代码长度以及使用的模型等因素</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">AI正在分析您的程式碼</h3>
+              <p className="text-gray-600 text-lg mb-6">請稍候，這通常需要至少30秒鐘...</p>
+              <p className="text-gray-600 text-lg mb-6">分析時長取決於您的網路環境、程式碼長度以及使用的模型等因素</p>
               <div className="bg-red-50 rounded-lg p-6 max-w-md mx-auto">
                 <p className="text-red-700 text-sm">
-                  正在进行安全检测、性能分析、代码风格检查等多维度评估<br />
-                  请勿离开页面！
+                  正在進行安全檢測、效能分析、程式碼風格檢查等多維度評估<br />
+                  請勿離開頁面！
                 </p>
               </div>
             </div>
@@ -881,7 +907,7 @@ class UserManager {
         </Card>
       )}
 
-      {/* 导出报告对话框 */}
+      {/* 匯出報告對話方塊 */}
       {result && (() => {
         const data = getTempTaskAndIssues();
         return data ? (

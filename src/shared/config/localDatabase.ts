@@ -1,6 +1,6 @@
 /**
- * 本地数据库实现 - 使用 IndexedDB
- * 提供与 Supabase 相同的 API 接口，但数据存储在浏览器本地
+ * 本地資料庫實現 - 使用 IndexedDB
+ * 提供與 Supabase 相同的 API 介面，但資料儲存在瀏覽器本地
  */
 
 import type { 
@@ -18,7 +18,7 @@ import type {
 const DB_NAME = 'xcodereviewer_local';
 const DB_VERSION = 1;
 
-// 数据库表名
+// 資料庫表名
 const STORES = {
   PROFILES: 'profiles',
   PROJECTS: 'projects',
@@ -33,7 +33,7 @@ class LocalDatabase {
   private initPromise: Promise<void> | null = null;
 
   /**
-   * 初始化数据库
+   * 初始化資料庫
    */
   async init(): Promise<void> {
     if (this.db) return;
@@ -51,14 +51,14 @@ class LocalDatabase {
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
 
-        // 创建 profiles 表
+        // 建立 profiles 表
         if (!db.objectStoreNames.contains(STORES.PROFILES)) {
           const profileStore = db.createObjectStore(STORES.PROFILES, { keyPath: 'id' });
           profileStore.createIndex('email', 'email', { unique: false });
           profileStore.createIndex('role', 'role', { unique: false });
         }
 
-        // 创建 projects 表
+        // 建立 projects 表
         if (!db.objectStoreNames.contains(STORES.PROJECTS)) {
           const projectStore = db.createObjectStore(STORES.PROJECTS, { keyPath: 'id' });
           projectStore.createIndex('owner_id', 'owner_id', { unique: false });
@@ -66,14 +66,14 @@ class LocalDatabase {
           projectStore.createIndex('created_at', 'created_at', { unique: false });
         }
 
-        // 创建 project_members 表
+        // 建立 project_members 表
         if (!db.objectStoreNames.contains(STORES.PROJECT_MEMBERS)) {
           const memberStore = db.createObjectStore(STORES.PROJECT_MEMBERS, { keyPath: 'id' });
           memberStore.createIndex('project_id', 'project_id', { unique: false });
           memberStore.createIndex('user_id', 'user_id', { unique: false });
         }
 
-        // 创建 audit_tasks 表
+        // 建立 audit_tasks 表
         if (!db.objectStoreNames.contains(STORES.AUDIT_TASKS)) {
           const taskStore = db.createObjectStore(STORES.AUDIT_TASKS, { keyPath: 'id' });
           taskStore.createIndex('project_id', 'project_id', { unique: false });
@@ -82,7 +82,7 @@ class LocalDatabase {
           taskStore.createIndex('created_at', 'created_at', { unique: false });
         }
 
-        // 创建 audit_issues 表
+        // 建立 audit_issues 表
         if (!db.objectStoreNames.contains(STORES.AUDIT_ISSUES)) {
           const issueStore = db.createObjectStore(STORES.AUDIT_ISSUES, { keyPath: 'id' });
           issueStore.createIndex('task_id', 'task_id', { unique: false });
@@ -90,7 +90,7 @@ class LocalDatabase {
           issueStore.createIndex('status', 'status', { unique: false });
         }
 
-        // 创建 instant_analyses 表
+        // 建立 instant_analyses 表
         if (!db.objectStoreNames.contains(STORES.INSTANT_ANALYSES)) {
           const analysisStore = db.createObjectStore(STORES.INSTANT_ANALYSES, { keyPath: 'id' });
           analysisStore.createIndex('user_id', 'user_id', { unique: false });
@@ -114,7 +114,7 @@ class LocalDatabase {
   }
 
   /**
-   * 获取对象存储
+   * 獲取物件儲存
    */
   private getStore(storeName: string, mode: IDBTransactionMode = 'readonly'): IDBObjectStore {
     if (!this.db) throw new Error('Database not initialized');
@@ -123,7 +123,7 @@ class LocalDatabase {
   }
 
   /**
-   * 通用查询方法
+   * 通用查詢方法
    */
   private async getAll<T>(storeName: string): Promise<T[]> {
     await this.init();
@@ -136,7 +136,7 @@ class LocalDatabase {
   }
 
   /**
-   * 通过 ID 获取单条记录
+   * 透過 ID 獲取單條記錄
    */
   private async getById<T>(storeName: string, id: string): Promise<T | null> {
     if (!id) return null;
@@ -151,7 +151,7 @@ class LocalDatabase {
   }
 
   /**
-   * 通过索引查询
+   * 透過索引查詢
    */
   private async getByIndex<T>(storeName: string, indexName: string, value: any): Promise<T[]> {
     await this.init();
@@ -165,7 +165,7 @@ class LocalDatabase {
   }
 
   /**
-   * 插入或更新记录
+   * 插入或更新記錄
    */
   private async put<T>(storeName: string, data: T): Promise<T> {
     await this.init();
@@ -178,7 +178,7 @@ class LocalDatabase {
   }
 
   /**
-   * 删除记录
+   * 刪除記錄
    */
   private async deleteRecord(storeName: string, id: string): Promise<void> {
     await this.init();
@@ -191,7 +191,7 @@ class LocalDatabase {
   }
 
   /**
-   * 统计记录数
+   * 統計記錄數
    */
   private async count(storeName: string): Promise<number> {
     await this.init();
@@ -203,7 +203,7 @@ class LocalDatabase {
     });
   }
 
-  // ==================== Profile 相关方法 ====================
+  // ==================== Profile 相關方法 ====================
 
   async getProfileById(id: string): Promise<Profile | null> {
     return this.getById<Profile>(STORES.PROFILES, id);
@@ -246,13 +246,13 @@ class LocalDatabase {
     return this.getAll<Profile>(STORES.PROFILES);
   }
 
-  // ==================== Project 相关方法 ====================
+  // ==================== Project 相關方法 ====================
 
   async getProjects(): Promise<Project[]> {
     const projects = await this.getAll<Project>(STORES.PROJECTS);
     const activeProjects = projects.filter(p => p.is_active);
     
-    // 关联 owner 信息
+    // 關聯 owner 資訊
     const projectsWithOwner = await Promise.all(
       activeProjects.map(async (project) => {
         const owner = project.owner_id ? await this.getProfileById(project.owner_id) : null;
@@ -331,7 +331,7 @@ class LocalDatabase {
     const projects = await this.getAll<Project>(STORES.PROJECTS);
     const deletedProjects = projects.filter(p => !p.is_active);
     
-    // 关联 owner 信息
+    // 關聯 owner 資訊
     const projectsWithOwner = await Promise.all(
       deletedProjects.map(async (project) => {
         const owner = project.owner_id ? await this.getProfileById(project.owner_id) : null;
@@ -364,7 +364,7 @@ class LocalDatabase {
     await this.deleteRecord(STORES.PROJECTS, id);
   }
 
-  // ==================== ProjectMember 相关方法 ====================
+  // ==================== ProjectMember 相關方法 ====================
 
   async getProjectMembers(projectId: string): Promise<ProjectMember[]> {
     const members = await this.getByIndex<ProjectMember>(STORES.PROJECT_MEMBERS, 'project_id', projectId);
@@ -409,7 +409,7 @@ class LocalDatabase {
     };
   }
 
-  // ==================== AuditTask 相关方法 ====================
+  // ==================== AuditTask 相關方法 ====================
 
   async getAuditTasks(projectId?: string): Promise<AuditTask[]> {
     let tasks: AuditTask[];
@@ -491,7 +491,7 @@ class LocalDatabase {
     return this.getAuditTaskById(id) as Promise<AuditTask>;
   }
 
-  // ==================== AuditIssue 相关方法 ====================
+  // ==================== AuditIssue 相關方法 ====================
 
   async getAuditIssues(taskId: string): Promise<AuditIssue[]> {
     const issues = await this.getByIndex<AuditIssue>(STORES.AUDIT_ISSUES, 'task_id', taskId);
@@ -508,7 +508,7 @@ class LocalDatabase {
       })
     );
     
-    // 按严重程度和创建时间排序
+    // 按嚴重程度和建立時間排序
     const severityOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
     return issuesWithRelations.sort((a, b) => {
       const severityDiff = (severityOrder[a.severity] || 999) - (severityOrder[b.severity] || 999);
@@ -558,7 +558,7 @@ class LocalDatabase {
     };
   }
 
-  // ==================== InstantAnalysis 相关方法 ====================
+  // ==================== InstantAnalysis 相關方法 ====================
 
   async getInstantAnalyses(userId?: string): Promise<InstantAnalysis[]> {
     let analyses: InstantAnalysis[];
@@ -592,7 +592,7 @@ class LocalDatabase {
       id: this.generateId(),
       user_id: analysisData.user_id,
       language: analysisData.language,
-      code_content: '', // 不持久化代码内容
+      code_content: '', // 不持久化程式碼內容
       analysis_result: analysisData.analysis_result || '{}',
       issues_count: analysisData.issues_count || 0,
       quality_score: analysisData.quality_score || 0,
@@ -606,7 +606,7 @@ class LocalDatabase {
     return { ...newAnalysis, user: user || undefined };
   }
 
-  // ==================== 统计相关方法 ====================
+  // ==================== 統計相關方法 ====================
 
   async getProjectStats(): Promise<any> {
     const projects = await this.getAll<Project>(STORES.PROJECTS);
@@ -624,5 +624,5 @@ class LocalDatabase {
   }
 }
 
-// 导出单例
+// 匯出單例
 export const localDB = new LocalDatabase();

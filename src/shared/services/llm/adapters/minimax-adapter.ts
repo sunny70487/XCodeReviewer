@@ -1,5 +1,5 @@
 /**
- * MiniMax适配器
+ * MiniMax介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,12 +21,12 @@ export class MinimaxAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, 'MiniMax API调用失败');
+      this.handleError(error, 'MiniMax API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // MiniMax API兼容OpenAI格式
+    // MiniMax API相容OpenAI格式
     const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.config.apiKey}`,
     };
@@ -55,12 +55,12 @@ export class MinimaxAdapter extends BaseLLMAdapter {
     const data = await response.json();
     
     if (data.base_resp?.status_code !== 0) {
-      throw new Error(`API错误 (${data.base_resp?.status_code}): ${data.base_resp?.status_msg}`);
+      throw new Error(`API錯誤 (${data.base_resp?.status_code}): ${data.base_resp?.status_msg}`);
     }
 
     const choice = data.choices?.[0];
     if (!choice) {
-      throw new Error('API响应格式异常: 缺少choices字段');
+      throw new Error('API響應格式異常: 缺少choices欄位');
     }
 
     return {

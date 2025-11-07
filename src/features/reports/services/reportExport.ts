@@ -1,6 +1,6 @@
 import type { AuditTask, AuditIssue } from "@/shared/types";
 
-// 导出 JSON 格式报告
+// 匯出 JSON 格式報告
 export async function exportToJSON(task: AuditTask, issues: AuditIssue[]) {
     const report = {
         metadata: {
@@ -10,7 +10,7 @@ export async function exportToJSON(task: AuditTask, issues: AuditIssue[]) {
         },
         task: {
             id: task.id,
-            projectName: task.project?.name || "未知项目",
+            projectName: task.project?.name || "未知專案",
             taskType: task.task_type,
             status: task.status,
             branchName: task.branch_name,
@@ -62,7 +62,7 @@ export async function exportToJSON(task: AuditTask, issues: AuditIssue[]) {
     URL.revokeObjectURL(url);
 }
 
-// 导出 PDF 格式报告（使用隐藏 iframe 打印）
+// 匯出 PDF 格式報告（使用隱藏 iframe 列印）
 export async function exportToPDF(task: AuditTask, issues: AuditIssue[]) {
     const criticalIssues = issues.filter(i => i.severity === "critical");
     const highIssues = issues.filter(i => i.severity === "high");
@@ -71,7 +71,7 @@ export async function exportToPDF(task: AuditTask, issues: AuditIssue[]) {
 
     const html = generateReportHTML(task, issues, criticalIssues, highIssues, mediumIssues, lowIssues);
 
-    // 创建隐藏的 iframe
+    // 建立隱藏的 iframe
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
     iframe.style.right = '0';
@@ -87,11 +87,11 @@ export async function exportToPDF(task: AuditTask, issues: AuditIssue[]) {
         iframeDoc.write(html);
         iframeDoc.close();
 
-        // 等待内容加载完成后打印
+        // 等待內容載入完成後列印
         iframe.onload = () => {
             setTimeout(() => {
                 iframe.contentWindow?.print();
-                // 打印对话框关闭后移除 iframe
+                // 列印對話方塊關閉後移除 iframe
                 setTimeout(() => {
                     document.body.removeChild(iframe);
                 }, 1000);
@@ -100,7 +100,7 @@ export async function exportToPDF(task: AuditTask, issues: AuditIssue[]) {
     }
 }
 
-// 生成报告 HTML（简化版）
+// 生成報告 HTML（簡化版）
 function generateReportHTML(
     task: AuditTask,
     issues: AuditIssue[],
@@ -114,7 +114,7 @@ function generateReportHTML(
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>代码审计报告</title>
+    <title>程式碼審計報告</title>
     <style>
         @page {
             margin: 2cm;
@@ -257,113 +257,113 @@ function generateReportHTML(
     </style>
 </head>
 <body>
-    <h1>代码审计报告</h1>
+    <h1>程式碼審計報告</h1>
     
     <div class="info-section">
-        <h2>项目信息</h2>
+        <h2>專案資訊</h2>
         <div class="info-item">
-            <span class="info-label">项目名称:</span>
-            <span>${task.project?.name || "未知项目"}</span>
+            <span class="info-label">專案名稱:</span>
+            <span>${task.project?.name || "未知專案"}</span>
         </div>
         <div class="info-item">
-            <span class="info-label">任务ID:</span>
+            <span class="info-label">任務ID:</span>
             <span>${task.id}</span>
         </div>
         <div class="info-item">
             <span class="info-label">分支:</span>
-            <span>${task.branch_name || "默认分支"}</span>
+            <span>${task.branch_name || "預設分支"}</span>
         </div>
         <div class="info-item">
-            <span class="info-label">创建时间:</span>
+            <span class="info-label">建立時間:</span>
             <span>${new Date(task.created_at).toLocaleString("zh-CN")}</span>
         </div>
         ${task.completed_at ? `
         <div class="info-item">
-            <span class="info-label">完成时间:</span>
+            <span class="info-label">完成時間:</span>
             <span>${new Date(task.completed_at).toLocaleString("zh-CN")}</span>
         </div>
         ` : ""}
     </div>
 
-    <h2>审计统计</h2>
+    <h2>審計統計</h2>
     <table>
         <tr>
-            <th>指标</th>
-            <th>数值</th>
-            <th>指标</th>
-            <th>数值</th>
+            <th>指標</th>
+            <th>數值</th>
+            <th>指標</th>
+            <th>數值</th>
         </tr>
         <tr>
-            <td>质量评分</td>
+            <td>質量評分</td>
             <td>${task.quality_score.toFixed(1)}/100</td>
-            <td>扫描文件</td>
+            <td>掃描檔案</td>
             <td>${task.scanned_files}/${task.total_files}</td>
         </tr>
         <tr>
-            <td>代码行数</td>
+            <td>程式碼行數</td>
             <td>${task.total_lines.toLocaleString()}</td>
-            <td>发现问题</td>
+            <td>發現問題</td>
             <td>${task.issues_count}</td>
         </tr>
         <tr>
-            <td>严重问题</td>
+            <td>嚴重問題</td>
             <td>${criticalIssues.length}</td>
-            <td>高优先级</td>
+            <td>高優先順序</td>
             <td>${highIssues.length}</td>
         </tr>
         <tr>
-            <td>中等优先级</td>
+            <td>中等優先順序</td>
             <td>${mediumIssues.length}</td>
-            <td>低优先级</td>
+            <td>低優先順序</td>
             <td>${lowIssues.length}</td>
         </tr>
     </table>
 
     ${issues.length > 0 ? `
-    <h2>问题详情</h2>
+    <h2>問題詳情</h2>
     
     ${criticalIssues.length > 0 ? `
-    <h3>严重问题 (${criticalIssues.length})</h3>
+    <h3>嚴重問題 (${criticalIssues.length})</h3>
     ${criticalIssues.map(issue => generateIssueHTML(issue, "critical")).join("")}
     ` : ""}
     
     ${highIssues.length > 0 ? `
-    <h3>高优先级问题 (${highIssues.length})</h3>
+    <h3>高優先順序問題 (${highIssues.length})</h3>
     ${highIssues.map(issue => generateIssueHTML(issue, "high")).join("")}
     ` : ""}
     
     ${mediumIssues.length > 0 ? `
-    <h3>中等优先级问题 (${mediumIssues.length})</h3>
+    <h3>中等優先順序問題 (${mediumIssues.length})</h3>
     ${mediumIssues.map(issue => generateIssueHTML(issue, "medium")).join("")}
     ` : ""}
     
     ${lowIssues.length > 0 ? `
-    <h3>低优先级问题 (${lowIssues.length})</h3>
+    <h3>低優先順序問題 (${lowIssues.length})</h3>
     ${lowIssues.map(issue => generateIssueHTML(issue, "low")).join("")}
     ` : ""}
     ` : `
     <div class="info-section">
-        <h3>✅ 代码质量优秀！</h3>
-        <p>恭喜！没有发现任何问题。您的代码通过了所有质量检查。</p>
+        <h3>✅ 程式碼質量優秀！</h3>
+        <p>恭喜！沒有發現任何問題。您的程式碼透過了所有質量檢查。</p>
     </div>
     `}
 
     <div class="footer">
-        <p><strong>报告生成时间:</strong> ${new Date().toLocaleString("zh-CN")}</p>
+        <p><strong>報告生成時間:</strong> ${new Date().toLocaleString("zh-CN")}</p>
     </div>
 </body>
 </html>
     `;
 }
 
-// 生成问题的 HTML
+// 生成問題的 HTML
 function generateIssueHTML(issue: AuditIssue, severity: string): string {
     return `
     <div class="issue">
         <div class="issue-header">
             <div class="issue-title">${escapeHtml(issue.title)}</div>
             <span class="severity severity-${severity}">
-                ${severity === "critical" ? "严重" : severity === "high" ? "高" : severity === "medium" ? "中等" : "低"}
+                ${severity === "critical" ? "嚴重" : severity === "high" ? "高" : severity === "medium" ? "中等" : "低"}
             </span>
         </div>
         <div class="issue-meta">
@@ -372,14 +372,14 @@ function generateIssueHTML(issue: AuditIssue, severity: string): string {
             ${issue.column_number ? `，第 ${issue.column_number} 列` : ""}
         </div>
         ${issue.description ? `
-        <p><strong>问题描述:</strong> ${escapeHtml(issue.description)}</p>
+        <p><strong>問題描述:</strong> ${escapeHtml(issue.description)}</p>
         ` : ""}
         ${issue.code_snippet ? `
         <div class="code-block"><pre>${escapeHtml(issue.code_snippet)}</pre></div>
         ` : ""}
         ${issue.suggestion ? `
         <div class="suggestion">
-            <strong>💡 修复建议:</strong><br>
+            <strong>💡 修復建議:</strong><br>
             ${escapeHtml(issue.suggestion)}
         </div>
         ` : ""}
@@ -387,7 +387,7 @@ function generateIssueHTML(issue: AuditIssue, severity: string): string {
     `;
 }
 
-// HTML 转义
+// HTML 轉義
 function escapeHtml(text: string): string {
     const div = document.createElement("div");
     div.textContent = text;

@@ -1,6 +1,6 @@
 /**
- * 数据库状态指示器
- * 显示当前使用的数据库模式
+ * 資料庫狀態指示器
+ * 顯示當前使用的資料庫模式
  */
 
 import { Database, Cloud, Eye } from 'lucide-react';
@@ -13,23 +13,23 @@ export function DatabaseStatus() {
       case 'local':
         return {
           icon: Database,
-          label: '本地数据库',
+          label: '本地資料庫',
           variant: 'default' as const,
-          description: '数据存储在浏览器本地'
+          description: '資料儲存在瀏覽器本地'
         };
       case 'supabase':
         return {
           icon: Cloud,
-          label: 'Supabase 云端',
+          label: 'Supabase 雲端',
           variant: 'secondary' as const,
-          description: '数据存储在云端'
+          description: '資料儲存在雲端'
         };
       case 'demo':
         return {
           icon: Eye,
           label: '演示模式',
           variant: 'outline' as const,
-          description: '使用演示数据，不会持久化'
+          description: '使用演示資料，不會持久化'
         };
       default:
         return {
@@ -58,33 +58,33 @@ export function DatabaseStatusDetail() {
       case 'local':
         return {
           icon: Database,
-          label: '本地数据库模式',
+          label: '本地資料庫模式',
           variant: 'default' as const,
-          description: '数据存储在浏览器 IndexedDB 中，完全本地化，隐私安全。',
-          tips: '提示：定期导出数据以防丢失。'
+          description: '資料儲存在瀏覽器 IndexedDB 中，完全本地化，隱私安全。',
+          tips: '提示：定期匯出資料以防丟失。'
         };
       case 'supabase':
         return {
           icon: Cloud,
-          label: 'Supabase 云端模式',
+          label: 'Supabase 雲端模式',
           variant: 'secondary' as const,
-          description: '数据存储在 Supabase 云端，支持多设备同步。',
-          tips: '提示：确保网络连接正常。'
+          description: '資料儲存在 Supabase 雲端，支援多裝置同步。',
+          tips: '提示：確保網路連線正常。'
         };
       case 'demo':
         return {
           icon: Eye,
           label: '演示模式',
           variant: 'outline' as const,
-          description: '使用内置演示数据，所有操作不会持久化保存。',
-          tips: '提示：配置数据库以保存您的数据。'
+          description: '使用內建演示資料，所有操作不會持久化儲存。',
+          tips: '提示：配置資料庫以儲存您的資料。'
         };
       default:
         return {
           icon: Database,
           label: '未知模式',
           variant: 'destructive' as const,
-          description: '数据库配置异常',
+          description: '資料庫配置異常',
           tips: ''
         };
     }

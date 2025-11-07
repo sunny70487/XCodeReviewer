@@ -1,24 +1,24 @@
-// 路径别名工具函数
+// 路徑別名工具函式
 export const paths = {
-  // 应用核心
+  // 應用核心
   app: '@/app',
   
-  // 组件
+  // 元件
   components: '@/components',
   ui: '@/components/ui',
   layout: '@/components/layout',
   features: '@/components/features',
   common: '@/components/common',
   
-  // 页面
+  // 頁面
   pages: '@/pages',
   
-  // 功能模块
+  // 功能模組
   analysisFeature: '@/features/analysis',
   projectsFeature: '@/features/projects',
   auditFeature: '@/features/audit',
   
-  // 共享资源
+  // 共享資源
   shared: '@/shared',
   hooks: '@/shared/hooks',
   services: '@/shared/services',
@@ -27,14 +27,14 @@ export const paths = {
   constants: '@/shared/constants',
   config: '@/shared/config',
   
-  // 静态资源
+  // 靜態資源
   assets: '@/assets',
   images: '@/assets/images',
   icons: '@/assets/icons',
   styles: '@/assets/styles',
 } as const;
 
-// 获取路径的辅助函数
+// 獲取路徑的輔助函式
 export function getPath(key: keyof typeof paths): string {
   return paths[key];
 }

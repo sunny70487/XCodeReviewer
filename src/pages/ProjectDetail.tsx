@@ -51,7 +51,7 @@ export default function ProjectDetail() {
     programming_languages: []
   });
 
-  // 将小写语言名转换为显示格式
+  // 將小寫語言名轉換為顯示格式
   const formatLanguageName = (lang: string): string => {
     const nameMap: Record<string, string> = {
       'javascript': 'JavaScript',
@@ -92,7 +92,7 @@ export default function ProjectDetail() {
       setTasks(tasksData);
     } catch (error) {
       console.error('Failed to load project data:', error);
-      toast.error("加载项目数据失败");
+      toast.error("載入專案資料失敗");
     } finally {
       setLoading(false);
     }
@@ -101,12 +101,12 @@ export default function ProjectDetail() {
   const handleRunAudit = async () => {
     if (!project || !id) return;
     
-    // 检查是否有仓库地址
+    // 檢查是否有倉庫地址
     if (project.repository_url) {
-      // 有仓库地址，启动仓库审计
+      // 有倉庫地址，啟動倉庫審計
       try {
         setScanning(true);
-        console.log('开始启动仓库审计任务...');
+        console.log('開始啟動倉庫審計任務...');
         const taskId = await runRepositoryAudit({
           projectId: id,
           repoUrl: project.repository_url,
@@ -116,30 +116,30 @@ export default function ProjectDetail() {
           createdBy: undefined
         });
         
-        console.log('审计任务创建成功，taskId:', taskId);
+        console.log('審計任務建立成功，taskId:', taskId);
         
-        // 显示终端进度窗口
+        // 顯示終端進度視窗
         setCurrentTaskId(taskId);
         setShowTerminalDialog(true);
         
-        // 重新加载项目数据
+        // 重新載入專案資料
         loadProjectData();
       } catch (e: any) {
-        console.error('启动审计失败:', e);
-        toast.error(e?.message || '启动审计失败');
+        console.error('啟動審計失敗:', e);
+        toast.error(e?.message || '啟動審計失敗');
       } finally {
         setScanning(false);
       }
     } else {
-      // 没有仓库地址，尝试从IndexedDB加载保存的ZIP文件
+      // 沒有倉庫地址，嘗試從IndexedDB載入儲存的ZIP檔案
       try {
         setScanning(true);
         const file = await loadZipFile(id);
         
         if (file) {
-          console.log('找到保存的ZIP文件，开始启动审计...');
+          console.log('找到儲存的ZIP檔案，開始啟動審計...');
           try {
-            // 启动ZIP文件审计
+            // 啟動ZIP檔案審計
             const taskId = await scanZipFile({
               projectId: id,
               zipFile: file,
@@ -147,29 +147,29 @@ export default function ProjectDetail() {
               createdBy: 'local-user'
             });
             
-            console.log('审计任务创建成功，taskId:', taskId);
+            console.log('審計任務建立成功，taskId:', taskId);
             
-            // 显示终端进度窗口
+            // 顯示終端進度視窗
             setCurrentTaskId(taskId);
             setShowTerminalDialog(true);
             
-            // 重新加载项目数据
+            // 重新載入專案資料
             loadProjectData();
           } catch (e: any) {
-            console.error('启动审计失败:', e);
-            toast.error(e?.message || '启动审计失败');
+            console.error('啟動審計失敗:', e);
+            toast.error(e?.message || '啟動審計失敗');
           } finally {
             setScanning(false);
           }
         } else {
           setScanning(false);
-          toast.warning('此项目未配置仓库地址，也未上传ZIP文件。请先在项目设置中配置仓库地址，或通过"新建任务"上传ZIP文件。');
-          // 不自动打开对话框，让用户自己选择
+          toast.warning('此專案未配置倉庫地址，也未上傳ZIP檔案。請先在專案設定中配置倉庫地址，或透過"新建任務"上傳ZIP檔案。');
+          // 不自動開啟對話方塊，讓使用者自己選擇
         }
       } catch (error) {
-        console.error('启动审计失败:', error);
+        console.error('啟動審計失敗:', error);
         setScanning(false);
-        toast.error('读取ZIP文件失败，请检查项目配置');
+        toast.error('讀取ZIP檔案失敗，請檢查專案配置');
       }
     }
   };
@@ -177,7 +177,7 @@ export default function ProjectDetail() {
   const handleOpenSettings = () => {
     if (!project) return;
     
-    // 初始化编辑表单
+    // 初始化編輯表單
     setEditForm({
       name: project.name,
       description: project.description || "",
@@ -194,18 +194,18 @@ export default function ProjectDetail() {
     if (!id) return;
     
     if (!editForm.name.trim()) {
-      toast.error("项目名称不能为空");
+      toast.error("專案名稱不能為空");
       return;
     }
 
     try {
       await api.updateProject(id, editForm);
-      toast.success("项目信息已保存");
+      toast.success("專案資訊已儲存");
       setShowSettingsDialog(false);
       loadProjectData();
     } catch (error) {
       console.error('Failed to update project:', error);
-      toast.error("保存失败");
+      toast.error("儲存失敗");
     }
   };
 
@@ -251,11 +251,11 @@ export default function ProjectDetail() {
   };
 
   const handleTaskCreated = () => {
-    toast.success("审计任务已创建", {
-      description: '因为网络和代码文件大小等因素，审计时长通常至少需要1分钟，请耐心等待...',
+    toast.success("審計任務已建立", {
+      description: '因為網路和程式碼檔案大小等因素，審計時長通常至少需要1分鐘，請耐心等待...',
       duration: 5000
     });
-    loadProjectData(); // 重新加载项目数据以显示新任务
+    loadProjectData(); // 重新載入專案資料以顯示新任務
   };
 
   if (loading) {
@@ -271,12 +271,12 @@ export default function ProjectDetail() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">项目未找到</h2>
-          <p className="text-gray-600 mb-4">请检查项目ID是否正确</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">專案未找到</h2>
+          <p className="text-gray-600 mb-4">請檢查專案ID是否正確</p>
           <Link to="/projects">
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              返回项目列表
+              返回專案列表
             </Button>
           </Link>
         </div>
@@ -286,7 +286,7 @@ export default function ProjectDetail() {
 
   return (
     <div className="space-y-6">
-      {/* 页面标题 */}
+      {/* 頁面標題 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link to="/projects">
@@ -298,34 +298,34 @@ export default function ProjectDetail() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{project.name}</h1>
             <p className="text-gray-600 mt-1">
-              {project.description || '暂无项目描述'}
+              {project.description || '暫無專案描述'}
             </p>
           </div>
         </div>
         
         <div className="flex items-center space-x-3">
           <Badge variant={project.is_active ? "default" : "secondary"}>
-            {project.is_active ? '活跃' : '暂停'}
+            {project.is_active ? '活躍' : '暫停'}
           </Badge>
           <Button onClick={handleRunAudit} disabled={scanning}>
             <Shield className="w-4 h-4 mr-2" />
-            {scanning ? '正在启动...' : '启动审计'}
+            {scanning ? '正在啟動...' : '啟動審計'}
           </Button>
           <Button variant="outline" onClick={handleOpenSettings}>
             <Edit className="w-4 h-4 mr-2" />
-            编辑
+            編輯
           </Button>
         </div>
       </div>
 
-      {/* 项目概览 */}
+      {/* 專案概覽 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
               <Activity className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">审计任务</p>
+                <p className="text-sm font-medium text-muted-foreground">審計任務</p>
                 <p className="text-2xl font-bold">{tasks.length}</p>
               </div>
             </div>
@@ -351,7 +351,7 @@ export default function ProjectDetail() {
             <div className="flex items-center">
               <AlertTriangle className="h-8 w-8 text-orange-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">发现问题</p>
+                <p className="text-sm font-medium text-muted-foreground">發現問題</p>
                 <p className="text-2xl font-bold">
                   {tasks.reduce((sum, task) => sum + task.issues_count, 0)}
                 </p>
@@ -365,7 +365,7 @@ export default function ProjectDetail() {
             <div className="flex items-center">
               <Code className="h-8 w-8 text-purple-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">平均质量分</p>
+                <p className="text-sm font-medium text-muted-foreground">平均質量分</p>
                 <p className="text-2xl font-bold">
                   {tasks.length > 0 
                     ? (tasks.reduce((sum, task) => sum + task.quality_score, 0) / tasks.length).toFixed(1)
@@ -378,41 +378,41 @@ export default function ProjectDetail() {
         </Card>
       </div>
 
-      {/* 主要内容 */}
+      {/* 主要內容 */}
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">项目概览</TabsTrigger>
-          <TabsTrigger value="tasks">审计任务</TabsTrigger>
-          <TabsTrigger value="issues">问题管理</TabsTrigger>
-          <TabsTrigger value="settings">项目设置</TabsTrigger>
+          <TabsTrigger value="overview">專案概覽</TabsTrigger>
+          <TabsTrigger value="tasks">審計任務</TabsTrigger>
+          <TabsTrigger value="issues">問題管理</TabsTrigger>
+          <TabsTrigger value="settings">專案設定</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* 项目信息 */}
+            {/* 專案資訊 */}
             <Card>
               <CardHeader>
-                <CardTitle>项目信息</CardTitle>
+                <CardTitle>專案資訊</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   {project.repository_url && (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">仓库地址</span>
+                      <span className="text-sm font-medium">倉庫地址</span>
                       <a 
                         href={project.repository_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:underline flex items-center"
                       >
-                        查看仓库
+                        檢視倉庫
                         <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                     </div>
                   )}
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">仓库类型</span>
+                    <span className="text-sm font-medium">倉庫型別</span>
                     <Badge variant="outline">
                       {project.repository_type === 'github' ? 'GitHub' : 
                        project.repository_type === 'gitlab' ? 'GitLab' : '其他'}
@@ -420,12 +420,12 @@ export default function ProjectDetail() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">默认分支</span>
+                    <span className="text-sm font-medium">預設分支</span>
                     <span className="text-sm text-muted-foreground">{project.default_branch}</span>
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">创建时间</span>
+                    <span className="text-sm font-medium">建立時間</span>
                     <span className="text-sm text-muted-foreground">
                       {formatDate(project.created_at)}
                     </span>
@@ -439,10 +439,10 @@ export default function ProjectDetail() {
                   </div>
                 </div>
 
-                {/* 编程语言 */}
+                {/* 程式語言 */}
                 {project.programming_languages && (
                   <div>
-                    <h4 className="text-sm font-medium mb-2">支持的编程语言</h4>
+                    <h4 className="text-sm font-medium mb-2">支援的程式語言</h4>
                     <div className="flex flex-wrap gap-2">
                       {JSON.parse(project.programming_languages).map((lang: string) => (
                         <Badge key={lang} variant="outline">
@@ -455,10 +455,10 @@ export default function ProjectDetail() {
               </CardContent>
             </Card>
 
-            {/* 最近活动 */}
+            {/* 最近活動 */}
             <Card>
               <CardHeader>
-                <CardTitle>最近活动</CardTitle>
+                <CardTitle>最近活動</CardTitle>
               </CardHeader>
               <CardContent>
                 {tasks.length > 0 ? (
@@ -469,7 +469,7 @@ export default function ProjectDetail() {
                           {getStatusIcon(task.status)}
                           <div>
                             <p className="text-sm font-medium">
-                              {task.task_type === 'repository' ? '仓库审计' : '即时分析'}
+                              {task.task_type === 'repository' ? '倉庫審計' : '即時分析'}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {formatDate(task.created_at)}
@@ -478,8 +478,8 @@ export default function ProjectDetail() {
                         </div>
                         <Badge className={getStatusColor(task.status)}>
                           {task.status === 'completed' ? '已完成' : 
-                           task.status === 'running' ? '运行中' : 
-                           task.status === 'failed' ? '失败' : '等待中'}
+                           task.status === 'running' ? '執行中' : 
+                           task.status === 'failed' ? '失敗' : '等待中'}
                         </Badge>
                       </div>
                     ))}
@@ -487,7 +487,7 @@ export default function ProjectDetail() {
                 ) : (
                   <div className="text-center py-8">
                     <Activity className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">暂无活动记录</p>
+                    <p className="text-muted-foreground">暫無活動記錄</p>
                   </div>
                 )}
               </CardContent>
@@ -497,10 +497,10 @@ export default function ProjectDetail() {
 
         <TabsContent value="tasks" className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">审计任务列表</h3>
+            <h3 className="text-lg font-medium">審計任務列表</h3>
             <Button onClick={handleCreateTask}>
               <Play className="w-4 h-4 mr-2" />
-              新建任务
+              新建任務
             </Button>
           </div>
 
@@ -514,43 +514,43 @@ export default function ProjectDetail() {
                         {getStatusIcon(task.status)}
                         <div>
                           <h4 className="font-medium">
-                            {task.task_type === 'repository' ? '仓库审计任务' : '即时分析任务'}
+                            {task.task_type === 'repository' ? '倉庫審計任務' : '即時分析任務'}
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            创建于 {formatDate(task.created_at)}
+                            建立於 {formatDate(task.created_at)}
                           </p>
                         </div>
                       </div>
                       <Badge className={getStatusColor(task.status)}>
                         {task.status === 'completed' ? '已完成' : 
-                         task.status === 'running' ? '运行中' : 
-                         task.status === 'failed' ? '失败' : '等待中'}
+                         task.status === 'running' ? '執行中' : 
+                         task.status === 'failed' ? '失敗' : '等待中'}
                       </Badge>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div className="text-center">
                         <p className="text-2xl font-bold">{task.total_files}</p>
-                        <p className="text-sm text-muted-foreground">总文件数</p>
+                        <p className="text-sm text-muted-foreground">總檔案數</p>
                       </div>
                       <div className="text-center">
                         <p className="text-2xl font-bold">{task.total_lines}</p>
-                        <p className="text-sm text-muted-foreground">代码行数</p>
+                        <p className="text-sm text-muted-foreground">程式碼行數</p>
                       </div>
                       <div className="text-center">
                         <p className="text-2xl font-bold">{task.issues_count}</p>
-                        <p className="text-sm text-muted-foreground">发现问题</p>
+                        <p className="text-sm text-muted-foreground">發現問題</p>
                       </div>
                       <div className="text-center">
                         <p className="text-2xl font-bold">{task.quality_score.toFixed(1)}</p>
-                        <p className="text-sm text-muted-foreground">质量评分</p>
+                        <p className="text-sm text-muted-foreground">質量評分</p>
                       </div>
                     </div>
 
                     {task.status === 'completed' && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
-                          <span>质量评分</span>
+                          <span>質量評分</span>
                           <span>{task.quality_score.toFixed(1)}/100</span>
                         </div>
                         <Progress value={task.quality_score} />
@@ -561,7 +561,7 @@ export default function ProjectDetail() {
                       <Link to={`/tasks/${task.id}`}>
                         <Button variant="outline" size="sm">
                           <FileText className="w-4 h-4 mr-2" />
-                          查看详情
+                          檢視詳情
                         </Button>
                       </Link>
                     </div>
@@ -573,11 +573,11 @@ export default function ProjectDetail() {
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Activity className="w-16 h-16 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium text-muted-foreground mb-2">暂无审计任务</h3>
-                <p className="text-sm text-muted-foreground mb-4">创建第一个审计任务开始代码质量分析</p>
+                <h3 className="text-lg font-medium text-muted-foreground mb-2">暫無審計任務</h3>
+                <p className="text-sm text-muted-foreground mb-4">建立第一個審計任務開始程式碼質量分析</p>
                 <Button onClick={handleCreateTask}>
                   <Play className="w-4 h-4 mr-2" />
-                  创建任务
+                  建立任務
                 </Button>
               </CardContent>
             </Card>
@@ -587,21 +587,21 @@ export default function ProjectDetail() {
         <TabsContent value="issues" className="space-y-6">
           <div className="text-center py-12">
             <AlertTriangle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-muted-foreground mb-2">问题管理</h3>
-            <p className="text-sm text-muted-foreground">此功能正在开发中</p>
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">問題管理</h3>
+            <p className="text-sm text-muted-foreground">此功能正在開發中</p>
           </div>
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
           <div className="text-center py-12">
             <Edit className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-muted-foreground mb-2">项目编辑</h3>
-            <p className="text-sm text-muted-foreground">此功能正在开发中</p>
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">專案編輯</h3>
+            <p className="text-sm text-muted-foreground">此功能正在開發中</p>
           </div>
         </TabsContent>
       </Tabs>
 
-      {/* 创建任务对话框 */}
+      {/* 建立任務對話方塊 */}
       <CreateTaskDialog
         open={showCreateTaskDialog}
         onOpenChange={setShowCreateTaskDialog}
@@ -609,7 +609,7 @@ export default function ProjectDetail() {
         preselectedProjectId={id}
       />
 
-      {/* 终端进度对话框 */}
+      {/* 終端進度對話方塊 */}
       <TerminalProgressDialog
         open={showTerminalDialog}
         onOpenChange={setShowTerminalDialog}
@@ -617,44 +617,44 @@ export default function ProjectDetail() {
         taskType="repository"
       />
 
-      {/* 项目编辑对话框 */}
+      {/* 專案編輯對話方塊 */}
       <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>编辑项目</DialogTitle>
+            <DialogTitle>編輯專案</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* 基本信息 */}
+            {/* 基本資訊 */}
             <div className="space-y-4">
               <div>
-                <Label htmlFor="edit-name">项目名称 *</Label>
+                <Label htmlFor="edit-name">專案名稱 *</Label>
                 <Input
                   id="edit-name"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  placeholder="输入项目名称"
+                  placeholder="輸入專案名稱"
                 />
               </div>
 
               <div>
-                <Label htmlFor="edit-description">项目描述</Label>
+                <Label htmlFor="edit-description">專案描述</Label>
                 <Textarea
                   id="edit-description"
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  placeholder="输入项目描述"
+                  placeholder="輸入專案描述"
                   rows={3}
                 />
               </div>
             </div>
 
-            {/* 仓库信息 */}
+            {/* 倉庫資訊 */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900">仓库信息</h3>
+              <h3 className="text-sm font-semibold text-gray-900">倉庫資訊</h3>
               
               <div>
-                <Label htmlFor="edit-repo-url">仓库地址</Label>
+                <Label htmlFor="edit-repo-url">倉庫地址</Label>
                 <Input
                   id="edit-repo-url"
                   value={editForm.repository_url}
@@ -665,7 +665,7 @@ export default function ProjectDetail() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="edit-repo-type">仓库类型</Label>
+                  <Label htmlFor="edit-repo-type">倉庫型別</Label>
                   <Select
                     value={editForm.repository_type}
                     onValueChange={(value: any) => setEditForm({ ...editForm, repository_type: value })}
@@ -682,7 +682,7 @@ export default function ProjectDetail() {
                 </div>
 
                 <div>
-                  <Label htmlFor="edit-branch">默认分支</Label>
+                  <Label htmlFor="edit-branch">預設分支</Label>
                   <Input
                     id="edit-branch"
                     value={editForm.default_branch}
@@ -693,9 +693,9 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            {/* 编程语言 */}
+            {/* 程式語言 */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900">编程语言</h3>
+              <h3 className="text-sm font-semibold text-gray-900">程式語言</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {supportedLanguages.map((lang) => (
                   <div
@@ -730,7 +730,7 @@ export default function ProjectDetail() {
               取消
             </Button>
             <Button onClick={handleSaveSettings}>
-              保存修改
+              儲存修改
             </Button>
           </div>
         </DialogContent>

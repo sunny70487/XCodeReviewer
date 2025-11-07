@@ -39,7 +39,7 @@ export default function RecycleBin() {
       setDeletedProjects(data);
     } catch (error) {
       console.error('Failed to load deleted projects:', error);
-      toast.error("加载已删除项目失败");
+      toast.error("載入已刪除專案失敗");
     } finally {
       setLoading(false);
     }
@@ -60,13 +60,13 @@ export default function RecycleBin() {
 
     try {
       await api.restoreProject(selectedProject.id);
-      toast.success(`项目 "${selectedProject.name}" 已恢复`);
+      toast.success(`專案 "${selectedProject.name}" 已恢復`);
       setShowRestoreDialog(false);
       setSelectedProject(null);
       loadDeletedProjects();
     } catch (error) {
       console.error('Failed to restore project:', error);
-      toast.error("恢复项目失败");
+      toast.error("恢復專案失敗");
     }
   };
 
@@ -74,23 +74,23 @@ export default function RecycleBin() {
     if (!selectedProject) return;
 
     try {
-      // 删除项目数据
+      // 刪除專案資料
       await api.permanentlyDeleteProject(selectedProject.id);
       
-      // 删除保存的ZIP文件（如果有）
+      // 刪除儲存的ZIP檔案（如果有）
       try {
         await deleteZipFile(selectedProject.id);
       } catch (error) {
-        console.error('删除ZIP文件失败:', error);
+        console.error('刪除ZIP檔案失敗:', error);
       }
       
-      toast.success(`项目 "${selectedProject.name}" 已永久删除`);
+      toast.success(`專案 "${selectedProject.name}" 已永久刪除`);
       setShowPermanentDeleteDialog(false);
       setSelectedProject(null);
       loadDeletedProjects();
     } catch (error) {
       console.error('Failed to permanently delete project:', error);
-      toast.error("永久删除项目失败");
+      toast.error("永久刪除專案失敗");
     }
   };
 
@@ -116,7 +116,7 @@ export default function RecycleBin() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-500">加载中...</p>
+          <p className="text-gray-500">載入中...</p>
         </div>
       </div>
     );
@@ -124,25 +124,25 @@ export default function RecycleBin() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* 页面标题 */}
+      {/* 頁面標題 */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="page-title flex items-center gap-2">
             <Trash2 className="w-8 h-8 text-gray-400" />
             回收站
           </h1>
-          <p className="page-subtitle">管理已删除的项目，可以恢复或永久删除</p>
+          <p className="page-subtitle">管理已刪除的專案，可以恢復或永久刪除</p>
         </div>
       </div>
 
-      {/* 搜索 */}
+      {/* 搜尋 */}
       <Card>
         <CardContent className="p-4">
           <div className="flex items-center space-x-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="搜索已删除的项目..."
+                placeholder="搜尋已刪除的專案..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -152,7 +152,7 @@ export default function RecycleBin() {
         </CardContent>
       </Card>
 
-      {/* 项目列表 */}
+      {/* 專案列表 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
@@ -175,13 +175,13 @@ export default function RecycleBin() {
                     </div>
                   </div>
                   <Badge variant="secondary" className="flex-shrink-0 bg-red-100 text-red-700">
-                    已删除
+                    已刪除
                   </Badge>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                {/* 项目信息 */}
+                {/* 專案資訊 */}
                 <div className="space-y-3">
                   {project.repository_url && (
                     <div className="flex items-center text-sm text-gray-500">
@@ -201,7 +201,7 @@ export default function RecycleBin() {
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-2" />
-                      删除于 {formatDate(project.updated_at)}
+                      刪除於 {formatDate(project.updated_at)}
                     </div>
                     <div className="flex items-center">
                       <Users className="w-4 h-4 mr-2" />
@@ -210,7 +210,7 @@ export default function RecycleBin() {
                   </div>
                 </div>
 
-                {/* 编程语言 */}
+                {/* 程式語言 */}
                 {project.programming_languages && (
                   <div className="flex flex-wrap gap-2">
                     {JSON.parse(project.programming_languages).slice(0, 4).map((lang: string) => (
@@ -226,7 +226,7 @@ export default function RecycleBin() {
                   </div>
                 )}
 
-                {/* 操作按钮 */}
+                {/* 操作按鈕 */}
                 <div className="flex gap-2 pt-2">
                   <Button
                     size="sm"
@@ -235,7 +235,7 @@ export default function RecycleBin() {
                     onClick={() => handleRestoreClick(project)}
                   >
                     <RotateCcw className="w-4 h-4 mr-2" />
-                    恢复
+                    恢復
                   </Button>
                   <Button
                     size="sm"
@@ -244,7 +244,7 @@ export default function RecycleBin() {
                     onClick={() => handlePermanentDeleteClick(project)}
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
-                    永久删除
+                    永久刪除
                   </Button>
                 </div>
               </CardContent>
@@ -258,10 +258,10 @@ export default function RecycleBin() {
                   <Inbox className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {searchTerm ? '未找到匹配的项目' : '回收站为空'}
+                  {searchTerm ? '未找到匹配的專案' : '回收站為空'}
                 </h3>
                 <p className="text-gray-500 mb-6 max-w-md">
-                  {searchTerm ? '尝试调整搜索条件' : '回收站中没有已删除的项目'}
+                  {searchTerm ? '嘗試調整搜尋條件' : '回收站中沒有已刪除的專案'}
                 </p>
               </CardContent>
             </Card>
@@ -269,16 +269,16 @@ export default function RecycleBin() {
         )}
       </div>
 
-      {/* 恢复项目确认对话框 */}
+      {/* 恢復專案確認對話方塊 */}
       <AlertDialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>确认恢复项目</AlertDialogTitle>
+            <AlertDialogTitle>確認恢復專案</AlertDialogTitle>
             <AlertDialogDescription>
-              您确定要恢复项目 <span className="font-semibold text-gray-900">"{selectedProject?.name}"</span> 吗？
+              您確定要恢復專案 <span className="font-semibold text-gray-900">"{selectedProject?.name}"</span> 嗎？
               <br />
               <br />
-              恢复后，该项目将重新出现在项目列表中，您可以继续使用该项目的所有功能。
+              恢復後，該專案將重新出現在專案列表中，您可以繼續使用該專案的所有功能。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -287,30 +287,30 @@ export default function RecycleBin() {
               onClick={handleConfirmRestore}
               className="bg-green-600 hover:bg-green-700 focus:ring-green-600"
             >
-              确认恢复
+              確認恢復
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* 永久删除确认对话框 */}
+      {/* 永久刪除確認對話方塊 */}
       <AlertDialog open={showPermanentDeleteDialog} onOpenChange={setShowPermanentDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-red-600">
               <AlertTriangle className="w-5 h-5" />
-              警告：永久删除项目
+              警告：永久刪除專案
             </AlertDialogTitle>
             <AlertDialogDescription>
-              您确定要<span className="font-semibold text-red-600">永久删除</span>项目 <span className="font-semibold text-gray-900">"{selectedProject?.name}"</span> 吗？
+              您確定要<span className="font-semibold text-red-600">永久刪除</span>專案 <span className="font-semibold text-gray-900">"{selectedProject?.name}"</span> 嗎？
               <br />
               <br />
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 my-3">
-                <p className="text-red-800 font-semibold mb-2">⚠️ 此操作不可撤销！</p>
+                <p className="text-red-800 font-semibold mb-2">⚠️ 此操作不可撤銷！</p>
                 <ul className="list-disc list-inside text-red-700 space-y-1 text-sm">
-                  <li>项目数据将被永久删除</li>
-                  <li>相关的审计任务可能会受影响</li>
-                  <li>无法通过任何方式恢复</li>
+                  <li>專案資料將被永久刪除</li>
+                  <li>相關的審計任務可能會受影響</li>
+                  <li>無法透過任何方式恢復</li>
                 </ul>
               </div>
             </AlertDialogDescription>
@@ -321,7 +321,7 @@ export default function RecycleBin() {
               onClick={handleConfirmPermanentDelete}
               className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
             >
-              确认永久删除
+              確認永久刪除
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

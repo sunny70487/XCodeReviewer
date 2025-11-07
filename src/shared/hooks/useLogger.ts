@@ -1,5 +1,5 @@
 /**
- * 日志记录 Hook
+ * 日誌記錄 Hook
  */
 
 import { useEffect, useCallback, useState } from 'react';
@@ -54,7 +54,7 @@ export function useLogs(filter?: {
 }) {
   const [logs, setLogs] = useState<LogEntry[]>(() => logger.getLogs(filter));
 
-  // 将filter转换为字符串作为依赖，避免对象引用问题
+  // 將filter轉換為字串作為依賴，避免物件引用問題
   const filterKey = JSON.stringify(filter);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export function useLogs(filter?: {
     return () => {
       unsubscribe();
     };
-  }, [filterKey]); // 使用filterKey而不是filter对象
+  }, [filterKey]); // 使用filterKey而不是filter物件
 
   return logs;
 }

@@ -1,6 +1,6 @@
 /**
- * 数据库管理组件
- * 提供本地数据库的导出、导入、清空等功能
+ * 資料庫管理元件
+ * 提供本地資料庫的匯出、匯入、清空等功能
  */
 
 import { useState } from 'react';
@@ -20,7 +20,7 @@ export function DatabaseManager() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // 导出数据
+  // 匯出資料
   const handleExport = async () => {
     try {
       setLoading(true);
@@ -37,16 +37,16 @@ export function DatabaseManager() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      setMessage({ type: 'success', text: '数据导出成功！' });
+      setMessage({ type: 'success', text: '資料匯出成功！' });
     } catch (error) {
-      console.error('导出失败:', error);
-      setMessage({ type: 'error', text: '数据导出失败，请重试' });
+      console.error('匯出失敗:', error);
+      setMessage({ type: 'error', text: '資料匯出失敗，請重試' });
     } finally {
       setLoading(false);
     }
   };
 
-  // 导入数据
+  // 匯入資料
   const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -58,19 +58,19 @@ export function DatabaseManager() {
       const text = await file.text();
       await importLocalDatabase(text);
       
-      setMessage({ type: 'success', text: '数据导入成功！页面将刷新...' });
+      setMessage({ type: 'success', text: '資料匯入成功！頁面將重新整理...' });
       setTimeout(() => window.location.reload(), 1500);
     } catch (error) {
-      console.error('导入失败:', error);
-      setMessage({ type: 'error', text: '数据导入失败，请检查文件格式' });
+      console.error('匯入失敗:', error);
+      setMessage({ type: 'error', text: '資料匯入失敗，請檢查檔案格式' });
     } finally {
       setLoading(false);
     }
   };
 
-  // 清空数据
+  // 清空資料
   const handleClear = async () => {
-    if (!confirm('确定要清空所有本地数据吗？此操作不可恢复！')) {
+    if (!confirm('確定要清空所有本地資料嗎？此操作不可恢復！')) {
       return;
     }
 
@@ -80,17 +80,17 @@ export function DatabaseManager() {
       
       await clearLocalDatabase();
       
-      setMessage({ type: 'success', text: '数据已清空！页面将刷新...' });
+      setMessage({ type: 'success', text: '資料已清空！頁面將重新整理...' });
       setTimeout(() => window.location.reload(), 1500);
     } catch (error) {
-      console.error('清空失败:', error);
-      setMessage({ type: 'error', text: '清空数据失败，请重试' });
+      console.error('清空失敗:', error);
+      setMessage({ type: 'error', text: '清空資料失敗，請重試' });
     } finally {
       setLoading(false);
     }
   };
 
-  // 初始化数据库
+  // 初始化資料庫
   const handleInit = async () => {
     try {
       setLoading(true);
@@ -98,10 +98,10 @@ export function DatabaseManager() {
       
       await initLocalDatabase();
       
-      setMessage({ type: 'success', text: '数据库初始化成功！' });
+      setMessage({ type: 'success', text: '資料庫初始化成功！' });
     } catch (error) {
-      console.error('初始化失败:', error);
-      setMessage({ type: 'error', text: '初始化失败，请重试' });
+      console.error('初始化失敗:', error);
+      setMessage({ type: 'error', text: '初始化失敗，請重試' });
     } finally {
       setLoading(false);
     }
@@ -113,18 +113,18 @@ export function DatabaseManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Database className="h-5 w-5" />
-            数据库管理
+            資料庫管理
           </CardTitle>
           <CardDescription>
-            当前使用 {dbMode === 'supabase' ? 'Supabase 云端' : '演示'} 模式
+            當前使用 {dbMode === 'supabase' ? 'Supabase 雲端' : '演示'} 模式
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              数据库管理功能仅在本地数据库模式下可用。
-              {dbMode === 'demo' && '请在 .env 文件中配置 VITE_USE_LOCAL_DB=true 启用本地数据库。'}
+              資料庫管理功能僅在本地資料庫模式下可用。
+              {dbMode === 'demo' && '請在 .env 檔案中配置 VITE_USE_LOCAL_DB=true 啟用本地資料庫。'}
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -137,10 +137,10 @@ export function DatabaseManager() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Database className="h-5 w-5" />
-          本地数据库管理
+          本地資料庫管理
         </CardTitle>
         <CardDescription>
-          管理您的本地数据库，包括导出、导入和清空数据
+          管理您的本地資料庫，包括匯出、匯入和清空資料
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -157,9 +157,9 @@ export function DatabaseManager() {
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <h4 className="text-sm font-medium">导出数据</h4>
+            <h4 className="text-sm font-medium">匯出資料</h4>
             <p className="text-sm text-muted-foreground">
-              将本地数据导出为 JSON 文件，用于备份或迁移
+              將本地資料匯出為 JSON 檔案，用於備份或遷移
             </p>
             <Button
               onClick={handleExport}
@@ -168,14 +168,14 @@ export function DatabaseManager() {
               variant="outline"
             >
               <Download className="mr-2 h-4 w-4" />
-              导出数据
+              匯出資料
             </Button>
           </div>
 
           <div className="space-y-2">
-            <h4 className="text-sm font-medium">导入数据</h4>
+            <h4 className="text-sm font-medium">匯入資料</h4>
             <p className="text-sm text-muted-foreground">
-              从 JSON 文件恢复数据
+              從 JSON 檔案恢復資料
             </p>
             <Button
               onClick={() => document.getElementById('import-file')?.click()}
@@ -184,7 +184,7 @@ export function DatabaseManager() {
               variant="outline"
             >
               <Upload className="mr-2 h-4 w-4" />
-              导入数据
+              匯入資料
             </Button>
             <input
               id="import-file"
@@ -196,9 +196,9 @@ export function DatabaseManager() {
           </div>
 
           <div className="space-y-2">
-            <h4 className="text-sm font-medium">初始化数据库</h4>
+            <h4 className="text-sm font-medium">初始化資料庫</h4>
             <p className="text-sm text-muted-foreground">
-              创建默认用户和基础数据
+              建立預設使用者和基礎資料
             </p>
             <Button
               onClick={handleInit}
@@ -212,9 +212,9 @@ export function DatabaseManager() {
           </div>
 
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-destructive">清空数据</h4>
+            <h4 className="text-sm font-medium text-destructive">清空資料</h4>
             <p className="text-sm text-muted-foreground">
-              删除所有本地数据（不可恢复）
+              刪除所有本地資料（不可恢復）
             </p>
             <Button
               onClick={handleClear}
@@ -223,7 +223,7 @@ export function DatabaseManager() {
               variant="destructive"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              清空数据
+              清空資料
             </Button>
           </div>
         </div>
@@ -231,8 +231,8 @@ export function DatabaseManager() {
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            <strong>提示：</strong>本地数据存储在浏览器中，清除浏览器数据会导致数据丢失。
-            建议定期导出备份。
+            <strong>提示：</strong>本地資料儲存在瀏覽器中，清除瀏覽器資料會導致資料丟失。
+            建議定期匯出備份。
           </AlertDescription>
         </Alert>
       </CardContent>

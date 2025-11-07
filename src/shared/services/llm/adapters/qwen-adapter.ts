@@ -1,5 +1,5 @@
 /**
- * 阿里云通义千问适配器
+ * 阿里雲通義千問介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -25,7 +25,7 @@ export class QwenAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, '通义千问API调用失败');
+      this.handleError(error, '通義千問API呼叫失敗');
     }
   }
 
@@ -67,12 +67,12 @@ export class QwenAdapter extends BaseLLMAdapter {
     const data = await response.json();
 
     if (data.code && data.code !== '200') {
-      throw new Error(`API错误 (${data.code}): ${data.message}`);
+      throw new Error(`API錯誤 (${data.code}): ${data.message}`);
     }
 
     const output = data.output;
     if (!output?.choices?.[0]) {
-      throw new Error('API响应格式异常: 缺少output.choices字段');
+      throw new Error('API響應格式異常: 缺少output.choices欄位');
     }
 
     const choice = output.choices[0];
@@ -94,7 +94,7 @@ export class QwenAdapter extends BaseLLMAdapter {
     await super.validateConfig();
     
     if (!this.config.model) {
-      throw new Error('未指定通义千问模型');
+      throw new Error('未指定通義千問模型');
     }
     
     return true;

@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
             <span className="text-lg font-semibold text-gray-900">XCodeReviewer</span>
           </div>
           <p className="text-gray-500 text-sm">
-            © {currentYear} XCodeReviewer. 致力于提升代码质量，保障软件安全.
+            © {currentYear} XCodeReviewer. 致力於提升程式碼質量，保障軟體安全.
           </p>
         </div>
       </div>

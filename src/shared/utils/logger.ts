@@ -1,6 +1,6 @@
 /**
- * 日志记录模块
- * 提供统一的日志记录、存储和导出功能
+ * 日誌記錄模組
+ * 提供統一的日誌記錄、儲存和匯出功能
  */
 
 export enum LogLevel {
@@ -12,10 +12,10 @@ export enum LogLevel {
 }
 
 export enum LogCategory {
-    USER_ACTION = 'USER_ACTION',      // 用户操作
-    API_CALL = 'API_CALL',            // API调用
-    SYSTEM = 'SYSTEM',                // 系统事件
-    CONSOLE_ERROR = 'CONSOLE_ERROR',  // 控制台错误
+    USER_ACTION = 'USER_ACTION',      // 使用者操作
+    API_CALL = 'API_CALL',            // API呼叫
+    SYSTEM = 'SYSTEM',                // 系統事件
+    CONSOLE_ERROR = 'CONSOLE_ERROR',  // 控制檯錯誤
 }
 
 export interface LogEntry {
@@ -33,7 +33,7 @@ export interface LogEntry {
 
 class Logger {
     private logs: LogEntry[] = [];
-    private maxLogs = 1000; // 最多保存1000条日志
+    private maxLogs = 1000; // 最多儲存1000條日誌
     private storageKey = 'app_logs';
     private listeners: Set<(log: LogEntry) => void> = new Set();
     private isEnabled = true;
@@ -46,7 +46,7 @@ class Logger {
     }
 
     /**
-     * 从localStorage加载历史日志
+     * 從localStorage載入歷史日誌
      */
     private loadLogsFromStorage() {
         try {
@@ -60,11 +60,11 @@ class Logger {
     }
 
     /**
-     * 保存日志到localStorage
+     * 儲存日誌到localStorage
      */
     private saveLogsToStorage() {
         try {
-            // 只保存最近的日志
+            // 只儲存最近的日誌
             const logsToSave = this.logs.slice(-this.maxLogs);
             localStorage.setItem(this.storageKey, JSON.stringify(logsToSave));
         } catch (error) {
@@ -73,15 +73,15 @@ class Logger {
     }
 
     /**
-     * 拦截console方法
+     * 攔截console方法
      */
     private setupConsoleInterceptor() {
         const originalError = console.error;
 
-        // 只拦截错误，不拦截警告
+        // 只攔截錯誤，不攔截警告
         console.error = (...args: any[]) => {
             originalError.apply(console, args);
-            // 过滤掉一些常见的无关错误
+            // 過濾掉一些常見的無關錯誤
             const message = args.join(' ');
             if (!message.includes('ResizeObserver') &&
                 !message.includes('favicon') &&
@@ -92,7 +92,7 @@ class Logger {
     }
 
     /**
-     * 设置全局错误处理
+     * 設定全域性錯誤處理
      */
     private setupErrorHandler() {
         window.addEventListener('error', (event) => {
@@ -112,7 +112,7 @@ class Logger {
     }
 
     /**
-     * 设置未处理的Promise拒绝处理
+     * 設定未處理的Promise拒絕處理
      */
     private setupUnhandledRejectionHandler() {
         window.addEventListener('unhandledrejection', (event) => {
@@ -127,7 +127,7 @@ class Logger {
     }
 
     /**
-     * 记录日志
+     * 記錄日誌
      */
     log(
         level: LogLevel,
@@ -152,28 +152,28 @@ class Logger {
 
         this.logs.push(entry);
 
-        // 限制日志数量
+        // 限制日誌數量
         if (this.logs.length > this.maxLogs) {
             this.logs = this.logs.slice(-this.maxLogs);
         }
 
-        // 保存到localStorage
+        // 儲存到localStorage
         this.saveLogsToStorage();
 
-        // 通知监听器
+        // 通知監聽器
         this.listeners.forEach(listener => listener(entry));
 
-        // 在开发环境输出到控制台
+        // 在開發環境輸出到控制檯
         if (import.meta.env.DEV) {
             this.logToConsole(entry);
         }
     }
 
     /**
-     * 输出到控制台
+     * 輸出到控制檯
      */
     private logToConsole(entry: LogEntry) {
-        // 生产环境只输出ERROR和FATAL级别
+        // 生產環境只輸出ERROR和FATAL級別
         if (!import.meta.env.DEV && entry.level !== LogLevel.ERROR && entry.level !== LogLevel.FATAL) {
             return;
         }
@@ -188,7 +188,7 @@ class Logger {
     }
 
     /**
-     * 获取控制台样式
+     * 獲取控制檯樣式
      */
     private getConsoleStyle(level: LogLevel): string {
         const styles = {
@@ -225,14 +225,14 @@ class Logger {
     }
 
     /**
-     * 记录用户操作
+     * 記錄使用者操作
      */
     logUserAction(action: string, details?: any) {
         this.info(LogCategory.USER_ACTION, action, details);
     }
 
     /**
-     * 记录API调用
+     * 記錄API呼叫
      */
     logApiCall(method: string, url: string, status?: number, duration?: number, error?: any) {
         const level = error ? LogLevel.ERROR : LogLevel.INFO;
@@ -246,14 +246,14 @@ class Logger {
     }
 
     /**
-     * 记录性能指标
+     * 記錄效能指標
      */
     logPerformance(metric: string, value: number, unit = 'ms') {
         this.info(LogCategory.SYSTEM, `${metric}: ${value}${unit}`, { metric, value, unit });
     }
 
     /**
-     * 获取所有日志
+     * 獲取所有日誌
      */
     getLogs(filter?: {
         level?: LogLevel;
@@ -290,7 +290,7 @@ class Logger {
     }
 
     /**
-     * 清空日志
+     * 清空日誌
      */
     clearLogs() {
         this.logs = [];
@@ -298,14 +298,14 @@ class Logger {
     }
 
     /**
-     * 导出日志为JSON
+     * 匯出日誌為JSON
      */
     exportLogsAsJson(): string {
         return JSON.stringify(this.logs, null, 2);
     }
 
     /**
-     * 导出日志为CSV
+     * 匯出日誌為CSV
      */
     exportLogsAsCsv(): string {
         const headers = ['Timestamp', 'Level', 'Category', 'Message', 'Data', 'URL'];
@@ -325,7 +325,7 @@ class Logger {
     }
 
     /**
-     * 下载日志文件
+     * 下載日誌檔案
      */
     downloadLogs(format: 'json' | 'csv' = 'json') {
         const content = format === 'json' ? this.exportLogsAsJson() : this.exportLogsAsCsv();
@@ -341,7 +341,7 @@ class Logger {
     }
 
     /**
-     * 添加日志监听器
+     * 新增日誌監聽器
      */
     addListener(listener: (log: LogEntry) => void) {
         this.listeners.add(listener);
@@ -349,14 +349,14 @@ class Logger {
     }
 
     /**
-     * 启用/禁用日志记录
+     * 啟用/禁用日誌記錄
      */
     setEnabled(enabled: boolean) {
         this.isEnabled = enabled;
     }
 
     /**
-     * 获取日志统计
+     * 獲取日誌統計
      */
     getStats() {
         const stats = {
@@ -378,5 +378,5 @@ class Logger {
     }
 }
 
-// 导出单例
+// 匯出單例
 export const logger = new Logger();

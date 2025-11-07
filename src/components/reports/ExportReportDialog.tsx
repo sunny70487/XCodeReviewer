@@ -39,17 +39,17 @@ export default function ExportReportDialog({
             switch (selectedFormat) {
                 case "json":
                     await exportToJSON(task, issues);
-                    toast.success("JSON 报告已导出");
+                    toast.success("JSON 報告已匯出");
                     break;
                 case "pdf":
                     await exportToPDF(task, issues);
-                    toast.success("PDF 报告已导出");
+                    toast.success("PDF 報告已匯出");
                     break;
             }
             onOpenChange(false);
         } catch (error) {
-            console.error("导出报告失败:", error);
-            toast.error("导出报告失败，请重试");
+            console.error("匯出報告失敗:", error);
+            toast.error("匯出報告失敗，請重試");
         } finally {
             setIsExporting(false);
         }
@@ -59,7 +59,7 @@ export default function ExportReportDialog({
         {
             value: "json" as ExportFormat,
             label: "JSON 格式",
-            description: "结构化数据，适合程序处理和集成",
+            description: "結構化資料，適合程式處理和整合",
             icon: FileJson,
             color: "text-yellow-600",
             bgColor: "bg-yellow-50",
@@ -68,7 +68,7 @@ export default function ExportReportDialog({
         {
             value: "pdf" as ExportFormat,
             label: "PDF 格式",
-            description: "专业报告，适合打印和分享",
+            description: "專業報告，適合列印和分享",
             icon: FileText,
             color: "text-red-600",
             bgColor: "bg-red-50",
@@ -82,10 +82,10 @@ export default function ExportReportDialog({
                 <DialogHeader>
                     <DialogTitle className="flex items-center space-x-2">
                         <Download className="w-5 h-5 text-primary" />
-                        <span>导出审计报告</span>
+                        <span>匯出審計報告</span>
                     </DialogTitle>
                     <DialogDescription>
-                        选择报告格式并导出完整的代码审计结果
+                        選擇報告格式並匯出完整的程式碼審計結果
                     </DialogDescription>
                 </DialogHeader>
 
@@ -138,32 +138,32 @@ export default function ExportReportDialog({
                         })}
                     </RadioGroup>
 
-                    {/* 报告预览信息 */}
+                    {/* 報告預覽資訊 */}
                     <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                        <h4 className="font-medium text-gray-900 mb-3">报告内容预览</h4>
+                        <h4 className="font-medium text-gray-900 mb-3">報告內容預覽</h4>
                         <div className="grid grid-cols-2 gap-3 text-sm">
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">项目名称:</span>
+                                <span className="text-gray-600">專案名稱:</span>
                                 <span className="font-medium text-gray-900">{task.project?.name || "未知"}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">质量评分:</span>
+                                <span className="text-gray-600">質量評分:</span>
                                 <span className="font-medium text-gray-900">{task.quality_score.toFixed(1)}/100</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">扫描文件:</span>
+                                <span className="text-gray-600">掃描檔案:</span>
                                 <span className="font-medium text-gray-900">{task.scanned_files}/{task.total_files}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">发现问题:</span>
+                                <span className="text-gray-600">發現問題:</span>
                                 <span className="font-medium text-orange-600">{issues.length}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">代码行数:</span>
+                                <span className="text-gray-600">程式碼行數:</span>
                                 <span className="font-medium text-gray-900">{task.total_lines.toLocaleString()}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-gray-600">严重问题:</span>
+                                <span className="text-gray-600">嚴重問題:</span>
                                 <span className="font-medium text-red-600">
                                     {issues.filter(i => i.severity === "critical").length}
                                 </span>
@@ -188,12 +188,12 @@ export default function ExportReportDialog({
                         {isExporting ? (
                             <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                导出中...
+                                匯出中...
                             </>
                         ) : (
                             <>
                                 <Download className="w-4 h-4 mr-2" />
-                                导出报告
+                                匯出報告
                             </>
                         )}
                     </Button>

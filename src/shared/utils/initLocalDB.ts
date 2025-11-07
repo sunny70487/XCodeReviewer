@@ -1,44 +1,44 @@
 /**
- * 本地数据库初始化工具
- * 用于在首次使用时创建默认用户和演示数据
+ * 本地資料庫初始化工具
+ * 用於在首次使用時建立預設使用者和演示資料
  */
 
 import { localDB } from '../config/localDatabase';
 import { api } from '../config/database';
 
 /**
- * 初始化本地数据库
- * 创建默认用户和基础数据
+ * 初始化本地資料庫
+ * 建立預設使用者和基礎資料
  */
 export async function initLocalDatabase(): Promise<void> {
   try {
-    // 初始化数据库
+    // 初始化資料庫
     await localDB.init();
     
-    // 检查是否已有用户
+    // 檢查是否已有使用者
     const profileCount = await localDB.getProfilesCount();
     
     if (profileCount === 0) {
-      // 创建默认本地用户
+      // 建立預設本地使用者
       await api.createProfiles({
         id: 'local-user',
         email: 'local@xcodereviewer.com',
-        full_name: '本地用户',
+        full_name: '本地使用者',
         role: 'admin',
         github_username: 'local-user',
       });
       
-      console.log('✅ 本地数据库初始化成功');
+      console.log('✅ 本地資料庫初始化成功');
     }
   } catch (error) {
-    console.error('❌ 本地数据库初始化失败:', error);
+    console.error('❌ 本地資料庫初始化失敗:', error);
     throw error;
   }
 }
 
 /**
- * 清空本地数据库
- * 用于重置或清理数据
+ * 清空本地資料庫
+ * 用於重置或清理資料
  */
 export async function clearLocalDatabase(): Promise<void> {
   try {
@@ -47,23 +47,23 @@ export async function clearLocalDatabase(): Promise<void> {
     
     return new Promise((resolve, reject) => {
       request.onsuccess = () => {
-        console.log('✅ 本地数据库已清空');
+        console.log('✅ 本地資料庫已清空');
         resolve();
       };
       request.onerror = () => {
-        console.error('❌ 清空本地数据库失败');
+        console.error('❌ 清空本地資料庫失敗');
         reject(request.error);
       };
     });
   } catch (error) {
-    console.error('❌ 清空本地数据库失败:', error);
+    console.error('❌ 清空本地資料庫失敗:', error);
     throw error;
   }
 }
 
 /**
- * 导出本地数据库数据
- * 用于备份或迁移
+ * 匯出本地資料庫資料
+ * 用於備份或遷移
  */
 export async function exportLocalDatabase(): Promise<string> {
   try {
@@ -79,40 +79,40 @@ export async function exportLocalDatabase(): Promise<string> {
     
     return JSON.stringify(data, null, 2);
   } catch (error) {
-    console.error('❌ 导出数据失败:', error);
+    console.error('❌ 匯出資料失敗:', error);
     throw error;
   }
 }
 
 /**
- * 导入数据到本地数据库
- * 用于恢复备份或迁移数据
+ * 匯入資料到本地資料庫
+ * 用於恢復備份或遷移資料
  */
 export async function importLocalDatabase(jsonData: string): Promise<void> {
   try {
     const data = JSON.parse(jsonData);
     
     if (!data.version || !data.profiles) {
-      throw new Error('无效的数据格式');
+      throw new Error('無效的資料格式');
     }
     
     await localDB.init();
     
-    // 导入用户
+    // 匯入使用者
     for (const profile of data.profiles) {
       await api.createProfiles(profile);
     }
     
-    // 导入项目
+    // 匯入專案
     if (data.projects) {
       for (const project of data.projects) {
         await api.createProject(project);
       }
     }
     
-    console.log('✅ 数据导入成功');
+    console.log('✅ 資料匯入成功');
   } catch (error) {
-    console.error('❌ 导入数据失败:', error);
+    console.error('❌ 匯入資料失敗:', error);
     throw error;
   }
 }

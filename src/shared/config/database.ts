@@ -21,10 +21,10 @@ const isValidUuid = (value?: string): boolean => {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 };
 
-// 检查是否配置了 Supabase
+// 檢查是否配置了 Supabase
 const hasSupabaseConfig = supabaseUrl && supabaseAnonKey;
 
-// 如果没有配置 Supabase，使用虚拟配置避免错误
+// 如果沒有配置 Supabase，使用虛擬配置避免錯誤
 const finalSupabaseUrl = hasSupabaseConfig ? supabaseUrl : 'https://demo.supabase.co';
 const finalSupabaseKey = hasSupabaseConfig ? supabaseAnonKey : 'demo-key';
 
@@ -37,12 +37,12 @@ export const supabase = hasSupabaseConfig ? createClient(finalSupabaseUrl, final
   }
 }) : null;
 
-// 数据库模式：local（本地IndexedDB）、supabase（云端）、demo（演示模式）
+// 資料庫模式：local（本地IndexedDB）、supabase（雲端）、demo（演示模式）
 export const dbMode = useLocalDB ? 'local' : (hasSupabaseConfig ? 'supabase' : 'demo');
 export const isDemoMode = dbMode === 'demo';
 export const isLocalMode = dbMode === 'local';
 
-// 演示数据
+// 演示資料
 const demoProfile: Profile = {
   id: 'demo-user',
   phone: undefined,
@@ -56,9 +56,9 @@ const demoProfile: Profile = {
   updated_at: new Date().toISOString()
 };
 
-// 用户相关API
+// 使用者相關API
 export const api = {
-  // Profile相关
+  // Profile相關
   async getProfilesById(id: string): Promise<Profile | null> {
     if (isDemoMode) {
       return demoProfile;
@@ -159,13 +159,13 @@ export const api = {
     return Array.isArray(data) ? data : [];
   },
 
-  // Project相关
+  // Project相關
   async getProjects(): Promise<Project[]> {
     if (isDemoMode) {
       return [{
         id: 'demo-project-1',
         name: 'Demo Project',
-        description: '这是一个演示项目，展示 XCodeReviewer 的功能',
+        description: '這是一個演示專案，展示 XCodeReviewer 的功能',
         repository_url: 'https://github.com/demo/project',
         repository_type: 'github',
         default_branch: 'main',
@@ -341,7 +341,7 @@ export const api = {
     if (error) throw error;
   },
 
-  // ProjectMember相关
+  // ProjectMember相關
   async getProjectMembers(projectId: string): Promise<ProjectMember[]> {
     if (isLocalMode) {
       return localDB.getProjectMembers(projectId);
@@ -389,7 +389,7 @@ export const api = {
     return Array.isArray(data) && data.length > 0 ? data[0] : {} as ProjectMember;
   },
 
-  // AuditTask相关
+  // AuditTask相關
   async getAuditTasks(projectId?: string): Promise<AuditTask[]> {
     if (isLocalMode) {
       return localDB.getAuditTasks(projectId);
@@ -487,7 +487,7 @@ export const api = {
     return Array.isArray(data) && data.length > 0 ? data[0] : {} as AuditTask;
   },
 
-  // AuditIssue相关
+  // AuditIssue相關
   async getAuditIssues(taskId: string): Promise<AuditIssue[]> {
     if (isLocalMode) {
       return localDB.getAuditIssues(taskId);
@@ -553,7 +553,7 @@ export const api = {
     return Array.isArray(data) && data.length > 0 ? data[0] : {} as AuditIssue;
   },
 
-  // InstantAnalysis相关
+  // InstantAnalysis相關
   async getInstantAnalyses(userId?: string): Promise<InstantAnalysis[]> {
     if (isLocalMode) {
       return localDB.getInstantAnalyses(userId);
@@ -596,7 +596,7 @@ export const api = {
       .insert([{
         user_id: analysis.user_id,
         language: analysis.language,
-        // 遵循安全要求：不持久化用户代码内容
+        // 遵循安全要求：不持久化使用者程式碼內容
         code_content: '',
         analysis_result: analysis.analysis_result || '{}',
         issues_count: analysis.issues_count || 0,
@@ -613,7 +613,7 @@ export const api = {
     return Array.isArray(data) && data.length > 0 ? data[0] : {} as InstantAnalysis;
   },
 
-  // 统计相关
+  // 統計相關
   async getProjectStats(): Promise<any> {
     if (isDemoMode) {
       return {

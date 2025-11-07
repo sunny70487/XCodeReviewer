@@ -1,6 +1,6 @@
 /**
- * 错误处理模块
- * 提供统一的错误处理和用户反馈机制
+ * 錯誤處理模組
+ * 提供統一的錯誤處理和使用者反饋機制
  */
 
 import { toast } from 'sonner';
@@ -28,12 +28,12 @@ export interface AppError {
 
 class ErrorHandler {
   /**
-   * 处理错误并显示用户友好的提示
+   * 處理錯誤並顯示使用者友好的提示
    */
   handle(error: any, context?: string): AppError {
     const appError = this.parseError(error);
     
-    // 记录错误日志
+    // 記錄錯誤日誌
     logger.error(
       LogCategory.SYSTEM,
       `${context ? `[${context}] ` : ''}${appError.message}`,
@@ -46,80 +46,80 @@ class ErrorHandler {
       error?.stack
     );
 
-    // 显示用户提示
+    // 顯示使用者提示
     this.showErrorToast(appError, context);
 
     return appError;
   }
 
   /**
-   * 解析错误对象
+   * 解析錯誤物件
    */
   private parseError(error: any): AppError {
     const timestamp = Date.now();
 
-    // Axios错误
+    // Axios錯誤
     if (error?.isAxiosError || error?.response) {
       return this.parseAxiosError(error, timestamp);
     }
 
-    // Fetch错误
+    // Fetch錯誤
     if (error instanceof TypeError && error.message.includes('fetch')) {
       return {
         type: ErrorType.NETWORK,
-        message: '网络连接失败，请检查网络设置',
+        message: '網路連線失敗，請檢查網路設定',
         originalError: error,
         timestamp,
       };
     }
 
-    // 自定义AppError
+    // 自定義AppError
     if (error?.type && Object.values(ErrorType).includes(error.type)) {
       return { ...error, timestamp };
     }
 
-    // 标准Error对象
+    // 標準Error物件
     if (error instanceof Error) {
       return {
         type: ErrorType.UNKNOWN,
-        message: error.message || '发生未知错误',
+        message: error.message || '發生未知錯誤',
         originalError: error,
         timestamp,
       };
     }
 
-    // 其他类型
+    // 其他型別
     return {
       type: ErrorType.UNKNOWN,
-      message: typeof error === 'string' ? error : '发生未知错误',
+      message: typeof error === 'string' ? error : '發生未知錯誤',
       originalError: error,
       timestamp,
     };
   }
 
   /**
-   * 解析Axios错误
+   * 解析Axios錯誤
    */
   private parseAxiosError(error: any, timestamp: number): AppError {
     const response = error.response;
     const status = response?.status;
 
-    // 网络错误
+    // 網路錯誤
     if (!response) {
       return {
         type: ErrorType.NETWORK,
-        message: '网络请求失败，请检查网络连接',
+        message: '網路請求失敗，請檢查網路連線',
         originalError: error,
         timestamp,
       };
     }
 
-    // 根据状态码分类
+    // 根據狀態碼分類
     switch (status) {
       case 400:
         return {
           type: ErrorType.VALIDATION,
-          message: response.data?.message || '请求参数错误',
+          message: response.data?.message || '請求引數錯誤',
           code: status,
           details: response.data,
           originalError: error,
@@ -129,7 +129,7 @@ class ErrorHandler {
       case 401:
         return {
           type: ErrorType.AUTHENTICATION,
-          message: '未登录或登录已过期，请重新登录',
+          message: '未登入或登入已過期，請重新登入',
           code: status,
           originalError: error,
           timestamp,
@@ -138,7 +138,7 @@ class ErrorHandler {
       case 403:
         return {
           type: ErrorType.AUTHORIZATION,
-          message: '没有权限执行此操作',
+          message: '沒有許可權執行此操作',
           code: status,
           originalError: error,
           timestamp,
@@ -147,7 +147,7 @@ class ErrorHandler {
       case 404:
         return {
           type: ErrorType.NOT_FOUND,
-          message: '请求的资源不存在',
+          message: '請求的資源不存在',
           code: status,
           originalError: error,
           timestamp,
@@ -157,7 +157,7 @@ class ErrorHandler {
       case 504:
         return {
           type: ErrorType.TIMEOUT,
-          message: '请求超时，请稍后重试',
+          message: '請求超時，請稍後重試',
           code: status,
           originalError: error,
           timestamp,
@@ -168,7 +168,7 @@ class ErrorHandler {
       case 503:
         return {
           type: ErrorType.API,
-          message: '服务器错误，请稍后重试',
+          message: '伺服器錯誤，請稍後重試',
           code: status,
           details: response.data,
           originalError: error,
@@ -178,7 +178,7 @@ class ErrorHandler {
       default:
         return {
           type: ErrorType.API,
-          message: response.data?.message || `请求失败 (${status})`,
+          message: response.data?.message || `請求失敗 (${status})`,
           code: status,
           details: response.data,
           originalError: error,
@@ -188,7 +188,7 @@ class ErrorHandler {
   }
 
   /**
-   * 显示错误提示
+   * 顯示錯誤提示
    */
   private showErrorToast(error: AppError, context?: string) {
     const title = context || this.getErrorTitle(error.type);
@@ -197,49 +197,49 @@ class ErrorHandler {
       description: error.message,
       duration: 5000,
       action: error.code ? {
-        label: '查看详情',
+        label: '檢視詳情',
         onClick: () => this.showErrorDetails(error),
       } : undefined,
     });
   }
 
   /**
-   * 获取错误标题
+   * 獲取錯誤標題
    */
   private getErrorTitle(type: ErrorType): string {
     const titles = {
-      [ErrorType.NETWORK]: '网络错误',
-      [ErrorType.API]: 'API错误',
-      [ErrorType.VALIDATION]: '验证错误',
-      [ErrorType.AUTHENTICATION]: '认证错误',
-      [ErrorType.AUTHORIZATION]: '权限错误',
-      [ErrorType.NOT_FOUND]: '资源不存在',
-      [ErrorType.TIMEOUT]: '请求超时',
-      [ErrorType.UNKNOWN]: '未知错误',
+      [ErrorType.NETWORK]: '網路錯誤',
+      [ErrorType.API]: 'API錯誤',
+      [ErrorType.VALIDATION]: '驗證錯誤',
+      [ErrorType.AUTHENTICATION]: '認證錯誤',
+      [ErrorType.AUTHORIZATION]: '許可權錯誤',
+      [ErrorType.NOT_FOUND]: '資源不存在',
+      [ErrorType.TIMEOUT]: '請求超時',
+      [ErrorType.UNKNOWN]: '未知錯誤',
     };
     return titles[type];
   }
 
   /**
-   * 显示错误详情
+   * 顯示錯誤詳情
    */
   private showErrorDetails(error: AppError) {
-    console.group('错误详情');
-    console.log('类型:', error.type);
-    console.log('消息:', error.message);
-    console.log('代码:', error.code);
-    console.log('时间:', new Date(error.timestamp).toLocaleString());
+    console.group('錯誤詳情');
+    console.log('型別:', error.type);
+    console.log('訊息:', error.message);
+    console.log('程式碼:', error.code);
+    console.log('時間:', new Date(error.timestamp).toLocaleString());
     if (error.details) {
-      console.log('详情:', error.details);
+      console.log('詳情:', error.details);
     }
     if (error.originalError) {
-      console.log('原始错误:', error.originalError);
+      console.log('原始錯誤:', error.originalError);
     }
     console.groupEnd();
   }
 
   /**
-   * 创建错误
+   * 建立錯誤
    */
   createError(type: ErrorType, message: string, details?: any): AppError {
     return {
@@ -251,7 +251,7 @@ class ErrorHandler {
   }
 
   /**
-   * 异步函数错误包装器
+   * 非同步函式錯誤包裝器
    */
   async wrap<T>(
     fn: () => Promise<T>,
@@ -274,7 +274,7 @@ class ErrorHandler {
   }
 
   /**
-   * 同步函数错误包装器
+   * 同步函式錯誤包裝器
    */
   wrapSync<T>(
     fn: () => T,
@@ -297,10 +297,10 @@ class ErrorHandler {
   }
 }
 
-// 导出单例
+// 匯出單例
 export const errorHandler = new ErrorHandler();
 
-// 便捷函数
+// 便捷函式
 export const handleError = (error: any, context?: string) => errorHandler.handle(error, context);
 export const wrapAsync = <T>(fn: () => Promise<T>, context?: string, options?: any) => 
   errorHandler.wrap(fn, context, options);

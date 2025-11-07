@@ -1,8 +1,8 @@
 /**
- * LLM服务统一导出
+ * LLM服務統一匯出
  */
 
-// 类型定义
+// 型別定義
 export type {
   LLMProvider,
   LLMConfig,
@@ -12,14 +12,14 @@ export type {
   ILLMAdapter,
 } from './types';
 
-// 工具类
+// 工具類
 export { LLMError, DEFAULT_LLM_CONFIG, DEFAULT_MODELS, DEFAULT_BASE_URLS } from './types';
 export { BaseLLMAdapter } from './base-adapter';
 
-// 适配器
+// 介面卡
 export * from './adapters';
 
-// 工厂和服务
+// 工廠和服務
 export { LLMFactory } from './llm-factory';
 export { LLMService, createLLMService, getDefaultLLMService } from './llm-service';
 

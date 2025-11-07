@@ -1,22 +1,22 @@
 /**
- * ZIP文件存储工具
- * 用于管理保存在IndexedDB中的ZIP文件
+ * ZIP檔案儲存工具
+ * 用於管理儲存在IndexedDB中的ZIP檔案
  */
 
 const DB_NAME = 'xcodereviewer_files';
 const STORE_NAME = 'zipFiles';
 
 /**
- * 保存ZIP文件到IndexedDB
+ * 儲存ZIP檔案到IndexedDB
  */
 export async function saveZipFile(projectId: string, file: File): Promise<void> {
-  // 检查浏览器是否支持IndexedDB
+  // 檢查瀏覽器是否支援IndexedDB
   if (!window.indexedDB) {
-    throw new Error('您的浏览器不支持IndexedDB，无法保存ZIP文件');
+    throw new Error('您的瀏覽器不支援IndexedDB，無法儲存ZIP檔案');
   }
 
   return new Promise((resolve, reject) => {
-    // 不指定版本号，让IndexedDB使用当前最新版本
+    // 不指定版本號，讓IndexedDB使用當前最新版本
     const dbRequest = indexedDB.open(DB_NAME);
     
     dbRequest.onupgradeneeded = (event) => {
@@ -26,18 +26,18 @@ export async function saveZipFile(projectId: string, file: File): Promise<void> 
           db.createObjectStore(STORE_NAME);
         }
       } catch (error) {
-        console.error('创建对象存储失败:', error);
-        reject(new Error('创建存储结构失败，请检查浏览器设置'));
+        console.error('建立物件儲存失敗:', error);
+        reject(new Error('建立儲存結構失敗，請檢查瀏覽器設定'));
       }
     };
 
     dbRequest.onsuccess = async (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       
-      // 检查对象存储是否存在，如果不存在则需要升级数据库
+      // 檢查物件儲存是否存在，如果不存在則需要升級資料庫
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.close();
-        // 增加版本号以触发onupgradeneeded
+        // 增加版本號以觸發onupgradeneeded
         const upgradeRequest = indexedDB.open(DB_NAME, db.version + 1);
         
         upgradeRequest.onupgradeneeded = (event) => {
@@ -47,7 +47,7 @@ export async function saveZipFile(projectId: string, file: File): Promise<void> 
               upgradeDb.createObjectStore(STORE_NAME);
             }
           } catch (error) {
-            console.error('升级数据库时创建对象存储失败:', error);
+            console.error('升級資料庫時建立物件儲存失敗:', error);
           }
         };
         
@@ -58,8 +58,8 @@ export async function saveZipFile(projectId: string, file: File): Promise<void> 
         
         upgradeRequest.onerror = (event) => {
           const error = (event.target as IDBOpenDBRequest).error;
-          console.error('升级数据库失败:', error);
-          reject(new Error(`升级数据库失败: ${error?.message || '未知错误'}`));
+          console.error('升級資料庫失敗:', error);
+          reject(new Error(`升級資料庫失敗: ${error?.message || '未知錯誤'}`));
         };
       } else {
         await performSave(db, file, projectId, resolve, reject);
@@ -68,14 +68,14 @@ export async function saveZipFile(projectId: string, file: File): Promise<void> 
 
     dbRequest.onerror = (event) => {
       const error = (event.target as IDBOpenDBRequest).error;
-      console.error('打开IndexedDB失败:', error);
-      const errorMsg = error?.message || '未知错误';
-      reject(new Error(`无法打开本地存储，可能是隐私模式或存储权限问题: ${errorMsg}`));
+      console.error('開啟IndexedDB失敗:', error);
+      const errorMsg = error?.message || '未知錯誤';
+      reject(new Error(`無法開啟本地儲存，可能是隱私模式或儲存許可權問題: ${errorMsg}`));
     };
 
     dbRequest.onblocked = () => {
-      console.warn('数据库被阻塞，可能有其他标签页正在使用');
-      reject(new Error('数据库被占用，请关闭其他标签页后重试'));
+      console.warn('資料庫被阻塞，可能有其他標籤頁正在使用');
+      reject(new Error('資料庫被佔用，請關閉其他標籤頁後重試'));
     };
   });
 }
@@ -101,38 +101,38 @@ async function performSave(
     
     putRequest.onerror = (event) => {
       const error = (event.target as IDBRequest).error;
-      console.error('写入数据失败:', error);
-      reject(new Error(`保存ZIP文件失败: ${error?.message || '未知错误'}`));
+      console.error('寫入資料失敗:', error);
+      reject(new Error(`儲存ZIP檔案失敗: ${error?.message || '未知錯誤'}`));
     };
     
     transaction.oncomplete = () => {
-      console.log(`ZIP文件已保存到项目 ${projectId} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+      console.log(`ZIP檔案已儲存到專案 ${projectId} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
       db.close();
       resolve();
     };
     
     transaction.onerror = (event) => {
       const error = (event.target as IDBTransaction).error;
-      console.error('事务失败:', error);
-      reject(new Error(`保存事务失败: ${error?.message || '未知错误'}`));
+      console.error('事務失敗:', error);
+      reject(new Error(`儲存事務失敗: ${error?.message || '未知錯誤'}`));
     };
     
     transaction.onabort = () => {
-      console.error('事务被中止');
-      reject(new Error('保存操作被中止'));
+      console.error('事務被中止');
+      reject(new Error('儲存操作被中止'));
     };
   } catch (error) {
-    console.error('保存ZIP文件时发生异常:', error);
+    console.error('儲存ZIP檔案時發生異常:', error);
     reject(error as Error);
   }
 }
 
 /**
- * 从IndexedDB加载ZIP文件
+ * 從IndexedDB載入ZIP檔案
  */
 export async function loadZipFile(projectId: string): Promise<File | null> {
   return new Promise((resolve, reject) => {
-    // 不指定版本号，让IndexedDB使用当前最新版本
+    // 不指定版本號，讓IndexedDB使用當前最新版本
     const dbRequest = indexedDB.open(DB_NAME);
     
     dbRequest.onupgradeneeded = (event) => {
@@ -168,24 +168,24 @@ export async function loadZipFile(projectId: string): Promise<File | null> {
       };
       
       getRequest.onerror = () => {
-        reject(new Error('读取ZIP文件失败'));
+        reject(new Error('讀取ZIP檔案失敗'));
       };
     };
 
     dbRequest.onerror = () => {
-      // 数据库打开失败，可能是首次使用，返回null而不是报错
-      console.warn('打开ZIP文件数据库失败，可能是首次使用');
+      // 資料庫開啟失敗，可能是首次使用，返回null而不是報錯
+      console.warn('開啟ZIP檔案資料庫失敗，可能是首次使用');
       resolve(null);
     };
   });
 }
 
 /**
- * 删除ZIP文件
+ * 刪除ZIP檔案
  */
 export async function deleteZipFile(projectId: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    // 不指定版本号，让IndexedDB使用当前最新版本
+    // 不指定版本號，讓IndexedDB使用當前最新版本
     const dbRequest = indexedDB.open(DB_NAME);
     
     dbRequest.onupgradeneeded = (event) => {
@@ -209,25 +209,25 @@ export async function deleteZipFile(projectId: string): Promise<void> {
       const deleteRequest = store.delete(projectId);
       
       deleteRequest.onsuccess = () => {
-        console.log(`已删除项目 ${projectId} 的ZIP文件`);
+        console.log(`已刪除專案 ${projectId} 的ZIP檔案`);
         resolve();
       };
       
       deleteRequest.onerror = () => {
-        reject(new Error('删除ZIP文件失败'));
+        reject(new Error('刪除ZIP檔案失敗'));
       };
     };
 
     dbRequest.onerror = () => {
-      // 数据库打开失败，可能文件不存在，直接resolve
-      console.warn('打开ZIP文件数据库失败，跳过删除操作');
+      // 資料庫開啟失敗，可能檔案不存在，直接resolve
+      console.warn('開啟ZIP檔案資料庫失敗，跳過刪除操作');
       resolve();
     };
   });
 }
 
 /**
- * 检查是否存在ZIP文件
+ * 檢查是否存在ZIP檔案
  */
 export async function hasZipFile(projectId: string): Promise<boolean> {
   try {

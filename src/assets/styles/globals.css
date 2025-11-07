@@ -6,11 +6,11 @@
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 
-专业深红色配色方案：
-- 主色调：深红色 (0 75% 25%) - 体现专业性和权威感
-- 强调色：暗红色 (0 60% 35%) - 用于交互元素和重点突出
-- 背景色：浅灰到黑色渐变 - 提供高对比度和现代感
-- 状态色：保持语义化的绿色(成功)、红色(错误)、黄色(警告)
+專業深紅色配色方案：
+- 主色調：深紅色 (0 75% 25%) - 體現專業性和權威感
+- 強調色：暗紅色 (0 60% 35%) - 用於互動元素和重點突出
+- 背景色：淺灰到黑色漸變 - 提供高對比度和現代感
+- 狀態色：保持語義化的綠色(成功)、紅色(錯誤)、黃色(警告)
 */
 
 @layer base {
@@ -45,12 +45,12 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    /* 专业渐变效果 */
+    /* 專業漸變效果 */
     --gradient-primary: linear-gradient(135deg, hsl(0 75% 25%) 0%, hsl(0 60% 35%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
     --gradient-background: linear-gradient(180deg, hsl(0 0% 98%) 0%, hsl(0 0% 95%) 100%);
     
-    /* 专业阴影效果 */
+    /* 專業陰影效果 */
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
     --shadow-hover: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
     --shadow-focus: 0 0 0 3px hsl(0 75% 25% / 0.1);
@@ -94,12 +94,12 @@ All colors MUST be HSL.
     --input: 0 0% 12%;
     --ring: 0 75% 45%;
     
-    /* 暗色模式专业渐变效果 */
+    /* 暗色模式專業漸變效果 */
     --gradient-primary: linear-gradient(135deg, hsl(0 75% 45%) 0%, hsl(0 60% 50%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 5%) 0%, hsl(0 0% 3%) 100%);
     --gradient-background: linear-gradient(180deg, hsl(0 0% 3%) 0%, hsl(0 0% 1%) 100%);
     
-    /* 暗色模式专业阴影效果 */
+    /* 暗色模式專業陰影效果 */
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
     --shadow-hover: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.4);
     --shadow-focus: 0 0 0 3px hsl(0 75% 45% / 0.2);
@@ -127,7 +127,7 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* 页面标题样式 */
+  /* 頁面標題樣式 */
   .page-title {
     @apply text-2xl md:text-3xl font-bold text-foreground tracking-tight;
   }
@@ -136,12 +136,12 @@ All colors MUST be HSL.
     @apply text-sm md:text-base text-muted-foreground mt-1;
   }
 
-  /* 现代化卡片样式 */
+  /* 現代化卡片樣式 */
   .card-modern {
     @apply bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-200;
   }
 
-  /* 统计卡片样式 */
+  /* 統計卡片樣式 */
   .stat-card {
     @apply bg-card rounded-xl border border-border shadow-sm hover:shadow-lg transition-all duration-300 hover:border-accent/30;
   }
@@ -158,7 +158,7 @@ All colors MUST be HSL.
     @apply w-12 h-12 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center shadow-sm;
   }
 
-  /* 按钮样式 */
+  /* 按鈕樣式 */
   .btn-primary {
     @apply bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200;
   }
@@ -167,7 +167,7 @@ All colors MUST be HSL.
     @apply border-border hover:border-accent/50 hover:bg-accent/5 transition-all duration-200;
   }
 
-  /* 空状态样式 */
+  /* 空狀態樣式 */
   .empty-state {
     @apply flex flex-col items-center justify-center text-center;
   }
@@ -176,7 +176,7 @@ All colors MUST be HSL.
     @apply w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4;
   }
 
-  /* 动画 */
+  /* 動畫 */
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
   }
@@ -192,17 +192,17 @@ All colors MUST be HSL.
     }
   }
 
-  /* 渐变背景 */
+  /* 漸變背景 */
   .gradient-bg {
     @apply bg-gradient-to-br from-background via-muted/30 to-accent/5;
   }
 
-  /* 响应式容器 */
+  /* 響應式容器 */
   .container-responsive {
     @apply container mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* 文本截断 */
+  /* 文字截斷 */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -215,12 +215,12 @@ All colors MUST be HSL.
     backdrop-filter: blur(12px);
   }
 
-  /* 平滑滚动 */
+  /* 平滑滾動 */
   html {
     scroll-behavior: smooth;
   }
 
-  /* 自定义滚动条 */
+  /* 自定義捲軸 */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -239,7 +239,7 @@ All colors MUST be HSL.
     background: hsl(var(--accent) / 0.6);
   }
 
-  /* 专业高级感样式 */
+  /* 專業高階感樣式 */
   .professional-card {
     @apply bg-gradient-card border border-border/50 shadow-card hover:shadow-hover transition-all duration-300;
   }
@@ -272,7 +272,7 @@ All colors MUST be HSL.
     @apply bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400;
   }
 
-  /* 高级导航样式 */
+  /* 高階導航樣式 */
   .nav-link {
     @apply flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-accent/10 hover:text-accent-foreground;
   }
@@ -281,7 +281,7 @@ All colors MUST be HSL.
     @apply bg-primary/10 text-primary border-r-2 border-primary;
   }
 
-  /* 专业表格样式 */
+  /* 專業表格樣式 */
   .professional-table {
     @apply w-full border-collapse bg-card rounded-lg overflow-hidden shadow-card;
   }
@@ -298,7 +298,7 @@ All colors MUST be HSL.
     @apply bg-accent/5;
   }
 
-  /* 图表和图标专用样式 */
+  /* 圖表和圖示專用樣式 */
   .chart-primary {
     color: hsl(var(--primary));
   }
@@ -331,12 +331,12 @@ All colors MUST be HSL.
     @apply text-muted-foreground;
   }
 
-  /* 加载动画 */
+  /* 載入動畫 */
   .loading-spinner {
     @apply animate-spin rounded-full border-2 border-primary border-t-transparent;
   }
 
-  /* 状态指示器颜色 */
+  /* 狀態指示器顏色 */
   .status-running {
     @apply bg-red-50 text-red-800 border-red-200;
   }
@@ -349,7 +349,7 @@ All colors MUST be HSL.
     @apply bg-red-100 text-red-900 border-red-300;
   }
 
-  /* 渐变图标背景 */
+  /* 漸變圖示背景 */
   .icon-bg-primary {
     @apply bg-gradient-to-br from-primary/10 to-accent/10;
   }

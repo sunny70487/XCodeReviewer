@@ -3,7 +3,7 @@ import { api } from "@/shared/config/database";
 
 const login_config = {
   title: 'XCodeReviewer',
-  desc: '登录以开始代码质量分析',
+  desc: '登入以開始程式碼質量分析',
   onLoginSuccess: async (user: any) => {
     try {
       const existingProfile = await api.getProfilesById(user.id);
@@ -45,7 +45,7 @@ export default function Login() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">XCodeReviewer</h1>
-          <p className="text-gray-600">基于AI的代码质量分析平台</p>
+          <p className="text-gray-600">基於AI的程式碼質量分析平臺</p>
         </div>
         
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-gray-100">
@@ -53,8 +53,8 @@ export default function Login() {
         </div>
         
         <div className="text-center mt-6 text-sm text-gray-600 bg-white/80 backdrop-blur-sm rounded-lg p-3">
-          <p>🔍 支持代码仓库审计和即时代码分析</p>
-          <p>🛡️ 提供安全漏洞检测和性能优化建议</p>
+          <p>🔍 支援程式碼倉庫審計和即時程式碼分析</p>
+          <p>🛡️ 提供安全漏洞檢測和效能最佳化建議</p>
         </div>
       </div>
     </div>

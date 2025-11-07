@@ -36,7 +36,7 @@ export default function TerminalProgressDialog({
     const pollIntervalRef = useRef<number | null>(null);
     const hasInitializedLogsRef = useRef(false);
 
-    // 添加日志条目
+    // 新增日誌條目
     const addLog = (message: string, type: LogEntry["type"] = "info") => {
         const timestamp = new Date().toLocaleTimeString("zh-CN", {
             hour: "2-digit",
@@ -46,37 +46,37 @@ export default function TerminalProgressDialog({
         setLogs(prev => [...prev, { timestamp, message, type }]);
     };
 
-    // 取消任务处理
+    // 取消任務處理
     const handleCancel = async () => {
         if (!taskId) return;
 
-        if (!confirm('确定要取消此任务吗？已分析的结果将被保留。')) {
+        if (!confirm('確定要取消此任務嗎？已分析的結果將被保留。')) {
             return;
         }
 
-        // 1. 标记任务为取消状态
+        // 1. 標記任務為取消狀態
         taskControl.cancelTask(taskId);
         setIsCancelled(true);
-        addLog("🛑 用户取消任务，正在停止...", "error");
+        addLog("🛑 使用者取消任務，正在停止...", "error");
 
-        // 2. 立即更新数据库状态
+        // 2. 立即更新資料庫狀態
         try {
             const { api } = await import("@/shared/config/database");
             await api.updateAuditTask(taskId, { status: 'cancelled' } as any);
-            addLog("✓ 任务状态已更新为已取消", "warning");
-            toast.success("任务已取消");
+            addLog("✓ 任務狀態已更新為已取消", "warning");
+            toast.success("任務已取消");
         } catch (error) {
-            console.error('更新取消状态失败:', error);
-            toast.warning("任务已标记取消，后台正在停止...");
+            console.error('更新取消狀態失敗:', error);
+            toast.warning("任務已標記取消，後臺正在停止...");
         }
     };
 
-    // 自动滚动到底部
+    // 自動滾動到底部
     useEffect(() => {
         logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [logs]);
 
-    // 实时更新光标处的时间
+    // 實時更新游標處的時間
     useEffect(() => {
         if (!open || isCompleted || isFailed || isCancelled) {
             return;
@@ -91,10 +91,10 @@ export default function TerminalProgressDialog({
         };
     }, [open, isCompleted, isFailed]);
 
-    // 轮询任务状态
+    // 輪詢任務狀態
     useEffect(() => {
         if (!open || !taskId) {
-            // 清理状态
+            // 清理狀態
             setLogs([]);
             setIsCompleted(false);
             setIsFailed(false);
@@ -106,15 +106,15 @@ export default function TerminalProgressDialog({
             return;
         }
 
-        // 只初始化日志一次（防止React严格模式重复）
+        // 只初始化日誌一次（防止React嚴格模式重複）
         if (!hasInitializedLogsRef.current) {
             hasInitializedLogsRef.current = true;
 
-            // 初始化日志
-            addLog("🚀 审计任务已启动", "info");
-            addLog(`� 任务任ID: ${taskId}`, "info");
-            addLog(`� 任务类D型: ${taskType === "repository" ? "仓库审计" : "ZIP文件审计"}`, "info");
-            addLog("⏳ 正在初始化审计环境...", "info");
+            // 初始化日誌
+            addLog("🚀 審計任務已啟動", "info");
+            addLog(`� 任務任ID: ${taskId}`, "info");
+            addLog(`� 任務類D型: ${taskType === "repository" ? "倉庫審計" : "ZIP檔案審計"}`, "info");
+            addLog("⏳ 正在初始化審計環境...", "info");
         }
 
         let lastScannedFiles = 0;
@@ -125,9 +125,9 @@ export default function TerminalProgressDialog({
         let hasDataChange = false;
         let isFirstPoll = true;
 
-        // 开始轮询
+        // 開始輪詢
         const pollTask = async () => {
-            // 如果任务已完成或失败，停止轮询
+            // 如果任務已完成或失敗，停止輪詢
             if (isCompleted || isFailed) {
                 if (pollIntervalRef.current) {
                     clearInterval(pollIntervalRef.current);
@@ -142,18 +142,18 @@ export default function TerminalProgressDialog({
 
                 const requestStartTime = Date.now();
 
-                // 使用 api.getAuditTaskById 获取任务状态
+                // 使用 api.getAuditTaskById 獲取任務狀態
                 const { api } = await import("@/shared/config/database");
                 const task = await api.getAuditTaskById(taskId);
 
                 const requestDuration = Date.now() - requestStartTime;
 
                 if (!task) {
-                    addLog(`❌ 任务不存在 (${requestDuration}ms)`, "error");
-                    throw new Error("任务不存在");
+                    addLog(`❌ 任務不存在 (${requestDuration}ms)`, "error");
+                    throw new Error("任務不存在");
                 }
 
-                // 检查是否有数据变化
+                // 檢查是否有資料變化
                 const statusChanged = task.status !== lastStatus;
                 const filesChanged = task.scanned_files !== lastScannedFiles;
                 const issuesChanged = task.issues_count !== lastIssuesCount;
@@ -161,75 +161,75 @@ export default function TerminalProgressDialog({
 
                 hasDataChange = statusChanged || filesChanged || issuesChanged || linesChanged;
 
-                // 标记首次轮询已完成
+                // 標記首次輪詢已完成
                 if (isFirstPoll) {
                     isFirstPoll = false;
                 }
 
-                // 只在有变化时显示请求/响应信息（跳过 pending 状态）
+                // 只在有變化時顯示請求/響應資訊（跳過 pending 狀態）
                 if (hasDataChange && task.status !== "pending") {
-                    addLog(`🔄 正在获取任务状态...`, "info");
+                    addLog(`🔄 正在獲取任務狀態...`, "info");
                     addLog(
-                        `✓ 状态: ${task.status} | 文件: ${task.scanned_files}/${task.total_files} | 问题: ${task.issues_count} (${requestDuration}ms)`,
+                        `✓ 狀態: ${task.status} | 檔案: ${task.scanned_files}/${task.total_files} | 問題: ${task.issues_count} (${requestDuration}ms)`,
                         "success"
                     );
                 }
 
-                // 更新上次状态
+                // 更新上次狀態
                 if (statusChanged) {
                     lastStatus = task.status;
                 }
 
-                // 检查任务状态
+                // 檢查任務狀態
                 if (task.status === "pending") {
-                    // 静默跳过 pending 状态，不显示任何日志
+                    // 靜默跳過 pending 狀態，不顯示任何日誌
                 } else if (task.status === "running") {
-                    // 首次进入运行状态
-                    if (statusChanged && logs.filter(l => l.message.includes("开始扫描")).length === 0) {
-                        addLog("🔍 开始扫描代码文件...", "info");
+                    // 首次進入執行狀態
+                    if (statusChanged && logs.filter(l => l.message.includes("開始掃描")).length === 0) {
+                        addLog("🔍 開始掃描程式碼檔案...", "info");
                         if (task.project) {
-                            addLog(`📁 项目: ${task.project.name}`, "info");
+                            addLog(`📁 專案: ${task.project.name}`, "info");
                             if (task.branch_name) {
                                 addLog(`🌿 分支: ${task.branch_name}`, "info");
                             }
                         }
                     }
 
-                    // 显示进度更新（仅在有变化时）
+                    // 顯示進度更新（僅在有變化時）
                     if (filesChanged && task.scanned_files > lastScannedFiles) {
                         const progress = calculateTaskProgress(task.scanned_files, task.total_files);
                         const filesProcessed = task.scanned_files - lastScannedFiles;
                         addLog(
-                            `📊 扫描进度: ${task.scanned_files || 0}/${task.total_files || 0} 文件 (${progress}%) [+${filesProcessed}]`,
+                            `📊 掃描進度: ${task.scanned_files || 0}/${task.total_files || 0} 檔案 (${progress}%) [+${filesProcessed}]`,
                             "info"
                         );
                         lastScannedFiles = task.scanned_files;
                     }
 
-                    // 显示问题发现（仅在有变化时）
+                    // 顯示問題發現（僅在有變化時）
                     if (issuesChanged && task.issues_count > lastIssuesCount) {
                         const newIssues = task.issues_count - lastIssuesCount;
-                        addLog(`⚠️  发现 ${newIssues} 个新问题 (总计: ${task.issues_count})`, "warning");
+                        addLog(`⚠️  發現 ${newIssues} 個新問題 (總計: ${task.issues_count})`, "warning");
                         lastIssuesCount = task.issues_count;
                     }
 
-                    // 显示代码行数（仅在有变化时）
+                    // 顯示程式碼行數（僅在有變化時）
                     if (linesChanged && task.total_lines > lastTotalLines) {
                         const newLines = task.total_lines - lastTotalLines;
-                        addLog(`📝 已分析 ${task.total_lines.toLocaleString()} 行代码 [+${newLines.toLocaleString()}]`, "info");
+                        addLog(`📝 已分析 ${task.total_lines.toLocaleString()} 行程式碼 [+${newLines.toLocaleString()}]`, "info");
                         lastTotalLines = task.total_lines;
                     }
                 } else if (task.status === "completed") {
-                    // 任务完成
+                    // 任務完成
                     if (!isCompleted) {
                         addLog("", "info"); // 空行分隔
-                        addLog("✅ 代码扫描完成", "success");
+                        addLog("✅ 程式碼掃描完成", "success");
                         addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "info");
-                        addLog(`📊 总计扫描: ${task.total_files} 个文件`, "success");
-                        addLog(`📝 总计分析: ${task.total_lines.toLocaleString()} 行代码`, "success");
-                        addLog(`⚠️  发现问题: ${task.issues_count} 个`, task.issues_count > 0 ? "warning" : "success");
+                        addLog(`📊 總計掃描: ${task.total_files} 個檔案`, "success");
+                        addLog(`📝 總計分析: ${task.total_lines.toLocaleString()} 行程式碼`, "success");
+                        addLog(`⚠️  發現問題: ${task.issues_count} 個`, task.issues_count > 0 ? "warning" : "success");
 
-                        // 解析问题类型分布
+                        // 解析問題型別分佈
                         if (task.issues_count > 0) {
                             try {
                                 const { api: apiImport } = await import("@/shared/config/database");
@@ -243,31 +243,31 @@ export default function TerminalProgressDialog({
                                 };
 
                                 if (severityCounts.critical > 0) {
-                                    addLog(`  🔴 严重: ${severityCounts.critical} 个`, "error");
+                                    addLog(`  🔴 嚴重: ${severityCounts.critical} 個`, "error");
                                 }
                                 if (severityCounts.high > 0) {
-                                    addLog(`  🟠 高: ${severityCounts.high} 个`, "warning");
+                                    addLog(`  🟠 高: ${severityCounts.high} 個`, "warning");
                                 }
                                 if (severityCounts.medium > 0) {
-                                    addLog(`  🟡 中等: ${severityCounts.medium} 个`, "warning");
+                                    addLog(`  🟡 中等: ${severityCounts.medium} 個`, "warning");
                                 }
                                 if (severityCounts.low > 0) {
-                                    addLog(`  🟢 低: ${severityCounts.low} 个`, "info");
+                                    addLog(`  🟢 低: ${severityCounts.low} 個`, "info");
                                 }
                             } catch (e) {
-                                // 静默处理错误
+                                // 靜默處理錯誤
                             }
                         }
 
-                        addLog(`⭐ 质量评分: ${task.quality_score.toFixed(1)}/100`, "success");
+                        addLog(`⭐ 質量評分: ${task.quality_score.toFixed(1)}/100`, "success");
                         addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "info");
-                        addLog("🎉 审计任务已完成！", "success");
+                        addLog("🎉 審計任務已完成！", "success");
 
                         if (task.completed_at) {
                             const startTime = new Date(task.created_at).getTime();
                             const endTime = new Date(task.completed_at).getTime();
                             const duration = Math.round((endTime - startTime) / 1000);
-                            addLog(`⏱️  总耗时: ${duration} 秒`, "info");
+                            addLog(`⏱️  總耗時: ${duration} 秒`, "info");
                         }
 
                         setIsCompleted(true);
@@ -277,17 +277,17 @@ export default function TerminalProgressDialog({
                         }
                     }
                 } else if (task.status === "cancelled") {
-                    // 任务被取消
+                    // 任務被取消
                     if (!isCancelled) {
                         addLog("", "info"); // 空行分隔
-                        addLog("🛑 任务已被用户取消", "warning");
+                        addLog("🛑 任務已被使用者取消", "warning");
                         addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "warning");
-                        addLog(`📊 完成统计:`, "info");
-                        addLog(`  • 已分析文件: ${task.scanned_files}/${task.total_files}`, "info");
-                        addLog(`  • 发现问题: ${task.issues_count} 个`, "info");
-                        addLog(`  • 代码行数: ${task.total_lines.toLocaleString()} 行`, "info");
+                        addLog(`📊 完成統計:`, "info");
+                        addLog(`  • 已分析檔案: ${task.scanned_files}/${task.total_files}`, "info");
+                        addLog(`  • 發現問題: ${task.issues_count} 個`, "info");
+                        addLog(`  • 程式碼行數: ${task.total_lines.toLocaleString()} 行`, "info");
                         addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "warning");
-                        addLog("✓ 已分析的结果已保存到数据库", "success");
+                        addLog("✓ 已分析的結果已儲存到資料庫", "success");
 
                         setIsCancelled(true);
                         if (pollIntervalRef.current) {
@@ -296,31 +296,31 @@ export default function TerminalProgressDialog({
                         }
                     }
                 } else if (task.status === "failed") {
-                    // 任务失败
+                    // 任務失敗
                     if (!isFailed) {
                         addLog("", "info"); // 空行分隔
-                        addLog("❌ 审计任务执行失败", "error");
+                        addLog("❌ 審計任務執行失敗", "error");
                         addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "error");
 
-                        // 尝试从日志系统获取具体错误信息
+                        // 嘗試從日誌系統獲取具體錯誤資訊
                         try {
                             const { logger } = await import("@/shared/utils/logger");
                             const recentLogs = logger.getLogs({
-                                startTime: Date.now() - 60000, // 最近1分钟
+                                startTime: Date.now() - 60000, // 最近1分鐘
                             });
 
-                            // 查找与当前任务相关的错误
+                            // 查詢與當前任務相關的錯誤
                             const taskErrors = recentLogs
                                 .filter(log =>
                                     log.level === 'ERROR' &&
                                     (log.message.includes(taskId) ||
-                                        log.message.includes('审计') ||
+                                        log.message.includes('審計') ||
                                         log.message.includes('API'))
                                 )
-                                .slice(-3); // 最近3条错误
+                                .slice(-3); // 最近3條錯誤
 
                             if (taskErrors.length > 0) {
-                                addLog("具体错误信息:", "error");
+                                addLog("具體錯誤資訊:", "error");
                                 taskErrors.forEach(log => {
                                     addLog(`  • ${log.message}`, "error");
                                     if (log.data?.error) {
@@ -331,25 +331,25 @@ export default function TerminalProgressDialog({
                                     }
                                 });
                             } else {
-                                // 如果没有找到具体错误，显示常见原因
+                                // 如果沒有找到具體錯誤，顯示常見原因
                                 addLog("可能的原因:", "error");
-                                addLog("  • 网络连接问题", "error");
-                                addLog("  • 仓库访问权限不足（私有仓库需配置 Token）", "error");
+                                addLog("  • 網路連線問題", "error");
+                                addLog("  • 倉庫訪問許可權不足（私有倉庫需配置 Token）", "error");
                                 addLog("  • GitHub/GitLab API 限流", "error");
-                                addLog("  • LLM API 配置错误或额度不足", "error");
+                                addLog("  • LLM API 配置錯誤或額度不足", "error");
                             }
                         } catch (e) {
-                            // 如果获取日志失败，显示常见原因
+                            // 如果獲取日誌失敗，顯示常見原因
                             addLog("可能的原因:", "error");
-                            addLog("  • 网络连接问题", "error");
-                            addLog("  • 仓库访问权限不足（私有仓库需配置 Token）", "error");
+                            addLog("  • 網路連線問題", "error");
+                            addLog("  • 倉庫訪問許可權不足（私有倉庫需配置 Token）", "error");
                             addLog("  • GitHub/GitLab API 限流", "error");
-                            addLog("  • LLM API 配置错误或额度不足", "error");
+                            addLog("  • LLM API 配置錯誤或額度不足", "error");
                         }
 
                         addLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "error");
-                        addLog("💡 建议: 检查系统配置和网络连接后重试", "warning");
-                        addLog("📋 查看完整日志: 导航栏 -> 系统日志", "warning");
+                        addLog("💡 建議: 檢查系統配置和網路連線後重試", "warning");
+                        addLog("📋 檢視完整日誌: 導航欄 -> 系統日誌", "warning");
 
                         setIsFailed(true);
                         if (pollIntervalRef.current) {
@@ -359,18 +359,18 @@ export default function TerminalProgressDialog({
                     }
                 }
             } catch (error: any) {
-                addLog(`❌ ${error.message || "未知错误"}`, "error");
-                // 不中断轮询，继续尝试
+                addLog(`❌ ${error.message || "未知錯誤"}`, "error");
+                // 不中斷輪詢，繼續嘗試
             }
         };
 
-        // 立即执行一次
+        // 立即執行一次
         pollTask();
 
-        // 设置定时轮询（每2秒）
+        // 設定定時輪詢（每2秒）
         pollIntervalRef.current = window.setInterval(pollTask, 2000);
 
-        // 清理函数
+        // 清理函式
         return () => {
             if (pollIntervalRef.current) {
                 clearInterval(pollIntervalRef.current);
@@ -379,7 +379,7 @@ export default function TerminalProgressDialog({
         };
     }, [open, taskId, taskType]);
 
-    // 获取日志颜色 - 使用优雅的深红色主题
+    // 獲取日誌顏色 - 使用優雅的深紅色主題
     const getLogColor = (type: LogEntry["type"]) => {
         switch (type) {
             case "success":
@@ -393,7 +393,7 @@ export default function TerminalProgressDialog({
         }
     };
 
-    // 获取状态图标
+    // 獲取狀態圖示
     const getStatusIcon = () => {
         if (isFailed) {
             return <XCircle className="w-5 h-5 text-rose-400" />;
@@ -423,19 +423,19 @@ export default function TerminalProgressDialog({
                     onPointerDownOutside={(e) => e.preventDefault()}
                     onInteractOutside={(e) => e.preventDefault()}
                 >
-                    {/* 无障碍访问标题 */}
+                    {/* 無障礙訪問標題 */}
                     <VisuallyHidden.Root>
-                        <DialogPrimitive.Title>审计进度监控</DialogPrimitive.Title>
+                        <DialogPrimitive.Title>審計進度監控</DialogPrimitive.Title>
                         <DialogPrimitive.Description>
-                            实时显示代码审计任务的执行进度和详细信息
+                            實時顯示程式碼審計任務的執行進度和詳細資訊
                         </DialogPrimitive.Description>
                     </VisuallyHidden.Root>
 
-                    {/* 终端头部 */}
+                    {/* 終端頭部 */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-red-950/50 to-gray-900/80 border-b border-red-900/30 backdrop-blur-sm">
                         <div className="flex items-center space-x-3">
                             <Terminal className="w-5 h-5 text-rose-400" />
-                            <span className="text-sm font-medium text-gray-100">审计进度监控</span>
+                            <span className="text-sm font-medium text-gray-100">審計進度監控</span>
                             {getStatusIcon()}
                         </div>
                         <div className="flex items-center space-x-2">
@@ -444,13 +444,13 @@ export default function TerminalProgressDialog({
                             <button
                                 className="w-3 h-3 rounded-full bg-rose-500 hover:bg-rose-600 cursor-pointer transition-colors focus:outline-none"
                                 onClick={() => onOpenChange(false)}
-                                title="关闭"
-                                aria-label="关闭"
+                                title="關閉"
+                                aria-label="關閉"
                             />
                         </div>
                     </div>
 
-                    {/* 终端内容 */}
+                    {/* 終端內容 */}
                     <div className="p-6 bg-gradient-to-b from-gray-900/95 to-gray-950/95 overflow-y-auto h-[calc(100%-120px)] font-mono text-sm backdrop-blur-sm">
                         <div className="space-y-2">
                             {logs.map((log, index) => (
@@ -464,7 +464,7 @@ export default function TerminalProgressDialog({
                                 </div>
                             ))}
 
-                            {/* 光标旋转闪烁效果 */}
+                            {/* 游標旋轉閃爍效果 */}
                             {!isCompleted && !isFailed && (
                                 <div className="flex items-center space-x-2 mt-4">
                                     <span className="text-rose-800/70 text-xs w-20">[{currentTime}]</span>
@@ -472,7 +472,7 @@ export default function TerminalProgressDialog({
                                 </div>
                             )}
 
-                            {/* 添加自定义动画 */}
+                            {/* 新增自定義動畫 */}
                             <style>{`
                                 @keyframes spinner {
                                     0% {
@@ -525,14 +525,14 @@ export default function TerminalProgressDialog({
                     <div className="px-4 py-3 bg-gradient-to-r from-red-950/50 to-gray-900/80 border-t border-red-900/30 backdrop-blur-sm">
                         <div className="flex items-center justify-between text-xs">
                             <span className="text-gray-300">
-                                {isCancelled ? "🛑 任务已取消，已分析的结果已保存" :
-                                    isCompleted ? "✅ 任务已完成，可以关闭此窗口" :
-                                        isFailed ? "❌ 任务失败，请检查配置后重试" :
-                                            "⏳ 审计进行中，请勿关闭窗口，过程可能较慢，请耐心等待......"}
+                                {isCancelled ? "🛑 任務已取消，已分析的結果已儲存" :
+                                    isCompleted ? "✅ 任務已完成，可以關閉此視窗" :
+                                        isFailed ? "❌ 任務失敗，請檢查配置後重試" :
+                                            "⏳ 審計進行中，請勿關閉視窗，過程可能較慢，請耐心等待......"}
                             </span>
 
                             <div className="flex items-center space-x-2">
-                                {/* 运行中显示取消按钮 */}
+                                {/* 執行中顯示取消按鈕 */}
                                 {!isCompleted && !isFailed && !isCancelled && (
                                     <Button
                                         size="sm"
@@ -541,11 +541,11 @@ export default function TerminalProgressDialog({
                                         className="h-7 text-xs bg-gray-800 border-red-600 text-red-400 hover:bg-red-900 hover:text-red-200"
                                     >
                                         <XIcon className="w-3 h-3 mr-1" />
-                                        取消任务
+                                        取消任務
                                     </Button>
                                 )}
 
-                                {/* 失败时显示查看日志按钮 */}
+                                {/* 失敗時顯示檢視日誌按鈕 */}
                                 {isFailed && (
                                     <button
                                         onClick={() => {
@@ -553,17 +553,17 @@ export default function TerminalProgressDialog({
                                         }}
                                         className="px-4 py-1.5 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white rounded text-xs transition-all shadow-lg shadow-yellow-900/50 font-medium"
                                     >
-                                        📋 查看日志
+                                        📋 檢視日誌
                                     </button>
                                 )}
 
-                                {/* 已完成/失败/取消显示关闭按钮 */}
+                                {/* 已完成/失敗/取消顯示關閉按鈕 */}
                                 {(isCompleted || isFailed || isCancelled) && (
                                     <button
                                         onClick={() => onOpenChange(false)}
                                         className="px-4 py-1.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded text-xs transition-all shadow-lg shadow-rose-900/50 font-medium"
                                     >
-                                        关闭
+                                        關閉
                                     </button>
                                 )}
                             </div>

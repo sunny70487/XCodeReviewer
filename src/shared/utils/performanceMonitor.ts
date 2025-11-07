@@ -1,5 +1,5 @@
 /**
- * 性能监控模块
+ * 效能監控模組
  */
 
 import { logger } from './logger';
@@ -8,14 +8,14 @@ class PerformanceMonitor {
   private marks = new Map<string, number>();
 
   /**
-   * 开始计时
+   * 開始計時
    */
   start(label: string) {
     this.marks.set(label, performance.now());
   }
 
   /**
-   * 结束计时并记录
+   * 結束計時並記錄
    */
   end(label: string, logToConsole = false) {
     const startTime = this.marks.get(label);
@@ -37,7 +37,7 @@ class PerformanceMonitor {
   }
 
   /**
-   * 测量函数执行时间
+   * 測量函式執行時間
    */
   async measure<T>(label: string, fn: () => T | Promise<T>): Promise<T> {
     this.start(label);
@@ -52,39 +52,39 @@ class PerformanceMonitor {
   }
 
   /**
-   * 监控页面性能指标 - 禁用自动监控
+   * 監控頁面效能指標 - 禁用自動監控
    */
   monitorPagePerformance() {
-    // 不自动记录页面性能，只在需要时手动调用
+    // 不自動記錄頁面效能，只在需要時手動呼叫
     return;
   }
 
   /**
-   * 监控资源加载 - 禁用
+   * 監控資源載入 - 禁用
    */
   monitorResourceLoading() {
-    // 不记录资源加载
+    // 不記錄資源載入
     return;
   }
 
   /**
-   * 监控内存使用 - 禁用
+   * 監控記憶體使用 - 禁用
    */
   monitorMemory() {
-    // 不记录内存使用
+    // 不記錄記憶體使用
     return;
   }
 
   /**
-   * 监控长任务 - 禁用
+   * 監控長任務 - 禁用
    */
   monitorLongTasks() {
-    // 不记录长任务
+    // 不記錄長任務
     return;
   }
 
   /**
-   * 初始化所有监控
+   * 初始化所有監控
    */
   initAll() {
     this.monitorPagePerformance();

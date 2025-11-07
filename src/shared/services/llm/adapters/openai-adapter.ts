@@ -1,5 +1,5 @@
 /**
- * OpenAI适配器 (支持GPT系列)
+ * OpenAI介面卡 (支援GPT系列)
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,27 +21,27 @@ export class OpenAIAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, 'OpenAI API调用失败');
+      this.handleError(error, 'OpenAI API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // 构建请求头
+    // 構建請求頭
     const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.config.apiKey}`,
     };
 
-    // 合并自定义请求头
+    // 合併自定義請求頭
     if (this.config.customHeaders) {
       Object.assign(headers, this.config.customHeaders);
     }
 
-    // 检测是否为推理模型（GPT-5 或 o1 系列，但排除 gpt-5-chat 等非推理模型）
+    // 檢測是否為推理模型（GPT-5 或 o1 系列，但排除 gpt-5-chat 等非推理模型）
     const modelName = this.config.model.toLowerCase();
     const isReasoningModel = (modelName.includes('o1') || modelName.includes('o3')) || 
                              (modelName.includes('gpt-5') && !modelName.includes('chat'));
 
-    // 构建请求体
+    // 構建請求體
     const requestBody: any = {
       model: this.config.model,
       messages: request.messages,
@@ -76,7 +76,7 @@ export class OpenAIAdapter extends BaseLLMAdapter {
     const choice = data.choices?.[0];
 
     if (!choice) {
-      throw new Error('API响应格式异常: 缺少choices字段');
+      throw new Error('API響應格式異常: 缺少choices欄位');
     }
 
     return {

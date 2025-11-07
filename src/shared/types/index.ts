@@ -1,4 +1,4 @@
-// 通用选项接口
+// 通用選項介面
 export interface Option {
   label: string;
   value: string;
@@ -6,7 +6,7 @@ export interface Option {
   withCount?: boolean;
 }
 
-// 用户相关类型
+// 使用者相關型別
 export interface Profile {
   id: string;
   phone?: string;
@@ -20,7 +20,7 @@ export interface Profile {
   updated_at: string;
 }
 
-// 项目相关类型
+// 專案相關型別
 export interface Project {
   id: string;
   name: string;
@@ -48,7 +48,7 @@ export interface ProjectMember {
   project?: Project;
 }
 
-// 审计相关类型
+// 審計相關型別
 export interface AuditTask {
   id: string;
   project_id: string;
@@ -104,7 +104,7 @@ export interface InstantAnalysis {
   user?: Profile;
 }
 
-// 表单相关类型
+// 表單相關型別
 export interface CreateProjectForm {
   name: string;
   description?: string;
@@ -132,7 +132,7 @@ export interface InstantAnalysisForm {
   code_content: string;
 }
 
-// 统计相关类型
+// 統計相關型別
 export interface ProjectStats {
   total_projects: number;
   active_projects: number;
@@ -153,7 +153,7 @@ export interface IssueStats {
   }>;
 }
 
-// API响应类型
+// API響應型別
 export interface ApiResponse<T> {
   data: T;
   message?: string;
@@ -168,7 +168,7 @@ export interface PaginatedResponse<T> {
   has_more: boolean;
 }
 
-// 代码分析结果类型
+// 程式碼分析結果型別
 export interface CodeAnalysisResult {
   issues: Array<{
     type: string;
@@ -203,7 +203,7 @@ export interface CodeAnalysisResult {
   };
 }
 
-// GitHub/GitLab集成类型
+// GitHub/GitLab整合型別
 export interface Repository {
   id: string;
   name: string;
@@ -227,7 +227,7 @@ export interface Branch {
   protected: boolean;
 }
 
-// 通知类型
+// 通知型別
 export interface Notification {
   id: string;
   type: 'task_completed' | 'task_failed' | 'new_issue' | 'issue_resolved';
@@ -238,7 +238,7 @@ export interface Notification {
   created_at: string;
 }
 
-// 系统配置类型
+// 系統配置型別
 export interface SystemConfig {
   max_file_size: number;
   supported_languages: string[];

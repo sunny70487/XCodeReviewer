@@ -1,5 +1,5 @@
 /**
- * 字节豆包适配器
+ * 位元組豆包介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,12 +21,12 @@ export class DoubaoAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, '豆包API调用失败');
+      this.handleError(error, '豆包API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // 豆包API兼容OpenAI格式
+    // 豆包API相容OpenAI格式
     const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.config.apiKey}`,
     };
@@ -56,7 +56,7 @@ export class DoubaoAdapter extends BaseLLMAdapter {
     const choice = data.choices?.[0];
 
     if (!choice) {
-      throw new Error('API响应格式异常: 缺少choices字段');
+      throw new Error('API響應格式異常: 缺少choices欄位');
     }
 
     return {

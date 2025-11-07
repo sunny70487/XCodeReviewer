@@ -1,12 +1,12 @@
 /**
- * 视频播放器组件
+ * 影片播放器元件
  * 
- * 基于video-react封装的视频播放器，支持自定义封面、自动播放、静音等功能
+ * 基於video-react封裝的影片播放器，支援自定義封面、自動播放、靜音等功能
  * 
  * 使用示例：
  * <Video
- *   src="" // 视频资源地址，默认为空字符串
- *   poster="https://internal-amis-res.cdn.bcebos.com/images/2019-12/1577157239810/da6376bf988c.png" // 视频封面图
+ *   src="" // 影片資源地址，預設為空字串
+ *   poster="https://internal-amis-res.cdn.bcebos.com/images/2019-12/1577157239810/da6376bf988c.png" // 影片封面圖
  * />
  */
 
@@ -24,14 +24,14 @@ import {
 import 'video-react/dist/video-react.css';
 
 interface VideoProps {
-    /** 视频资源地址 */
+    /** 影片資源地址 */
 src: string;
-poster?: string; /** 视频封面图地址 */
-className?: string; /** 自定义类名 */
-autoPlay?: boolean; /** 是否自动播放，默认为false */
-muted?: boolean; /** 是否静音，默认为false */
-controls?: boolean; /** 是否显示控制条，默认为true */
-aspectRatio?: string | 'auto' | '16:9' | '4:3'; /** 视频宽高比，默认为'auto' */
+poster?: string; /** 影片封面圖地址 */
+className?: string; /** 自定義類名 */
+autoPlay?: boolean; /** 是否自動播放，預設為false */
+muted?: boolean; /** 是否靜音，預設為false */
+controls?: boolean; /** 是否顯示控制條，預設為true */
+aspectRatio?: string | 'auto' | '16:9' | '4:3'; /** 影片寬高比，預設為'auto' */
 }
 
 export default function Video({

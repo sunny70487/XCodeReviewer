@@ -68,7 +68,7 @@ export default function Projects() {
     programming_languages: []
   });
 
-  // 将小写语言名转换为显示格式
+  // 將小寫語言名轉換為顯示格式
   const formatLanguageName = (lang: string): string => {
     const nameMap: Record<string, string> = {
       'javascript': 'JavaScript',
@@ -100,7 +100,7 @@ export default function Projects() {
       setProjects(data);
     } catch (error) {
       console.error('Failed to load projects:', error);
-      toast.error("加载项目失败");
+      toast.error("載入專案失敗");
     } finally {
       setLoading(false);
     }
@@ -108,39 +108,39 @@ export default function Projects() {
 
   const handleCreateProject = async () => {
     if (!createForm.name.trim()) {
-      toast.error("请输入项目名称");
+      toast.error("請輸入專案名稱");
       return;
     }
 
     try {
       await api.createProject({
         ...createForm,
-        // 无登录场景下不传 owner_id，由后端置为 null
+        // 無登入場景下不傳 owner_id，由後端置為 null
       } as any);
 
-      // 记录用户操作
+      // 記錄使用者操作
       import('@/shared/utils/logger').then(({ logger, LogCategory }) => {
-        logger.logUserAction('创建项目', {
+        logger.logUserAction('建立專案', {
           projectName: createForm.name,
           repositoryType: createForm.repository_type,
           languages: createForm.programming_languages,
         });
       });
 
-      toast.success("项目创建成功");
+      toast.success("專案建立成功");
       setShowCreateDialog(false);
       resetCreateForm();
       loadProjects();
     } catch (error) {
       console.error('Failed to create project:', error);
       
-      // 记录错误并显示详细信息
+      // 記錄錯誤並顯示詳細資訊
       import('@/shared/utils/errorHandler').then(({ handleError }) => {
-        handleError(error, '创建项目失败');
+        handleError(error, '建立專案失敗');
       });
       
-      const errorMessage = error instanceof Error ? error.message : '未知错误';
-      toast.error(`创建项目失败: ${errorMessage}`);
+      const errorMessage = error instanceof Error ? error.message : '未知錯誤';
+      toast.error(`建立專案失敗: ${errorMessage}`);
     }
   };
 
@@ -159,16 +159,16 @@ export default function Projects() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // 验证文件
+    // 驗證檔案
     const validation = validateZipFile(file);
     if (!validation.valid) {
       toast.error(validation.error);
       return;
     }
 
-    // 检查是否有项目名称
+    // 檢查是否有專案名稱
     if (!createForm.name.trim()) {
-      toast.error("请先输入项目名称");
+      toast.error("請先輸入專案名稱");
       return;
     }
 
@@ -176,7 +176,7 @@ export default function Projects() {
       setUploading(true);
       setUploadProgress(0);
 
-      // 模拟上传进度
+      // 模擬上傳進度
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
           if (prev >= 100) {
@@ -187,51 +187,51 @@ export default function Projects() {
         });
       }, 100);
 
-      // 创建项目
+      // 建立專案
       const project = await api.createProject({
         ...createForm,
         repository_type: "other"
       } as any);
 
-      // 保存ZIP文件到IndexedDB（使用项目ID作为key）
+      // 儲存ZIP檔案到IndexedDB（使用專案ID作為key）
       try {
         await saveZipFile(project.id, file);
       } catch (error) {
-        console.error('保存ZIP文件失败:', error);
+        console.error('儲存ZIP檔案失敗:', error);
       }
 
       clearInterval(progressInterval);
       setUploadProgress(100);
 
-      // 记录用户操作
+      // 記錄使用者操作
       import('@/shared/utils/logger').then(({ logger, LogCategory }) => {
-        logger.logUserAction('上传ZIP文件创建项目', {
+        logger.logUserAction('上傳ZIP檔案建立專案', {
           projectName: project.name,
           fileName: file.name,
           fileSize: file.size,
         });
       });
 
-      // 关闭创建对话框
+      // 關閉建立對話方塊
       setShowCreateDialog(false);
       resetCreateForm();
       loadProjects();
 
-      toast.success(`项目 "${project.name}" 已创建`, {
-        description: 'ZIP文件已保存，您可以启动代码审计',
+      toast.success(`專案 "${project.name}" 已建立`, {
+        description: 'ZIP檔案已儲存，您可以啟動程式碼審計',
         duration: 4000
       });
 
     } catch (error: any) {
       console.error('Upload failed:', error);
       
-      // 记录错误并显示详细信息
+      // 記錄錯誤並顯示詳細資訊
       import('@/shared/utils/errorHandler').then(({ handleError }) => {
-        handleError(error, '上传ZIP文件失败');
+        handleError(error, '上傳ZIP檔案失敗');
       });
       
-      const errorMessage = error?.message || '未知错误';
-      toast.error(`上传失败: ${errorMessage}`);
+      const errorMessage = error?.message || '未知錯誤';
+      toast.error(`上傳失敗: ${errorMessage}`);
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -280,19 +280,19 @@ export default function Projects() {
     if (!projectToEdit) return;
 
     if (!editForm.name.trim()) {
-      toast.error("项目名称不能为空");
+      toast.error("專案名稱不能為空");
       return;
     }
 
     try {
       await api.updateProject(projectToEdit.id, editForm);
-      toast.success(`项目 "${editForm.name}" 已更新`);
+      toast.success(`專案 "${editForm.name}" 已更新`);
       setShowEditDialog(false);
       setProjectToEdit(null);
       loadProjects();
     } catch (error) {
       console.error('Failed to update project:', error);
-      toast.error("更新项目失败");
+      toast.error("更新專案失敗");
     }
   };
 
@@ -316,16 +316,16 @@ export default function Projects() {
     try {
       await api.deleteProject(projectToDelete.id);
       
-      // 记录用户操作
+      // 記錄使用者操作
       import('@/shared/utils/logger').then(({ logger, LogCategory }) => {
-        logger.logUserAction('删除项目', {
+        logger.logUserAction('刪除專案', {
           projectId: projectToDelete.id,
           projectName: projectToDelete.name,
         });
       });
       
-      toast.success(`项目 "${projectToDelete.name}" 已移到回收站`, {
-        description: '您可以在回收站中恢复此项目',
+      toast.success(`專案 "${projectToDelete.name}" 已移到回收站`, {
+        description: '您可以在回收站中恢復此專案',
         duration: 4000
       });
       setShowDeleteDialog(false);
@@ -334,22 +334,22 @@ export default function Projects() {
     } catch (error) {
       console.error('Failed to delete project:', error);
       
-      // 记录错误并显示详细信息
+      // 記錄錯誤並顯示詳細資訊
       import('@/shared/utils/errorHandler').then(({ handleError }) => {
-        handleError(error, '删除项目失败');
+        handleError(error, '刪除專案失敗');
       });
       
-      const errorMessage = error instanceof Error ? error.message : '未知错误';
-      toast.error(`删除项目失败: ${errorMessage}`);
+      const errorMessage = error instanceof Error ? error.message : '未知錯誤';
+      toast.error(`刪除專案失敗: ${errorMessage}`);
     }
   };
 
   const handleTaskCreated = () => {
-    toast.success("审计任务已创建", {
-      description: '因为网络和代码文件大小等因素，审计时长通常至少需要1分钟，请耐心等待...',
+    toast.success("審計任務已建立", {
+      description: '因為網路和程式碼檔案大小等因素，審計時長通常至少需要1分鐘，請耐心等待...',
       duration: 5000
     });
-    // 任务创建后会自动跳转到项目详情页面
+    // 任務建立後會自動跳轉到專案詳情頁面
   };
 
   if (loading) {
@@ -362,44 +362,44 @@ export default function Projects() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* 页面标题和操作 */}
+      {/* 頁面標題和操作 */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="page-title">项目管理</h1>
-          <p className="page-subtitle">管理您的代码项目，配置审计规则和查看分析结果</p>
+          <h1 className="page-title">專案管理</h1>
+          <p className="page-subtitle">管理您的程式碼專案，配置審計規則和檢視分析結果</p>
         </div>
 
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              新建项目
+              新建專案
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>创建新项目</DialogTitle>
+              <DialogTitle>建立新專案</DialogTitle>
             </DialogHeader>
 
             <Tabs defaultValue="repository" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="repository">Git 仓库</TabsTrigger>
-                <TabsTrigger value="upload">上传代码</TabsTrigger>
+                <TabsTrigger value="repository">Git 倉庫</TabsTrigger>
+                <TabsTrigger value="upload">上傳程式碼</TabsTrigger>
               </TabsList>
 
               <TabsContent value="repository" className="space-y-4 mt-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">项目名称 *</Label>
+                    <Label htmlFor="name">專案名稱 *</Label>
                     <Input
                       id="name"
                       value={createForm.name}
                       onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                      placeholder="输入项目名称"
+                      placeholder="輸入專案名稱"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="repository_type">仓库类型</Label>
+                    <Label htmlFor="repository_type">倉庫型別</Label>
                     <Select
                       value={createForm.repository_type}
                       onValueChange={(value: any) => setCreateForm({ ...createForm, repository_type: value })}
@@ -417,19 +417,19 @@ export default function Projects() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">项目描述</Label>
+                  <Label htmlFor="description">專案描述</Label>
                   <Textarea
                     id="description"
                     value={createForm.description}
                     onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
-                    placeholder="简要描述项目内容和目标"
+                    placeholder="簡要描述專案內容和目標"
                     rows={3}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="repository_url">仓库地址</Label>
+                    <Label htmlFor="repository_url">倉庫地址</Label>
                     <Input
                       id="repository_url"
                       value={createForm.repository_url}
@@ -438,7 +438,7 @@ export default function Projects() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="default_branch">默认分支</Label>
+                    <Label htmlFor="default_branch">預設分支</Label>
                     <Input
                       id="default_branch"
                       value={createForm.default_branch}
@@ -449,7 +449,7 @@ export default function Projects() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>编程语言</Label>
+                  <Label>程式語言</Label>
                   <div className="grid grid-cols-3 gap-2">
                     {supportedLanguages.map((lang) => (
                       <label key={lang} className="flex items-center space-x-2">
@@ -482,35 +482,35 @@ export default function Projects() {
                     取消
                   </Button>
                   <Button onClick={handleCreateProject}>
-                    创建项目
+                    建立專案
                   </Button>
                 </div>
               </TabsContent>
 
               <TabsContent value="upload" className="space-y-4 mt-6">
                 <div className="space-y-2">
-                  <Label htmlFor="upload-name">项目名称 *</Label>
+                  <Label htmlFor="upload-name">專案名稱 *</Label>
                   <Input
                     id="upload-name"
                     value={createForm.name}
                     onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                    placeholder="输入项目名称"
+                    placeholder="輸入專案名稱"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="upload-description">项目描述</Label>
+                  <Label htmlFor="upload-description">專案描述</Label>
                   <Textarea
                     id="upload-description"
                     value={createForm.description}
                     onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
-                    placeholder="简要描述项目内容和目标"
+                    placeholder="簡要描述專案內容和目標"
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>编程语言</Label>
+                  <Label>程式語言</Label>
                   <div className="grid grid-cols-3 gap-2">
                     {supportedLanguages.map((lang) => (
                       <label key={lang} className="flex items-center space-x-2">
@@ -538,14 +538,14 @@ export default function Projects() {
                   </div>
                 </div>
 
-                {/* 文件上传区域 */}
+                {/* 檔案上傳區域 */}
                 <div className="space-y-4">
-                  <Label>上传代码文件</Label>
+                  <Label>上傳程式碼檔案</Label>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
                     <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">上传 ZIP 文件</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">上傳 ZIP 檔案</h3>
                     <p className="text-sm text-gray-500 mb-4">
-                      支持 ZIP 格式，最大 100MB
+                      支援 ZIP 格式，最大 100MB
                     </p>
                     <input
                       ref={fileInputRef}
@@ -562,14 +562,14 @@ export default function Projects() {
                       disabled={uploading || !createForm.name.trim()}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      选择文件
+                      選擇檔案
                     </Button>
                   </div>
 
                   {uploading && (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span>上传并分析中...</span>
+                        <span>上傳並分析中...</span>
                         <span>{uploadProgress}%</span>
                       </div>
                       <Progress value={uploadProgress} />
@@ -580,12 +580,12 @@ export default function Projects() {
                     <div className="flex items-start space-x-3">
                       <AlertCircle className="w-5 h-5 text-primary mt-0.5" />
                       <div className="text-sm text-red-800">
-                        <p className="font-medium mb-1">上传说明：</p>
+                        <p className="font-medium mb-1">上傳說明：</p>
                         <ul className="space-y-1 text-xs">
-                          <li>• 请确保 ZIP 文件包含完整的项目代码</li>
-                          <li>• 系统会自动排除 node_modules、.git 等目录</li>
-                          <li>• ZIP 文件会保存，只需上传一次</li>
-                          <li>• 创建后可在项目详情页启动多次审计</li>
+                          <li>• 請確保 ZIP 檔案包含完整的專案程式碼</li>
+                          <li>• 系統會自動排除 node_modules、.git 等目錄</li>
+                          <li>• ZIP 檔案會儲存，只需上傳一次</li>
+                          <li>• 建立後可在專案詳情頁啟動多次審計</li>
                         </ul>
                       </div>
                     </div>
@@ -603,14 +603,14 @@ export default function Projects() {
         </Dialog>
       </div>
 
-      {/* 搜索和筛选 */}
+      {/* 搜尋和篩選 */}
       <Card>
         <CardContent className="p-4">
           <div className="flex items-center space-x-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="搜索项目名称或描述..."
+                placeholder="搜尋專案名稱或描述..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -618,13 +618,13 @@ export default function Projects() {
             </div>
             <Button variant="outline">
               <Settings className="w-4 h-4 mr-2" />
-              筛选
+              篩選
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* 项目列表 */}
+      {/* 專案列表 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
@@ -649,13 +649,13 @@ export default function Projects() {
                     </div>
                   </div>
                   <Badge variant={project.is_active ? "default" : "secondary"} className="flex-shrink-0">
-                    {project.is_active ? '活跃' : '暂停'}
+                    {project.is_active ? '活躍' : '暫停'}
                   </Badge>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                {/* 项目信息 */}
+                {/* 專案資訊 */}
                 <div className="space-y-3">
                   {project.repository_url && (
                     <div className="flex items-center text-sm text-gray-500">
@@ -684,7 +684,7 @@ export default function Projects() {
                   </div>
                 </div>
 
-                {/* 编程语言 */}
+                {/* 程式語言 */}
                 {project.programming_languages && (
                   <div className="flex flex-wrap gap-2">
                     {JSON.parse(project.programming_languages).slice(0, 4).map((lang: string) => (
@@ -705,7 +705,7 @@ export default function Projects() {
                   <Link to={`/projects/${project.id}`} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full btn-secondary">
                       <Code className="w-4 h-4 mr-2" />
-                      查看详情
+                      檢視詳情
                     </Button>
                   </Link>
                   <Button
@@ -714,7 +714,7 @@ export default function Projects() {
                     onClick={() => handleCreateTask(project.id)}
                   >
                     <Shield className="w-4 h-4 mr-2" />
-                    新建任务
+                    新建任務
                   </Button>
                   <Button
                     size="sm"
@@ -744,15 +744,15 @@ export default function Projects() {
                   <Code className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  {searchTerm ? '未找到匹配的项目' : '暂无项目'}
+                  {searchTerm ? '未找到匹配的專案' : '暫無專案'}
                 </h3>
                 <p className="text-gray-500 mb-6 max-w-md">
-                  {searchTerm ? '尝试调整搜索条件' : '创建您的第一个项目开始代码审计'}
+                  {searchTerm ? '嘗試調整搜尋條件' : '建立您的第一個專案開始程式碼審計'}
                 </p>
                 {!searchTerm && (
                   <Button onClick={() => setShowCreateDialog(true)} className="btn-primary">
                     <Plus className="w-4 h-4 mr-2" />
-                    创建项目
+                    建立專案
                   </Button>
                 )}
               </CardContent>
@@ -761,14 +761,14 @@ export default function Projects() {
         )}
       </div>
 
-      {/* 项目统计 */}
+      {/* 專案統計 */}
       {projects.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="stat-card">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="stat-label">总项目数</p>
+                  <p className="stat-label">總專案數</p>
                   <p className="stat-value text-xl">{projects.length}</p>
                 </div>
                 <div className="stat-icon from-primary to-accent">
@@ -782,7 +782,7 @@ export default function Projects() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="stat-label">活跃项目</p>
+                  <p className="stat-label">活躍專案</p>
                   <p className="stat-value text-xl">{projects.filter(p => p.is_active).length}</p>
                 </div>
                 <div className="stat-icon from-emerald-500 to-emerald-600">
@@ -822,7 +822,7 @@ export default function Projects() {
         </div>
       )}
 
-      {/* 创建任务对话框 */}
+      {/* 建立任務對話方塊 */}
       <CreateTaskDialog
         open={showCreateTaskDialog}
         onOpenChange={setShowCreateTaskDialog}
@@ -830,44 +830,44 @@ export default function Projects() {
         preselectedProjectId={selectedProjectForTask}
       />
 
-      {/* 编辑项目对话框 */}
+      {/* 編輯專案對話方塊 */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>编辑项目</DialogTitle>
+            <DialogTitle>編輯專案</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* 基本信息 */}
+            {/* 基本資訊 */}
             <div className="space-y-4">
               <div>
-                <Label htmlFor="edit-name">项目名称 *</Label>
+                <Label htmlFor="edit-name">專案名稱 *</Label>
                 <Input
                   id="edit-name"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  placeholder="输入项目名称"
+                  placeholder="輸入專案名稱"
                 />
               </div>
 
               <div>
-                <Label htmlFor="edit-description">项目描述</Label>
+                <Label htmlFor="edit-description">專案描述</Label>
                 <Textarea
                   id="edit-description"
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  placeholder="输入项目描述"
+                  placeholder="輸入專案描述"
                   rows={3}
                 />
               </div>
             </div>
 
-            {/* 仓库信息 */}
+            {/* 倉庫資訊 */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900">仓库信息</h3>
+              <h3 className="text-sm font-semibold text-gray-900">倉庫資訊</h3>
               
               <div>
-                <Label htmlFor="edit-repo-url">仓库地址</Label>
+                <Label htmlFor="edit-repo-url">倉庫地址</Label>
                 <Input
                   id="edit-repo-url"
                   value={editForm.repository_url}
@@ -878,7 +878,7 @@ export default function Projects() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="edit-repo-type">仓库类型</Label>
+                  <Label htmlFor="edit-repo-type">倉庫型別</Label>
                   <Select
                     value={editForm.repository_type}
                     onValueChange={(value: any) => setEditForm({ ...editForm, repository_type: value })}
@@ -895,7 +895,7 @@ export default function Projects() {
                 </div>
 
                 <div>
-                  <Label htmlFor="edit-branch">默认分支</Label>
+                  <Label htmlFor="edit-branch">預設分支</Label>
                   <Input
                     id="edit-branch"
                     value={editForm.default_branch}
@@ -906,9 +906,9 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* 编程语言 */}
+            {/* 程式語言 */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-gray-900">编程语言</h3>
+              <h3 className="text-sm font-semibold text-gray-900">程式語言</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {supportedLanguages.map((lang) => (
                   <div
@@ -943,28 +943,28 @@ export default function Projects() {
               取消
             </Button>
             <Button onClick={handleSaveEdit}>
-              保存修改
+              儲存修改
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* 删除确认对话框 */}
+      {/* 刪除確認對話方塊 */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>移到回收站</AlertDialogTitle>
             <AlertDialogDescription>
-              您确定要删除项目 <span className="font-semibold text-gray-900">"{projectToDelete?.name}"</span> 吗？
+              您確定要刪除專案 <span className="font-semibold text-gray-900">"{projectToDelete?.name}"</span> 嗎？
               <br />
               <br />
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 my-3">
-                <p className="text-blue-800 font-semibold mb-2">💡 温馨提示</p>
+                <p className="text-blue-800 font-semibold mb-2">💡 溫馨提示</p>
                 <ul className="list-disc list-inside text-blue-700 space-y-1 text-sm">
-                  <li>项目将被移到<span className="font-semibold">回收站</span>，不会立即删除</li>
-                  <li>您可以在回收站中随时恢复此项目</li>
-                  <li>相关的审计任务和报告将会保留</li>
-                  <li>如需永久删除，请在回收站中操作</li>
+                  <li>專案將被移到<span className="font-semibold">回收站</span>，不會立即刪除</li>
+                  <li>您可以在回收站中隨時恢復此專案</li>
+                  <li>相關的審計任務和報告將會保留</li>
+                  <li>如需永久刪除，請在回收站中操作</li>
                 </ul>
               </div>
             </AlertDialogDescription>

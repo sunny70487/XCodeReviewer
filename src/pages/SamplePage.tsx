@@ -1,5 +1,5 @@
 /**
- * 示例页面
+ * 示例頁面
  */
 
 import PageMeta from "@/components/layout/PageMeta";
@@ -7,9 +7,9 @@ import PageMeta from "@/components/layout/PageMeta";
 export default function SamplePage() {
   return (
     <>
-      <PageMeta title="首页" description="首页介绍" />
+      <PageMeta title="首頁" description="首頁介紹" />
       <div>
-        <h3>这是一个示例页面</h3>
+        <h3>這是一個示例頁面</h3>
       </div>
     </>
   );

@@ -23,8 +23,8 @@ export function AppWrapper({ children }: AppWrapperProps) {
 
 export default function PageMeta({
   title = "XCodeReviewer",
-  description = "基于AI的现代化代码质量分析和审查服务，提供全面的代码安全检测、性能分析和最佳实践建议。",
-  keywords = "代码审计,代码质量,AI分析,安全检测,性能优化,代码规范",
+  description = "基於AI的現代化程式碼質量分析和審查服務，提供全面的程式碼安全檢測、效能分析和最佳實踐建議。",
+  keywords = "程式碼審計,程式碼質量,AI分析,安全檢測,效能最佳化,程式碼規範",
   image = "/images/logo.png",
   url = window.location.href
 }: PageMetaProps) {
@@ -32,7 +32,7 @@ export default function PageMeta({
 
   return (
     <Helmet>
-      {/* 基本信息 */}
+      {/* 基本資訊 */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />

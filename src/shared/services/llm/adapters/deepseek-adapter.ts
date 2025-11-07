@@ -1,5 +1,5 @@
 /**
- * DeepSeek适配器
+ * DeepSeek介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,18 +21,18 @@ export class DeepSeekAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, 'DeepSeek API调用失败');
+      this.handleError(error, 'DeepSeek API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // DeepSeek API兼容OpenAI格式
-    // 构建请求头
+    // DeepSeek API相容OpenAI格式
+    // 構建請求頭
     const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.config.apiKey}`,
     };
 
-    // 合并自定义请求头
+    // 合併自定義請求頭
     if (this.config.customHeaders) {
       Object.assign(headers, this.config.customHeaders);
     }
@@ -63,7 +63,7 @@ export class DeepSeekAdapter extends BaseLLMAdapter {
     const choice = data.choices?.[0];
 
     if (!choice) {
-      throw new Error('API响应格式异常: 缺少choices字段');
+      throw new Error('API響應格式異常: 缺少choices欄位');
     }
 
     return {

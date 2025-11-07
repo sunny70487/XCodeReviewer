@@ -1,6 +1,6 @@
 /**
- * API拦截器
- * 自动记录所有API调用和响应
+ * API攔截器
+ * 自動記錄所有API呼叫和響應
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
@@ -16,10 +16,10 @@ interface RequestMetadata {
 const requestMetadataMap = new WeakMap<any, RequestMetadata>();
 
 /**
- * 设置Axios拦截器
+ * 設定Axios攔截器
  */
 export function setupAxiosInterceptors(instance: AxiosInstance) {
-  // 请求拦截器
+  // 請求攔截器
   instance.interceptors.request.use(
     (config) => {
       const metadata: RequestMetadata = {
@@ -48,7 +48,7 @@ export function setupAxiosInterceptors(instance: AxiosInstance) {
     }
   );
 
-  // 响应拦截器
+  // 響應攔截器
   instance.interceptors.response.use(
     (response) => {
       const metadata = requestMetadataMap.get(response.config);
@@ -67,7 +67,7 @@ export function setupAxiosInterceptors(instance: AxiosInstance) {
           }
         );
 
-        // 记录性能
+        // 記錄效能
         if (duration > 1000) {
           logger.warn(
             LogCategory.PERFORMANCE,
@@ -106,7 +106,7 @@ export function setupAxiosInterceptors(instance: AxiosInstance) {
 }
 
 /**
- * 创建带拦截器的Axios实例
+ * 建立帶攔截器的Axios例項
  */
 export function createApiClient(config?: AxiosRequestConfig): AxiosInstance {
   const instance = axios.create(config);
@@ -114,7 +114,7 @@ export function createApiClient(config?: AxiosRequestConfig): AxiosInstance {
 }
 
 /**
- * Fetch API包装器
+ * Fetch API包裝器
  */
 export async function fetchWithLogging(
   url: string,
@@ -172,7 +172,7 @@ export async function fetchWithLogging(
 }
 
 /**
- * 包装异步函数以自动记录错误
+ * 包裝非同步函式以自動記錄錯誤
  */
 export function withErrorLogging<T extends (...args: any[]) => Promise<any>>(
   fn: T,

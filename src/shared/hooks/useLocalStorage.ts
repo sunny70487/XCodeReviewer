@@ -4,7 +4,7 @@ export function useLocalStorage<T>(
   key: string,
   initialValue: T
 ): [T, (value: T | ((val: T) => T)) => void] {
-  // 获取初始值
+  // 獲取初始值
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -15,10 +15,10 @@ export function useLocalStorage<T>(
     }
   });
 
-  // 设置值的函数
+  // 設定值的函式
   const setValue = (value: T | ((val: T) => T)) => {
     try {
-      // 允许传入函数来更新状态
+      // 允許傳入函式來更新狀態
       const valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
@@ -34,7 +34,7 @@ export function useSessionStorage<T>(
   key: string,
   initialValue: T
 ): [T, (value: T | ((val: T) => T)) => void] {
-  // 获取初始值
+  // 獲取初始值
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.sessionStorage.getItem(key);
@@ -45,7 +45,7 @@ export function useSessionStorage<T>(
     }
   });
 
-  // 设置值的函数
+  // 設定值的函式
   const setValue = (value: T | ((val: T) => T)) => {
     try {
       const valueToStore = value instanceof Function ? value(storedValue) : value;

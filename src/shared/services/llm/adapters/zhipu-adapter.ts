@@ -1,5 +1,5 @@
 /**
- * 智谱AI (GLM系列)适配器
+ * 智譜AI (GLM系列)介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,12 +21,12 @@ export class ZhipuAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, '智谱AI API调用失败');
+      this.handleError(error, '智譜AI API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // 智谱AI API兼容OpenAI格式
+    // 智譜AI API相容OpenAI格式
     const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.config.apiKey}`,
     };
@@ -56,7 +56,7 @@ export class ZhipuAdapter extends BaseLLMAdapter {
     const choice = data.choices?.[0];
 
     if (!choice) {
-      throw new Error('API响应格式异常: 缺少choices字段');
+      throw new Error('API響應格式異常: 缺少choices欄位');
     }
 
     return {
@@ -75,7 +75,7 @@ export class ZhipuAdapter extends BaseLLMAdapter {
     await super.validateConfig();
     
     if (!this.config.model.startsWith('glm-')) {
-      throw new Error(`无效的智谱AI模型: ${this.config.model}`);
+      throw new Error(`無效的智譜AI模型: ${this.config.model}`);
     }
     
     return true;

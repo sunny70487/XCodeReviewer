@@ -30,7 +30,7 @@ export default function DatabaseTest() {
     
     const tests: Array<{ name: string; test: () => Promise<any> }> = [
       {
-        name: "数据库连接测试",
+        name: "資料庫連線測試",
         test: async () => {
           const start = Date.now();
           await api.getProjectStats();
@@ -38,7 +38,7 @@ export default function DatabaseTest() {
         }
       },
       {
-        name: "项目数据查询",
+        name: "專案資料查詢",
         test: async () => {
           const start = Date.now();
           const projects = await api.getProjects();
@@ -49,7 +49,7 @@ export default function DatabaseTest() {
         }
       },
       {
-        name: "审计任务查询",
+        name: "審計任務查詢",
         test: async () => {
           const start = Date.now();
           const tasks = await api.getAuditTasks();
@@ -60,7 +60,7 @@ export default function DatabaseTest() {
         }
       },
       {
-        name: "用户配置查询",
+        name: "使用者配置查詢",
         test: async () => {
           const start = Date.now();
           const count = await api.getProfilesCount();
@@ -74,36 +74,36 @@ export default function DatabaseTest() {
 
     for (const { name, test } of tests) {
       try {
-        // 添加pending状态
-        setResults(prev => [...prev, { name, status: 'pending', message: '测试中...' }]);
+        // 新增pending狀態
+        setResults(prev => [...prev, { name, status: 'pending', message: '測試中...' }]);
         
         const result = await test();
         
-        // 更新为成功状态
+        // 更新為成功狀態
         setResults(prev => prev.map(r => 
           r.name === name 
             ? { 
                 name, 
                 status: 'success', 
-                message: `测试通过 (${result.duration}ms)${result.count !== undefined ? ` - 数据量: ${result.count}` : ''}`,
+                message: `測試透過 (${result.duration}ms)${result.count !== undefined ? ` - 資料量: ${result.count}` : ''}`,
                 duration: result.duration
               }
             : r
         ));
       } catch (error: any) {
-        // 更新为错误状态
+        // 更新為錯誤狀態
         setResults(prev => prev.map(r => 
           r.name === name 
             ? { 
                 name, 
                 status: 'error', 
-                message: `测试失败: ${error.message || '未知错误'}`
+                message: `測試失敗: ${error.message || '未知錯誤'}`
               }
             : r
         ));
       }
       
-      // 添加延迟避免过快执行
+      // 新增延遲避免過快執行
       await new Promise(resolve => setTimeout(resolve, 500));
     }
     
@@ -113,9 +113,9 @@ export default function DatabaseTest() {
     const totalCount = tests.length;
     
     if (successCount === totalCount) {
-      toast.success("所有数据库测试通过！");
+      toast.success("所有資料庫測試透過！");
     } else {
-      toast.error(`${totalCount - successCount} 个测试失败`);
+      toast.error(`${totalCount - successCount} 個測試失敗`);
     }
   };
 
@@ -135,11 +135,11 @@ export default function DatabaseTest() {
   const getStatusBadge = (status: TestResult['status']) => {
     switch (status) {
       case 'success':
-        return <Badge className="bg-green-100 text-green-800">通过</Badge>;
+        return <Badge className="bg-green-100 text-green-800">透過</Badge>;
       case 'error':
-        return <Badge className="bg-red-100 text-red-800">失败</Badge>;
+        return <Badge className="bg-red-100 text-red-800">失敗</Badge>;
       case 'pending':
-        return <Badge className="bg-red-50 text-red-800">测试中</Badge>;
+        return <Badge className="bg-red-50 text-red-800">測試中</Badge>;
       default:
         return null;
     }
@@ -150,13 +150,13 @@ export default function DatabaseTest() {
       <CardHeader>
         <CardTitle className="flex items-center">
           <Database className="w-5 h-5 mr-2" />
-          数据库连接测试
+          資料庫連線測試
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600">
-            测试数据库连接状态和基本功能
+            測試資料庫連線狀態和基本功能
           </p>
           <Button 
             onClick={runTests} 
@@ -166,12 +166,12 @@ export default function DatabaseTest() {
             {testing ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                测试中...
+                測試中...
               </>
             ) : (
               <>
                 <RefreshCw className="w-4 h-4 mr-2" />
-                开始测试
+                開始測試
               </>
             )}
           </Button>
@@ -201,8 +201,8 @@ export default function DatabaseTest() {
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              测试完成！成功: {results.filter(r => r.status === 'success').length} / 
-              总计: {results.length}
+              測試完成！成功: {results.filter(r => r.status === 'success').length} / 
+              總計: {results.length}
             </AlertDescription>
           </Alert>
         )}
@@ -211,7 +211,7 @@ export default function DatabaseTest() {
           <Alert>
             <Database className="h-4 w-4" />
             <AlertDescription>
-              点击"开始测试"按钮来检查数据库连接状态
+              點選"開始測試"按鈕來檢查資料庫連線狀態
             </AlertDescription>
           </Alert>
         )}

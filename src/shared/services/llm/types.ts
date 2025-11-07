@@ -1,43 +1,43 @@
 /**
- * LLM服务类型定义
+ * LLM服務型別定義
  */
 
-// 支持的LLM提供商类型
+// 支援的LLM提供商型別
 export type LLMProvider = 
   | 'gemini'      // Google Gemini
   | 'openai'      // OpenAI (GPT系列)
   | 'claude'      // Anthropic Claude
-  | 'qwen'        // 阿里云通义千问
+  | 'qwen'        // 阿里雲通義千問
   | 'deepseek'    // DeepSeek
-  | 'zhipu'       // 智谱AI (GLM系列)
+  | 'zhipu'       // 智譜AI (GLM系列)
   | 'moonshot'    // 月之暗面 Kimi
   | 'baidu'       // 百度文心一言
   | 'minimax'     // MiniMax
-  | 'doubao'      // 字节豆包
+  | 'doubao'      // 位元組豆包
   | 'ollama';     // Ollama 本地大模型
 
-// LLM配置接口
+// LLM配置介面
 export interface LLMConfig {
   provider: LLMProvider;
   apiKey: string;
   model: string;
-  baseUrl?: string;          // 自定义API端点
-  timeout?: number;          // 超时时间(ms)
-  temperature?: number;      // 温度参数
-  maxTokens?: number;        // 最大token数
-  topP?: number;            // Top-p采样
-  frequencyPenalty?: number; // 频率惩罚
-  presencePenalty?: number;  // 存在惩罚
-  customHeaders?: Record<string, string>; // 自定义请求头
+  baseUrl?: string;          // 自定義API端點
+  timeout?: number;          // 超時時間(ms)
+  temperature?: number;      // 溫度引數
+  maxTokens?: number;        // 最大token數
+  topP?: number;            // Top-p取樣
+  frequencyPenalty?: number; // 頻率懲罰
+  presencePenalty?: number;  // 存在懲罰
+  customHeaders?: Record<string, string>; // 自定義請求頭
 }
 
-// LLM请求消息
+// LLM請求訊息
 export interface LLMMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
-// LLM请求参数
+// LLM請求引數
 export interface LLMRequest {
   messages: LLMMessage[];
   temperature?: number;
@@ -46,7 +46,7 @@ export interface LLMRequest {
   stream?: boolean;
 }
 
-// LLM响应
+// LLM響應
 export interface LLMResponse {
   content: string;
   model?: string;
@@ -58,35 +58,35 @@ export interface LLMResponse {
   finishReason?: string;
 }
 
-// LLM适配器接口
+// LLM介面卡介面
 export interface ILLMAdapter {
   /**
-   * 发送请求并获取响应
+   * 傳送請求並獲取響應
    */
   complete(request: LLMRequest): Promise<LLMResponse>;
 
   /**
-   * 流式响应（可选）
+   * 流式響應（可選）
    */
   streamComplete?(request: LLMRequest): AsyncGenerator<string, void, unknown>;
 
   /**
-   * 获取提供商名称
+   * 獲取提供商名稱
    */
   getProvider(): LLMProvider;
 
   /**
-   * 获取模型名称
+   * 獲取模型名稱
    */
   getModel(): string;
 
   /**
-   * 验证配置是否有效
+   * 驗證配置是否有效
    */
   validateConfig(): Promise<boolean>;
 }
 
-// 错误类型
+// 錯誤型別
 export class LLMError extends Error {
   constructor(
     message: string,
@@ -99,7 +99,7 @@ export class LLMError extends Error {
   }
 }
 
-// 默认配置
+// 預設配置
 export const DEFAULT_LLM_CONFIG: Partial<LLMConfig> = {
   timeout: 150000,
   temperature: 0.2,
@@ -109,7 +109,7 @@ export const DEFAULT_LLM_CONFIG: Partial<LLMConfig> = {
   presencePenalty: 0,
 };
 
-// 各平台默认模型
+// 各平臺預設模型
 export const DEFAULT_MODELS: Record<LLMProvider, string> = {
   gemini: 'gemini-2.5-flash',
   openai: 'gpt-4o-mini',
@@ -124,7 +124,7 @@ export const DEFAULT_MODELS: Record<LLMProvider, string> = {
   ollama: 'llama3',
 };
 
-// 各平台API端点
+// 各平臺API端點
 export const DEFAULT_BASE_URLS: Partial<Record<LLMProvider, string>> = {
   openai: 'https://api.openai.com/v1',
   qwen: 'https://dashscope.aliyuncs.com/api/v1',

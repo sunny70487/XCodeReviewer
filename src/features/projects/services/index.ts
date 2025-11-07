@@ -1,3 +1,3 @@
-// 导出项目相关服务
+// 匯出專案相關服務
 export * from './repoScan';
 export * from './repoZipScan';

@@ -1,34 +1,34 @@
 /**
- * 全局任务控制管理器
- * 用于取消正在运行的审计任务
+ * 全域性任務控制管理器
+ * 用於取消正在執行的審計任務
  */
 
 class TaskControlManager {
   private cancelledTasks: Set<string> = new Set();
 
   /**
-   * 取消任务
+   * 取消任務
    */
   cancelTask(taskId: string) {
     this.cancelledTasks.add(taskId);
-    console.log(`🛑 任务 ${taskId} 已标记为取消`);
+    console.log(`🛑 任務 ${taskId} 已標記為取消`);
   }
 
   /**
-   * 检查任务是否被取消
+   * 檢查任務是否被取消
    */
   isCancelled(taskId: string): boolean {
     return this.cancelledTasks.has(taskId);
   }
 
   /**
-   * 清理已完成任务的控制状态
+   * 清理已完成任務的控制狀態
    */
   cleanupTask(taskId: string) {
     this.cancelledTasks.delete(taskId);
   }
 }
 
-// 导出单例
+// 匯出單例
 export const taskControl = new TaskControlManager();
 

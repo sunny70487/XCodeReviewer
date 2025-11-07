@@ -1,5 +1,5 @@
 /**
- * LLM适配器基类
+ * LLM介面卡基類
  */
 
 import type { ILLMAdapter, LLMConfig, LLMRequest, LLMResponse, LLMProvider } from './types';
@@ -36,7 +36,7 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
   }
 
   /**
-   * 处理超时
+   * 處理超時
    */
   protected async withTimeout<T>(
     promise: Promise<T>,
@@ -46,7 +46,7 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
       promise,
       new Promise<T>((_, reject) =>
         setTimeout(() => reject(new LLMError(
-          `请求超时 (${timeoutMs}ms)`,
+          `請求超時 (${timeoutMs}ms)`,
           this.config.provider
         )), timeoutMs)
       ),
@@ -54,32 +54,32 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
   }
 
   /**
-   * 处理API错误
+   * 處理API錯誤
    */
   protected handleError(error: any, context?: string): never {
     let message = error.message || error;
     
-    // 针对不同错误类型提供更详细的信息
-    if (error.name === 'AbortError' || message.includes('超时')) {
-      message = `请求超时 (${this.config.timeout}ms)。建议：\n` +
-        `1. 检查网络连接是否正常\n` +
-        `2. 尝试增加超时时间（在.env中设置 VITE_LLM_TIMEOUT）\n` +
-        `3. 验证API端点是否正确`;
+    // 針對不同錯誤型別提供更詳細的資訊
+    if (error.name === 'AbortError' || message.includes('超時')) {
+      message = `請求超時 (${this.config.timeout}ms)。建議：\n` +
+        `1. 檢查網路連線是否正常\n` +
+        `2. 嘗試增加超時時間（在.env中設定 VITE_LLM_TIMEOUT）\n` +
+        `3. 驗證API端點是否正確`;
     } else if (error.statusCode === 401 || error.statusCode === 403) {
-      message = `API认证失败。建议：\n` +
-        `1. 检查API Key是否正确配置\n` +
-        `2. 确认API Key是否有效且未过期\n` +
-        `3. 验证API Key权限是否充足`;
+      message = `API認證失敗。建議：\n` +
+        `1. 檢查API Key是否正確配置\n` +
+        `2. 確認API Key是否有效且未過期\n` +
+        `3. 驗證API Key許可權是否充足`;
     } else if (error.statusCode === 429) {
-      message = `API调用频率超限。建议：\n` +
-        `1. 等待一段时间后重试\n` +
-        `2. 降低并发数（VITE_LLM_CONCURRENCY）\n` +
-        `3. 增加请求间隔（VITE_LLM_GAP_MS）`;
+      message = `API呼叫頻率超限。建議：\n` +
+        `1. 等待一段時間後重試\n` +
+        `2. 降低併發數（VITE_LLM_CONCURRENCY）\n` +
+        `3. 增加請求間隔（VITE_LLM_GAP_MS）`;
     } else if (error.statusCode >= 500) {
-      message = `API服务异常 (${error.statusCode})。建议：\n` +
-        `1. 稍后重试\n` +
-        `2. 检查服务商状态页面\n` +
-        `3. 尝试切换其他LLM提供商`;
+      message = `API服務異常 (${error.statusCode})。建議：\n` +
+        `1. 稍後重試\n` +
+        `2. 檢查服務商狀態頁面\n` +
+        `3. 嘗試切換其他LLM提供商`;
     }
 
     const fullMessage = context ? `${context}: ${message}` : message;
@@ -93,7 +93,7 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
   }
 
   /**
-   * 重试逻辑
+   * 重試邏輯
    */
   protected async retry<T>(
     fn: () => Promise<T>,
@@ -108,14 +108,14 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
       } catch (error: any) {
         lastError = error;
         
-        // 如果是4xx错误（客户端错误），不重试
+        // 如果是4xx錯誤（客戶端錯誤），不重試
         if (error.statusCode >= 400 && error.statusCode < 500) {
           throw error;
         }
         
-        // 最后一次尝试时不等待
+        // 最後一次嘗試時不等待
         if (attempt < maxAttempts - 1) {
-          // 指数退避
+          // 指數退避
           await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, attempt)));
         }
       }
@@ -125,7 +125,7 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
   }
 
   /**
-   * 构建请求头
+   * 構建請求頭
    */
   protected buildHeaders(additionalHeaders: Record<string, string> = {}): Record<string, string> {
     return {

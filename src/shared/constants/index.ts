@@ -1,6 +1,6 @@
-// 应用常量定义
+// 應用常量定義
 
-// 支持的编程语言
+// 支援的程式語言
 export const SUPPORTED_LANGUAGES = [
   'javascript',
   'typescript',
@@ -16,7 +16,7 @@ export const SUPPORTED_LANGUAGES = [
   'kotlin',
 ] as const;
 
-// 问题类型
+// 問題型別
 export const ISSUE_TYPES = {
   BUG: 'bug',
   SECURITY: 'security',
@@ -25,7 +25,7 @@ export const ISSUE_TYPES = {
   MAINTAINABILITY: 'maintainability',
 } as const;
 
-// 问题严重程度
+// 問題嚴重程度
 export const SEVERITY_LEVELS = {
   CRITICAL: 'critical',
   HIGH: 'high',
@@ -33,7 +33,7 @@ export const SEVERITY_LEVELS = {
   LOW: 'low',
 } as const;
 
-// 任务状态
+// 任務狀態
 export const TASK_STATUS = {
   PENDING: 'pending',
   RUNNING: 'running',
@@ -42,13 +42,13 @@ export const TASK_STATUS = {
   CANCELLED: 'cancelled',
 } as const;
 
-// 用户角色
+// 使用者角色
 export const USER_ROLES = {
   ADMIN: 'admin',
   MEMBER: 'member',
 } as const;
 
-// 项目成员角色
+// 專案成員角色
 export const PROJECT_ROLES = {
   OWNER: 'owner',
   ADMIN: 'admin',
@@ -56,7 +56,7 @@ export const PROJECT_ROLES = {
   VIEWER: 'viewer',
 } as const;
 
-// 仓库类型
+// 倉庫型別
 export const REPOSITORY_TYPES = {
   GITHUB: 'github',
   GITLAB: 'gitlab',
@@ -70,7 +70,7 @@ export const ANALYSIS_DEPTH = {
   DEEP: 'deep',
 } as const;
 
-// 默认配置
+// 預設配置
 export const DEFAULT_CONFIG = {
   MAX_FILE_SIZE: 1024 * 1024, // 1MB
   MAX_FILES_PER_SCAN: 100,
@@ -78,7 +78,7 @@ export const DEFAULT_CONFIG = {
   DEBOUNCE_DELAY: 300, // 300ms
 } as const;
 
-// API 端点
+// API 端點
 export const API_ENDPOINTS = {
   PROJECTS: '/api/projects',
   AUDIT_TASKS: '/api/audit-tasks',
@@ -86,7 +86,7 @@ export const API_ENDPOINTS = {
   USERS: '/api/users',
 } as const;
 
-// 本地存储键名
+// 本地儲存鍵名
 export const STORAGE_KEYS = {
   THEME: 'xcodereviewer-theme',
   USER_PREFERENCES: 'xcodereviewer-preferences',

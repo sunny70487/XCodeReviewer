@@ -1,5 +1,5 @@
 /**
- * LLM工厂类 - 统一创建和管理LLM适配器
+ * LLM工廠類 - 統一建立和管理LLM介面卡
  */
 
 import type { ILLMAdapter, LLMConfig, LLMProvider } from './types';
@@ -19,36 +19,36 @@ import {
 } from './adapters';
 
 /**
- * LLM工厂类
+ * LLM工廠類
  */
 export class LLMFactory {
   private static adapters: Map<string, ILLMAdapter> = new Map();
 
   /**
-   * 创建LLM适配器实例
+   * 建立LLM介面卡例項
    */
   static createAdapter(config: LLMConfig): ILLMAdapter {
     const cacheKey = this.getCacheKey(config);
     
-    // 从缓存中获取
+    // 從快取中獲取
     if (this.adapters.has(cacheKey)) {
       return this.adapters.get(cacheKey)!;
     }
 
-    // 创建新的适配器实例
+    // 建立新的介面卡例項
     const adapter = this.instantiateAdapter(config);
     
-    // 缓存实例
+    // 快取例項
     this.adapters.set(cacheKey, adapter);
     
     return adapter;
   }
 
   /**
-   * 根据提供商类型实例化适配器
+   * 根據提供商型別例項化介面卡
    */
   private static instantiateAdapter(config: LLMConfig): ILLMAdapter {
-    // 如果未指定模型，使用默认模型
+    // 如果未指定模型，使用預設模型
     if (!config.model) {
       config.model = DEFAULT_MODELS[config.provider];
     }
@@ -88,26 +88,26 @@ export class LLMFactory {
         return new OllamaAdapter(config);
       
       default:
-        throw new Error(`不支持的LLM提供商: ${config.provider}`);
+        throw new Error(`不支援的LLM提供商: ${config.provider}`);
     }
   }
 
   /**
-   * 生成缓存键
+   * 生成快取鍵
    */
   private static getCacheKey(config: LLMConfig): string {
     return `${config.provider}:${config.model}:${config.apiKey.substring(0, 8)}`;
   }
 
   /**
-   * 清除缓存
+   * 清除快取
    */
   static clearCache(): void {
     this.adapters.clear();
   }
 
   /**
-   * 获取支持的提供商列表
+   * 獲取支援的提供商列表
    */
   static getSupportedProviders(): LLMProvider[] {
     return [
@@ -126,14 +126,14 @@ export class LLMFactory {
   }
 
   /**
-   * 获取提供商的默认模型
+   * 獲取提供商的預設模型
    */
   static getDefaultModel(provider: LLMProvider): string {
     return DEFAULT_MODELS[provider];
   }
 
   /**
-   * 获取提供商的可用模型列表
+   * 獲取提供商的可用模型列表
    */
   static getAvailableModels(provider: LLMProvider): string[] {
     const models: Record<LLMProvider, string[]> = {
@@ -215,20 +215,20 @@ export class LLMFactory {
   }
 
   /**
-   * 获取提供商的友好名称
+   * 獲取提供商的友好名稱
    */
   static getProviderDisplayName(provider: LLMProvider): string {
     const names: Record<LLMProvider, string> = {
       gemini: 'Google Gemini',
       openai: 'OpenAI GPT',
       claude: 'Anthropic Claude',
-      qwen: '阿里云通义千问',
+      qwen: '阿里雲通義千問',
       deepseek: 'DeepSeek',
-      zhipu: '智谱AI (GLM)',
+      zhipu: '智譜AI (GLM)',
       moonshot: '月之暗面 Kimi',
       baidu: '百度文心一言',
       minimax: 'MiniMax',
-      doubao: '字节豆包',
+      doubao: '位元組豆包',
       ollama: 'Ollama 本地大模型',
     };
 

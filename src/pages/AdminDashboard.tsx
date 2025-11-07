@@ -33,7 +33,7 @@ export default function AdminDashboard() {
     completedTasks: 0,
     totalIssues: 0,
     resolvedIssues: 0,
-    storageUsed: '计算中...',
+    storageUsed: '計算中...',
     storageQuota: '未知'
   });
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
       setLoading(true);
       const projectStats = await api.getProjectStats();
 
-      // 获取存储使用量（IndexedDB）
+      // 獲取儲存使用量（IndexedDB）
       let storageUsed = '未知';
       let storageQuota = '未知';
       let details = null;
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
       setStorageDetails(details);
     } catch (error) {
       console.error('Failed to load stats:', error);
-      toast.error("加载统计数据失败");
+      toast.error("載入統計資料失敗");
     } finally {
       setLoading(false);
     }
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="space-y-4 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">加载数据库信息...</p>
+          <p className="text-muted-foreground">載入資料庫資訊...</p>
         </div>
       </div>
     );
@@ -110,48 +110,48 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 pb-8">
-      {/* 页面标题 */}
+      {/* 頁面標題 */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
             <Settings className="h-8 w-8 text-primary" />
-            系统管理
+            系統管理
           </h1>
           <p className="text-gray-600 mt-2">
-            管理系统配置、LLM设置、数据库和存储使用情况
+            管理系統配置、LLM設定、資料庫和儲存使用情況
           </p>
         </div>
         <Button variant="outline" onClick={loadStats}>
           <RefreshCw className="w-4 h-4 mr-2" />
-          刷新数据
+          重新整理資料
         </Button>
       </div>
 
-      {/* 数据库模式提示 */}
+      {/* 資料庫模式提示 */}
       {!isLocalMode && (
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            当前使用 <strong>{dbMode === 'supabase' ? 'Supabase 云端' : '演示'}</strong> 模式。
-            数据库管理功能仅在本地数据库模式下完全可用。
-            {dbMode === 'demo' && ' 请在 .env 文件中配置 VITE_USE_LOCAL_DB=true 启用本地数据库。'}
+            當前使用 <strong>{dbMode === 'supabase' ? 'Supabase 雲端' : '演示'}</strong> 模式。
+            資料庫管理功能僅在本地資料庫模式下完全可用。
+            {dbMode === 'demo' && ' 請在 .env 檔案中配置 VITE_USE_LOCAL_DB=true 啟用本地資料庫。'}
           </AlertDescription>
         </Alert>
       )}
 
-      {/* 数据库状态卡片 */}
+      {/* 資料庫狀態卡片 */}
       <DatabaseStatusDetail />
 
-      {/* 统计概览 */}
+      {/* 統計概覽 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">项目总数</p>
+                <p className="text-sm font-medium text-muted-foreground">專案總數</p>
                 <p className="text-3xl font-bold mt-2">{stats.totalProjects}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  活跃: {stats.activeProjects}
+                  活躍: {stats.activeProjects}
                 </p>
               </div>
               <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">审计任务</p>
+                <p className="text-sm font-medium text-muted-foreground">審計任務</p>
                 <p className="text-3xl font-bold mt-2">{stats.totalTasks}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   已完成: {stats.completedTasks}
@@ -182,10 +182,10 @@ export default function AdminDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">发现问题</p>
+                <p className="text-sm font-medium text-muted-foreground">發現問題</p>
                 <p className="text-3xl font-bold mt-2">{stats.totalIssues}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  已解决: {stats.resolvedIssues}
+                  已解決: {stats.resolvedIssues}
                 </p>
               </div>
               <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
@@ -199,10 +199,10 @@ export default function AdminDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">存储使用</p>
+                <p className="text-sm font-medium text-muted-foreground">儲存使用</p>
                 <p className="text-3xl font-bold mt-2">{stats.storageUsed}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  配额: {stats.storageQuota}
+                  配額: {stats.storageQuota}
                 </p>
               </div>
               <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
@@ -213,32 +213,32 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* 主要内容标签页 */}
+      {/* 主要內容標籤頁 */}
       <Tabs defaultValue="config" className="w-full">
         <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="config">系统配置</TabsTrigger>
-          <TabsTrigger value="overview">数据概览</TabsTrigger>
-          <TabsTrigger value="storage">存储管理</TabsTrigger>
-          <TabsTrigger value="operations">数据操作</TabsTrigger>
-          <TabsTrigger value="settings">高级设置</TabsTrigger>
+          <TabsTrigger value="config">系統配置</TabsTrigger>
+          <TabsTrigger value="overview">資料概覽</TabsTrigger>
+          <TabsTrigger value="storage">儲存管理</TabsTrigger>
+          <TabsTrigger value="operations">資料操作</TabsTrigger>
+          <TabsTrigger value="settings">高階設定</TabsTrigger>
         </TabsList>
 
-        {/* 系统配置 */}
+        {/* 系統配置 */}
         <TabsContent value="config" className="space-y-6">
           <SystemConfig />
         </TabsContent>
 
-        {/* 数据概览 */}
+        {/* 資料概覽 */}
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* 任务完成率 */}
+            {/* 任務完成率 */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
-                  任务完成率
+                  任務完成率
                 </CardTitle>
-                <CardDescription>审计任务的完成情况统计</CardDescription>
+                <CardDescription>審計任務的完成情況統計</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -259,7 +259,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-4">
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">总任务数</p>
+                    <p className="text-sm text-muted-foreground">總任務數</p>
                     <p className="text-2xl font-bold">{stats.totalTasks}</p>
                   </div>
                   <div className="space-y-1">
@@ -270,19 +270,19 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* 问题解决率 */}
+            {/* 問題解決率 */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5" />
-                  问题解决率
+                  問題解決率
                 </CardTitle>
-                <CardDescription>代码问题的解决情况统计</CardDescription>
+                <CardDescription>程式碼問題的解決情況統計</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span>已解决</span>
+                    <span>已解決</span>
                     <span className="font-medium">
                       {stats.totalIssues > 0
                         ? Math.round((stats.resolvedIssues / stats.totalIssues) * 100)
@@ -299,11 +299,11 @@ export default function AdminDashboard() {
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-4">
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">总问题数</p>
+                    <p className="text-sm text-muted-foreground">總問題數</p>
                     <p className="text-2xl font-bold">{stats.totalIssues}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">已解决</p>
+                    <p className="text-sm text-muted-foreground">已解決</p>
                     <p className="text-2xl font-bold text-green-600">{stats.resolvedIssues}</p>
                   </div>
                 </div>
@@ -311,14 +311,14 @@ export default function AdminDashboard() {
             </Card>
           </div>
 
-          {/* 数据库表统计 */}
+          {/* 資料庫表統計 */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
-                数据库表统计
+                資料庫表統計
               </CardTitle>
-              <CardDescription>各数据表的记录数量</CardDescription>
+              <CardDescription>各資料表的記錄數量</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-3">
                     <FolderOpen className="h-8 w-8 text-primary" />
                     <div>
-                      <p className="text-sm text-muted-foreground">项目</p>
+                      <p className="text-sm text-muted-foreground">專案</p>
                       <p className="text-2xl font-bold">{stats.totalProjects}</p>
                     </div>
                   </div>
@@ -335,7 +335,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-3">
                     <Clock className="h-8 w-8 text-green-600" />
                     <div>
-                      <p className="text-sm text-muted-foreground">审计任务</p>
+                      <p className="text-sm text-muted-foreground">審計任務</p>
                       <p className="text-2xl font-bold">{stats.totalTasks}</p>
                     </div>
                   </div>
@@ -344,7 +344,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center gap-3">
                     <AlertTriangle className="h-8 w-8 text-orange-600" />
                     <div>
-                      <p className="text-sm text-muted-foreground">问题</p>
+                      <p className="text-sm text-muted-foreground">問題</p>
                       <p className="text-2xl font-bold">{stats.totalIssues}</p>
                     </div>
                   </div>
@@ -354,16 +354,16 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
 
-        {/* 存储管理 */}
+        {/* 儲存管理 */}
         <TabsContent value="storage" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <HardDrive className="h-5 w-5" />
-                存储空间使用情况
+                儲存空間使用情況
               </CardTitle>
               <CardDescription>
-                浏览器 IndexedDB 存储空间的使用详情
+                瀏覽器 IndexedDB 儲存空間的使用詳情
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -371,13 +371,13 @@ export default function AdminDashboard() {
                 <>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span>已使用空间</span>
+                      <span>已使用空間</span>
                       <span className="font-medium">{storageDetails.percentage}%</span>
                     </div>
                     <Progress value={storageDetails.percentage} />
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>{stats.storageUsed} 已使用</span>
-                      <span>{stats.storageQuota} 总配额</span>
+                      <span>{stats.storageQuota} 總配額</span>
                     </div>
                   </div>
 
@@ -387,11 +387,11 @@ export default function AdminDashboard() {
                       <p className="text-xl font-bold">{stats.storageUsed}</p>
                     </div>
                     <div className="p-4 bg-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground mb-1">总配额</p>
+                      <p className="text-sm text-muted-foreground mb-1">總配額</p>
                       <p className="text-xl font-bold">{stats.storageQuota}</p>
                     </div>
                     <div className="p-4 bg-muted rounded-lg">
-                      <p className="text-sm text-muted-foreground mb-1">剩余空间</p>
+                      <p className="text-sm text-muted-foreground mb-1">剩餘空間</p>
                       <p className="text-xl font-bold">
                         {((storageDetails.quota - storageDetails.usage) / 1024 / 1024).toFixed(2)} MB
                       </p>
@@ -402,7 +402,7 @@ export default function AdminDashboard() {
                     <Alert variant="destructive">
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
-                        存储空间使用率已超过 80%，建议清理不需要的数据或导出备份后清空数据库。
+                        儲存空間使用率已超過 80%，建議清理不需要的資料或匯出備份後清空資料庫。
                       </AlertDescription>
                     </Alert>
                   )}
@@ -411,7 +411,7 @@ export default function AdminDashboard() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    无法获取存储空间信息。您的浏览器可能不支持 Storage API。
+                    無法獲取儲存空間資訊。您的瀏覽器可能不支援 Storage API。
                   </AlertDescription>
                 </Alert>
               )}
@@ -420,33 +420,33 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>存储优化建议</CardTitle>
+              <CardTitle>儲存最佳化建議</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                 <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="font-medium">定期导出备份</p>
+                  <p className="font-medium">定期匯出備份</p>
                   <p className="text-sm text-muted-foreground">
-                    建议定期导出数据为 JSON 文件，防止数据丢失
+                    建議定期匯出資料為 JSON 檔案，防止資料丟失
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                 <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="font-medium">清理旧数据</p>
+                  <p className="font-medium">清理舊資料</p>
                   <p className="text-sm text-muted-foreground">
-                    删除不再需要的项目和任务可以释放存储空间
+                    刪除不再需要的專案和任務可以釋放儲存空間
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                 <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                 <div>
-                  <p className="font-medium">监控存储使用</p>
+                  <p className="font-medium">監控儲存使用</p>
                   <p className="text-sm text-muted-foreground">
-                    定期检查存储使用情况，避免超出浏览器限制
+                    定期檢查儲存使用情況，避免超出瀏覽器限制
                   </p>
                 </div>
               </div>
@@ -454,55 +454,55 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
 
-        {/* 数据操作 */}
+        {/* 資料操作 */}
         <TabsContent value="operations" className="space-y-6">
           <DatabaseManager />
         </TabsContent>
 
-        {/* 设置 */}
+        {/* 設定 */}
         <TabsContent value="settings" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>数据库设置</CardTitle>
-              <CardDescription>配置数据库行为和性能选项</CardDescription>
+              <CardTitle>資料庫設定</CardTitle>
+              <CardDescription>配置資料庫行為和效能選項</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>当前数据库模式：</strong> {dbMode === 'local' ? '本地 IndexedDB' : dbMode === 'supabase' ? 'Supabase 云端' : '演示模式'}
+                  <strong>當前資料庫模式：</strong> {dbMode === 'local' ? '本地 IndexedDB' : dbMode === 'supabase' ? 'Supabase 雲端' : '演示模式'}
                 </AlertDescription>
               </Alert>
 
               <div className="space-y-4 pt-4">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
-                    <p className="font-medium">自动备份</p>
+                    <p className="font-medium">自動備份</p>
                     <p className="text-sm text-muted-foreground">
-                      定期自动导出数据备份（开发中）
+                      定期自動匯出資料備份（開發中）
                     </p>
                   </div>
-                  <Badge variant="outline">即将推出</Badge>
+                  <Badge variant="outline">即將推出</Badge>
                 </div>
 
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
-                    <p className="font-medium">数据压缩</p>
+                    <p className="font-medium">資料壓縮</p>
                     <p className="text-sm text-muted-foreground">
-                      压缩存储数据以节省空间（开发中）
+                      壓縮儲存資料以節省空間（開發中）
                     </p>
                   </div>
-                  <Badge variant="outline">即将推出</Badge>
+                  <Badge variant="outline">即將推出</Badge>
                 </div>
 
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
-                    <p className="font-medium">数据同步</p>
+                    <p className="font-medium">資料同步</p>
                     <p className="text-sm text-muted-foreground">
-                      在多个设备间同步数据（开发中）
+                      在多個裝置間同步資料（開發中）
                     </p>
                   </div>
-                  <Badge variant="outline">即将推出</Badge>
+                  <Badge variant="outline">即將推出</Badge>
                 </div>
               </div>
             </CardContent>
@@ -510,21 +510,21 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>关于本地数据库</CardTitle>
+              <CardTitle>關於本地資料庫</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
               <p>
-                本地数据库使用浏览器的 IndexedDB 技术存储数据，具有以下特点：
+                本地資料庫使用瀏覽器的 IndexedDB 技術儲存資料，具有以下特點：
               </p>
               <ul className="list-disc list-inside space-y-2 ml-2">
-                <li>数据完全存储在本地，不会上传到服务器</li>
-                <li>支持离线访问，无需网络连接</li>
-                <li>存储容量取决于浏览器和设备</li>
-                <li>清除浏览器数据会删除所有本地数据</li>
-                <li>不同浏览器的数据相互独立</li>
+                <li>資料完全儲存在本地，不會上傳到伺服器</li>
+                <li>支援離線訪問，無需網路連線</li>
+                <li>儲存容量取決於瀏覽器和裝置</li>
+                <li>清除瀏覽器資料會刪除所有本地資料</li>
+                <li>不同瀏覽器的資料相互獨立</li>
               </ul>
               <p className="pt-2">
-                <strong>建议：</strong>定期导出数据备份，以防意外数据丢失。
+                <strong>建議：</strong>定期匯出資料備份，以防意外資料丟失。
               </p>
             </CardContent>
           </Card>

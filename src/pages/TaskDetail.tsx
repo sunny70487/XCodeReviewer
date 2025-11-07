@@ -31,27 +31,27 @@ import ExportReportDialog from "@/components/reports/ExportReportDialog";
 import { calculateTaskProgress } from "@/shared/utils/utils";
 import { taskControl } from "@/shared/services/taskControl";
 
-// AI解释解析函数
+// AI解釋解析函式
 function parseAIExplanation(aiExplanation: string) {
   try {
     const parsed = JSON.parse(aiExplanation);
-    // 检查是否有xai字段
+    // 檢查是否有xai欄位
     if (parsed.xai) {
       return parsed.xai;
     }
-    // 检查是否直接包含what, why, how字段
+    // 檢查是否直接包含what, why, how欄位
     if (parsed.what || parsed.why || parsed.how) {
       return parsed;
     }
-    // 如果都没有，返回null表示无法解析
+    // 如果都沒有，返回null表示無法解析
     return null;
   } catch (error) {
-    // JSON解析失败，返回null
+    // JSON解析失敗，返回null
     return null;
   }
 }
 
-// 问题列表组件
+// 問題列表元件
 function IssuesList({ issues }: { issues: AuditIssue[] }) {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -106,7 +106,7 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
           </div>
         </div>
         <Badge className={`${getSeverityColor(issue.severity)} px-2 py-1 text-xs font-medium`}>
-          {issue.severity === 'critical' ? '严重' :
+          {issue.severity === 'critical' ? '嚴重' :
             issue.severity === 'high' ? '高' :
               issue.severity === 'medium' ? '中等' : '低'}
         </Badge>
@@ -116,7 +116,7 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
         <div className="bg-white border border-gray-200 rounded-lg p-3 mb-3">
           <div className="flex items-center mb-1">
             <Info className="w-3 h-3 text-gray-600 mr-1" />
-            <span className="font-medium text-gray-800 text-xs">问题详情</span>
+            <span className="font-medium text-gray-800 text-xs">問題詳情</span>
           </div>
           <p className="text-gray-700 text-xs leading-relaxed">
             {issue.description}
@@ -131,7 +131,7 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
               <div className="w-4 h-4 bg-red-600 rounded flex items-center justify-center">
                 <Code className="w-2 h-2 text-white" />
               </div>
-              <span className="text-gray-300 text-xs font-medium">问题代码</span>
+              <span className="text-gray-300 text-xs font-medium">問題程式碼</span>
             </div>
             {issue.line_number && (
               <span className="text-gray-400 text-xs">第 {issue.line_number} 行</span>
@@ -152,7 +152,7 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
               <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center mr-2">
                 <Lightbulb className="w-3 h-3 text-white" />
               </div>
-              <span className="font-medium text-blue-800 text-sm">修复建议</span>
+              <span className="font-medium text-blue-800 text-sm">修復建議</span>
             </div>
             <p className="text-blue-700 text-xs leading-relaxed">{issue.suggestion}</p>
           </div>
@@ -168,13 +168,13 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
                   <div className="w-5 h-5 bg-red-600 rounded flex items-center justify-center mr-2">
                     <Zap className="w-3 h-3 text-white" />
                   </div>
-                  <span className="font-medium text-red-800 text-sm">AI 解释</span>
+                  <span className="font-medium text-red-800 text-sm">AI 解釋</span>
                 </div>
 
                 <div className="space-y-2 text-xs">
                   {parsedExplanation.what && (
                     <div className="border-l-2 border-red-600 pl-2">
-                      <span className="font-medium text-red-700">问题：</span>
+                      <span className="font-medium text-red-700">問題：</span>
                       <span className="text-gray-700 ml-1">{parsedExplanation.what}</span>
                     </div>
                   )}
@@ -195,7 +195,7 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
 
                   {parsedExplanation.learn_more && (
                     <div className="border-l-2 border-red-400 pl-2">
-                      <span className="font-medium text-red-600">链接：</span>
+                      <span className="font-medium text-red-600">連結：</span>
                       <a
                         href={parsedExplanation.learn_more}
                         target="_blank"
@@ -210,12 +210,12 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
               </div>
             );
           } else {
-            // 如果无法解析JSON，回退到原始显示方式
+            // 如果無法解析JSON，回退到原始顯示方式
             return (
               <div className="bg-white border border-red-200 rounded-lg p-3">
                 <div className="flex items-center mb-2">
                   <Zap className="w-4 h-4 text-red-600 mr-2" />
-                  <span className="font-medium text-red-800 text-sm">AI 解释</span>
+                  <span className="font-medium text-red-800 text-sm">AI 解釋</span>
                 </div>
                 <p className="text-gray-700 text-xs leading-relaxed">{issue.ai_explanation}</p>
               </div>
@@ -232,11 +232,11 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-12 h-12 text-green-600" />
         </div>
-        <h3 className="text-2xl font-bold text-green-800 mb-3">代码质量优秀！</h3>
-        <p className="text-green-600 text-lg mb-6">恭喜！没有发现任何问题</p>
+        <h3 className="text-2xl font-bold text-green-800 mb-3">程式碼質量優秀！</h3>
+        <p className="text-green-600 text-lg mb-6">恭喜！沒有發現任何問題</p>
         <div className="bg-green-50 rounded-lg p-6 max-w-md mx-auto">
           <p className="text-green-700 text-sm">
-            您的代码通过了所有质量检查，包括安全性、性能、可维护性等各个方面的评估。
+            您的程式碼透過了所有質量檢查，包括安全性、效能、可維護性等各個方面的評估。
           </p>
         </div>
       </div>
@@ -250,7 +250,7 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
           全部 ({issues.length})
         </TabsTrigger>
         <TabsTrigger value="critical" className="text-sm">
-          严重 ({criticalIssues.length})
+          嚴重 ({criticalIssues.length})
         </TabsTrigger>
         <TabsTrigger value="high" className="text-sm">
           高 ({highIssues.length})
@@ -273,8 +273,8 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
         ) : (
           <div className="text-center py-12">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">没有发现严重问题</h3>
-            <p className="text-gray-500">代码在严重级别的检查中表现良好</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">沒有發現嚴重問題</h3>
+            <p className="text-gray-500">程式碼在嚴重級別的檢查中表現良好</p>
           </div>
         )}
       </TabsContent>
@@ -285,8 +285,8 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
         ) : (
           <div className="text-center py-12">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">没有发现高优先级问题</h3>
-            <p className="text-gray-500">代码在高优先级检查中表现良好</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">沒有發現高優先順序問題</h3>
+            <p className="text-gray-500">程式碼在高優先順序檢查中表現良好</p>
           </div>
         )}
       </TabsContent>
@@ -297,8 +297,8 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
         ) : (
           <div className="text-center py-12">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">没有发现中等优先级问题</h3>
-            <p className="text-gray-500">代码在中等优先级检查中表现良好</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">沒有發現中等優先順序問題</h3>
+            <p className="text-gray-500">程式碼在中等優先順序檢查中表現良好</p>
           </div>
         )}
       </TabsContent>
@@ -309,8 +309,8 @@ function IssuesList({ issues }: { issues: AuditIssue[] }) {
         ) : (
           <div className="text-center py-12">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">没有发现低优先级问题</h3>
-            <p className="text-gray-500">代码在低优先级检查中表现良好</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">沒有發現低優先順序問題</h3>
+            <p className="text-gray-500">程式碼在低優先順序檢查中表現良好</p>
           </div>
         )}
       </TabsContent>
@@ -331,23 +331,23 @@ export default function TaskDetail() {
     }
   }, [id]);
 
-  // 对于运行中或等待中的任务，静默更新进度（不触发loading状态）
+  // 對於執行中或等待中的任務，靜默更新進度（不觸發loading狀態）
   useEffect(() => {
     if (!task || !id) {
       return;
     }
 
-    // 运行中或等待中的任务需要定时更新
+    // 執行中或等待中的任務需要定時更新
     if (task.status === 'running' || task.status === 'pending') {
       const intervalId = setInterval(async () => {
         try {
-          // 静默获取任务数据，不触发loading状态
+          // 靜默獲取任務資料，不觸發loading狀態
           const [taskData, issuesData] = await Promise.all([
             api.getAuditTaskById(id),
             api.getAuditIssues(id)
           ]);
 
-          // 只有数据真正变化时才更新状态
+          // 只有資料真正變化時才更新狀態
           if (taskData && (
             taskData.status !== task.status ||
             taskData.scanned_files !== task.scanned_files ||
@@ -357,9 +357,9 @@ export default function TaskDetail() {
             setIssues(issuesData);
           }
         } catch (error) {
-          console.error('静默更新任务失败:', error);
+          console.error('靜默更新任務失敗:', error);
         }
-      }, 3000); // 每3秒静默更新一次
+      }, 3000); // 每3秒靜默更新一次
 
       return () => clearInterval(intervalId);
     }
@@ -379,7 +379,7 @@ export default function TaskDetail() {
       setIssues(issuesData);
     } catch (error) {
       console.error('Failed to load task detail:', error);
-      toast.error("加载任务详情失败");
+      toast.error("載入任務詳情失敗");
     } finally {
       setLoading(false);
     }
@@ -409,26 +409,26 @@ export default function TaskDetail() {
   const handleCancel = async () => {
     if (!id || !task) return;
     
-    if (!confirm('确定要取消此任务吗？已分析的结果将被保留。')) {
+    if (!confirm('確定要取消此任務嗎？已分析的結果將被保留。')) {
       return;
     }
     
-    // 1. 标记任务为取消状态（让后台循环检测到）
+    // 1. 標記任務為取消狀態（讓後臺迴圈檢測到）
     taskControl.cancelTask(id);
     
-    // 2. 立即更新本地状态显示
+    // 2. 立即更新本地狀態顯示
     setTask(prev => prev ? { ...prev, status: 'cancelled' as const } : prev);
     
-    // 3. 尝试立即更新数据库（后台也会更新，这里是双保险）
+    // 3. 嘗試立即更新資料庫（後臺也會更新，這裡是雙保險）
     try {
       await api.updateAuditTask(id, { status: 'cancelled' } as any);
-      toast.success("任务已取消");
+      toast.success("任務已取消");
     } catch (error) {
-      console.error('更新取消状态失败:', error);
-      toast.warning("任务已标记取消，后台正在停止...");
+      console.error('更新取消狀態失敗:', error);
+      toast.warning("任務已標記取消，後臺正在停止...");
     }
     
-    // 4. 1秒后再次刷新，确保显示最新状态
+    // 4. 1秒後再次重新整理，確保顯示最新狀態
     setTimeout(() => {
       loadTaskDetail();
     }, 1000);
@@ -461,7 +461,7 @@ export default function TaskDetail() {
           <Link to="/audit-tasks">
             <Button variant="outline" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              返回任务列表
+              返回任務列表
             </Button>
           </Link>
         </div>
@@ -470,31 +470,31 @@ export default function TaskDetail() {
             <div className="empty-icon">
               <AlertTriangle className="w-8 h-8 text-red-500" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">任务不存在</h3>
-            <p className="text-gray-500">请检查任务ID是否正确</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">任務不存在</h3>
+            <p className="text-gray-500">請檢查任務ID是否正確</p>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  // 使用公共函数计算进度百分比
+  // 使用公共函式計算進度百分比
   const progressPercentage = calculateTaskProgress(task.scanned_files, task.total_files);
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* 页面标题 */}
+      {/* 頁面標題 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link to="/audit-tasks">
             <Button variant="outline" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              返回任务列表
+              返回任務列表
             </Button>
           </Link>
           <div>
-            <h1 className="page-title">任务详情</h1>
-            <p className="page-subtitle">{task.project?.name || '未知项目'} - 审计任务</p>
+            <h1 className="page-title">任務詳情</h1>
+            <p className="page-subtitle">{task.project?.name || '未知專案'} - 審計任務</p>
           </div>
         </div>
 
@@ -503,13 +503,13 @@ export default function TaskDetail() {
             {getStatusIcon(task.status)}
             <span className="ml-2">
               {task.status === 'completed' ? '已完成' :
-                task.status === 'running' ? '运行中' :
-                  task.status === 'failed' ? '失败' :
+                task.status === 'running' ? '執行中' :
+                  task.status === 'failed' ? '失敗' :
                     task.status === 'cancelled' ? '已取消' : '等待中'}
             </span>
           </Badge>
           
-          {/* 运行中或等待中的任务显示取消按钮 */}
+          {/* 執行中或等待中的任務顯示取消按鈕 */}
           {(task.status === 'running' || task.status === 'pending') && (
             <Button 
               size="sm" 
@@ -518,11 +518,11 @@ export default function TaskDetail() {
               className="text-red-600 hover:text-red-700 hover:bg-red-50"
             >
               <X className="w-4 h-4 mr-2" />
-              取消任务
+              取消任務
             </Button>
           )}
           
-          {/* 已完成的任务显示导出按钮 */}
+          {/* 已完成的任務顯示匯出按鈕 */}
           {task.status === 'completed' && (
             <Button 
               size="sm" 
@@ -530,19 +530,19 @@ export default function TaskDetail() {
               onClick={() => setExportDialogOpen(true)}
             >
               <Download className="w-4 h-4 mr-2" />
-              导出报告
+              匯出報告
             </Button>
           )}
         </div>
       </div>
 
-      {/* 任务概览 */}
+      {/* 任務概覽 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="stat-card">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">扫描进度</p>
+                <p className="stat-label">掃描進度</p>
                 <p className="stat-value text-xl">{progressPercentage}%</p>
                 <Progress value={progressPercentage} className="mt-2" />
               </div>
@@ -557,7 +557,7 @@ export default function TaskDetail() {
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">发现问题</p>
+                <p className="stat-label">發現問題</p>
                 <p className="stat-value text-xl text-orange-600">{task.issues_count}</p>
               </div>
               <div className="stat-icon from-orange-500 to-orange-600">
@@ -571,7 +571,7 @@ export default function TaskDetail() {
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">质量评分</p>
+                <p className="stat-label">質量評分</p>
                 <p className="stat-value text-xl text-primary">{task.quality_score.toFixed(1)}</p>
               </div>
               <div className="stat-icon from-emerald-500 to-emerald-600">
@@ -585,7 +585,7 @@ export default function TaskDetail() {
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="stat-label">代码行数</p>
+                <p className="stat-label">程式碼行數</p>
                 <p className="stat-value text-xl">{task.total_lines.toLocaleString()}</p>
               </div>
               <div className="stat-icon from-purple-500 to-purple-600">
@@ -596,33 +596,33 @@ export default function TaskDetail() {
         </Card>
       </div>
 
-      {/* 任务信息 */}
+      {/* 任務資訊 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <Card className="card-modern">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Shield className="w-5 h-5 text-primary" />
-                <span>任务信息</span>
+                <span>任務資訊</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">任务类型</p>
+                  <p className="text-sm font-medium text-gray-500">任務型別</p>
                   <p className="text-base">
-                    {task.task_type === 'repository' ? '仓库审计任务' : '即时分析任务'}
+                    {task.task_type === 'repository' ? '倉庫審計任務' : '即時分析任務'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">目标分支</p>
+                  <p className="text-sm font-medium text-gray-500">目標分支</p>
                   <p className="text-base flex items-center">
                     <GitBranch className="w-4 h-4 mr-1" />
-                    {task.branch_name || '默认分支'}
+                    {task.branch_name || '預設分支'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">创建时间</p>
+                  <p className="text-sm font-medium text-gray-500">建立時間</p>
                   <p className="text-base flex items-center">
                     <Calendar className="w-4 h-4 mr-1" />
                     {formatDate(task.created_at)}
@@ -630,7 +630,7 @@ export default function TaskDetail() {
                 </div>
                 {task.completed_at && (
                   <div>
-                    <p className="text-sm font-medium text-gray-500">完成时间</p>
+                    <p className="text-sm font-medium text-gray-500">完成時間</p>
                     <p className="text-base flex items-center">
                       <CheckCircle className="w-4 h-4 mr-1" />
                       {formatDate(task.completed_at)}
@@ -653,10 +653,10 @@ export default function TaskDetail() {
                 </div>
               )}
 
-              {/* 扫描配置 */}
+              {/* 掃描配置 */}
               {task.scan_config && (
                 <div>
-                  <p className="text-sm font-medium text-gray-500 mb-2">扫描配置</p>
+                  <p className="text-sm font-medium text-gray-500 mb-2">掃描配置</p>
                   <div className="bg-gray-50 rounded-lg p-3">
                     <pre className="text-xs text-gray-600">
                       {JSON.stringify(JSON.parse(task.scan_config), null, 2)}
@@ -673,31 +673,31 @@ export default function TaskDetail() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <FileText className="w-5 h-5 text-primary" />
-                <span>项目信息</span>
+                <span>專案資訊</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {task.project ? (
                 <>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">项目名称</p>
+                    <p className="text-sm font-medium text-gray-500">專案名稱</p>
                     <Link to={`/projects/${task.project.id}`} className="text-base text-primary hover:underline">
                       {task.project.name}
                     </Link>
                   </div>
                   {task.project.description && (
                     <div>
-                      <p className="text-sm font-medium text-gray-500">项目描述</p>
+                      <p className="text-sm font-medium text-gray-500">專案描述</p>
                       <p className="text-sm text-gray-600">{task.project.description}</p>
                     </div>
                   )}
                   <div>
-                    <p className="text-sm font-medium text-gray-500">仓库类型</p>
+                    <p className="text-sm font-medium text-gray-500">倉庫型別</p>
                     <p className="text-base">{task.project.repository_type?.toUpperCase() || 'OTHER'}</p>
                   </div>
                   {task.project.programming_languages && (
                     <div>
-                      <p className="text-sm font-medium text-gray-500 mb-2">编程语言</p>
+                      <p className="text-sm font-medium text-gray-500 mb-2">程式語言</p>
                       <div className="flex flex-wrap gap-1">
                         {JSON.parse(task.project.programming_languages).map((lang: string) => (
                           <Badge key={lang} variant="secondary" className="text-xs">
@@ -709,20 +709,20 @@ export default function TaskDetail() {
                   )}
                 </>
               ) : (
-                <p className="text-gray-500">项目信息不可用</p>
+                <p className="text-gray-500">專案資訊不可用</p>
               )}
             </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* 问题列表 */}
+      {/* 問題列表 */}
       {issues.length > 0 && (
         <Card className="card-modern">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Bug className="w-6 h-6 text-orange-600" />
-              <span>发现的问题 ({issues.length})</span>
+              <span>發現的問題 ({issues.length})</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -731,7 +731,7 @@ export default function TaskDetail() {
         </Card>
       )}
 
-      {/* 导出报告对话框 */}
+      {/* 匯出報告對話方塊 */}
       {task && (
         <ExportReportDialog
           open={exportDialogOpen}

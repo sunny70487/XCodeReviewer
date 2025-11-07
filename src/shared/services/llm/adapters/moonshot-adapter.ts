@@ -1,5 +1,5 @@
 /**
- * 月之暗面 Kimi适配器
+ * 月之暗面 Kimi介面卡
  */
 
 import { BaseLLMAdapter } from '../base-adapter';
@@ -21,12 +21,12 @@ export class MoonshotAdapter extends BaseLLMAdapter {
         return await this.withTimeout(this._sendRequest(request));
       });
     } catch (error) {
-      this.handleError(error, 'Moonshot API调用失败');
+      this.handleError(error, 'Moonshot API呼叫失敗');
     }
   }
 
   private async _sendRequest(request: LLMRequest): Promise<LLMResponse> {
-    // Moonshot API兼容OpenAI格式
+    // Moonshot API相容OpenAI格式
     const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.config.apiKey}`,
     };
@@ -56,7 +56,7 @@ export class MoonshotAdapter extends BaseLLMAdapter {
     const choice = data.choices?.[0];
 
     if (!choice) {
-      throw new Error('API响应格式异常: 缺少choices字段');
+      throw new Error('API響應格式異常: 缺少choices欄位');
     }
 
     return {
@@ -75,7 +75,7 @@ export class MoonshotAdapter extends BaseLLMAdapter {
     await super.validateConfig();
 
     if (!this.config.model.startsWith('moonshot-')) {
-      throw new Error(`无效的Moonshot模型: ${this.config.model}`);
+      throw new Error(`無效的Moonshot模型: ${this.config.model}`);
     }
 
     return true;
